@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import Header from "@/components/Header";
-
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -15,13 +15,13 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      
       <body className={`${inter.className} h-fit min-h-screen grid grid-rows-[72px_1fr] space-y-2 p-2`}>
-        <Header />
-        <div className="bg-blue-100 rounded-lg shadow-lg">
-          {children}
-        </div>
-        
+        <AuthProvider>
+          <Header />
+          <div className="bg-blue-100 rounded-lg shadow-lg">
+            {children}
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );

@@ -1,3 +1,6 @@
+'use client'
+
+// components
 import DateTimeFilter from "@/components/dashboard/DateTimeFilter"
 import AgentContainer from "@/components/dashboard/AgentContainer"
 import NetworkConnection from "@/components/dashboard/NetworkConeection"
@@ -6,6 +9,7 @@ import EventTable from "@/components/dashboard/EventTable"
 import PieGraph from "@/components/dashboard/PieGraph";
 
 const DashboardPage = () => {
+
   return (
     <div className="h-full grid grid-rows-[auto,1fr,3fr,3fr,6fr] p-2 gap-2">
       
@@ -14,17 +18,17 @@ const DashboardPage = () => {
         <DateTimeFilter />
       </div>
       
-
       {/* agent status */}
-      <div className="p-2 bg-gray-100 rounded-lg grid grid-cols-8 gap-4">
+      <div className="p-2 bg-gray-100 rounded-lg ">
         <AgentContainer />   
       </div>
       
-      {/* network connection and event trend */}
+
+      {/* network connection and event trend */} 
       <div className="p-2 bg-gray-100 rounded-lg grid grid-cols-10 gap-4">
         
         {/* network connection */}
-        <div className="bg-white rounded-lg shadow-lg col-span-4 p-2 flex flex-col">
+        <div className="bg-white rounded-lg shadow-lg col-span-4 p-2 flex flex-col h-full w-full relative">
           <NetworkConnection />  
         </div>
 
@@ -35,17 +39,16 @@ const DashboardPage = () => {
       
       </div>
       
+
       {/* event */}
       <div className="p-2 bg-gray-100 rounded-lg">
-        <div className="bg-white flex flex-col gap-2">
           <EventTable />
-        </div>
       </div>
       
 
       {/* pie chart */}
       <div className="p-2 bg-gray-100 rounded-lg grid grid-cols-2 grid-rows-2 gap-2">
-        <PieGraph  />    
+        <PieGraph title="Top 5 agents" />    
         <PieGraph title="Top MITRE ATT&CKS" />
         <PieGraph title="Top 5 Event Counts by Agent Name" />
         <PieGraph title="Top 5 Event" />

@@ -1,9 +1,25 @@
 'use client'
 
+// third-party
+import {useState, useEffect} from 'react'
 import ReactECharts from 'echarts-for-react';
 
+// components
+import Loading from '@/components/Loading'
+import ErrorDisplayer from '@/components/Error'
+
+// context
+import {useDashBoardContext} from '@/contexts/DashBoardContext'
+
+// utils
+import {initData, fetchEventTrendData, fetchEventTrendDataType} from '@/utils/dashboard/fetchEventTrendData'
+
 const EventTrendGraph = () => {
-  // 呼叫 API
+  const {dateTimeRange} = useDashBoardContext()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
+  const [error, setError] = useState<string | null>(null)
+
   const option = {
     title: {
       text: '事件趨勢 (level 8~14)',
@@ -15,7 +31,7 @@ const EventTrendGraph = () => {
       trigger: 'axis'
     },
     legend: {
-      data: ['Interface entered i', 'Windows application', 'Maximum authenticati', 'Possible kernel level r', 'User account changed'],
+      data: chartData.label,
       right: 'right',
       orient: 'vertical'
     },
@@ -38,55 +54,42 @@ const EventTrendGraph = () => {
         fontSize: 12  // 調整字體大小
       }
     },
-    series: [
-      {
-        name: 'Interface entered i',
-        type: 'line',
-        data: [
-          ['2024-07-24 00:00', 0],
-          ['2024-07-26 00:01', 5],
-          ['2024-07-28 00:02', 6],
-          ['2024-07-30 00:03', 1],
-          ['2024-08-01 00:04', 2]
-        ]
-      },
-      {
-        name: 'Windows application',
-        type: 'line',
-        data: [
-          ['2024-07-24 00:00', 1],
-          ['2024-07-26 00:01', 4],
-          ['2024-07-28 00:02', 6],
-          ['2024-07-30 00:03', 2],
-          ['2024-08-01 00:04', 2]
-        ]
-      },
-      {
-        name: 'Maximum authenticati',
-        type: 'line',
-        data: [
-          ['2024-07-24 00:00', 5],
-          ['2024-07-26 00:01', 5],
-          ['2024-07-28 00:02', 8],
-          ['2024-07-30 00:03', 10],
-          ['2024-08-01 00:04', 2]
-        ]
-      },
-      {
-        name: 'Possible kernel level r',
-        type: 'line',
-        data: [
-          ['2024-07-24 00:00', 3],
-          ['2024-07-26 00:01', 1],
-          ['2024-07-28 00:02', 2],
-          ['2024-07-30 00:03', 0],
-          ['2024-08-01 00:04', 0]
-        ]
-      },
-    ]
+    series: chartData.datas
   }
 
-  return <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />
+  useEffect(() => {
+    const fetchData = async () => {
+      if(isLoading) return
+      setIsLoading(true)
+      try{
+        if(dateTimeRange?.start && dateTimeRange?.end){
+          const result = await fetchEventTrendData({start: dateTimeRange?.start, end: dateTimeRange?.end})
+          if(result.success){
+            setChartData(result.content)
+          }else{
+            throw new Error("Error fetching event trend data")
+          }
+        }
+      }catch(error){
+        console.log(error)
+        setError("Failed to fetch trend data 😢. Please try again later.")
+        setTimeout(() => {
+          setError(null)
+        }, 3000)
+      }finally{
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [dateTimeRange])
+
+
+  return (
+    <div className='h-full w-full relative'>
+      {error && <ErrorDisplayer errorMessage={error} setError={setError} /> }
+      {isLoading ? <Loading /> : <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />}
+    </div>
+  )
 }
 
 export default EventTrendGraph;

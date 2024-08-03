@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { AgentDataType } from "@/components/dashboard/AgentContainer"
+import { AgentDataType } from "@/utils/dashboard/fetchAgentData";
 
 const Agent = ({agent}: {agent: AgentDataType}) => {
   return (
@@ -12,7 +12,7 @@ const Agent = ({agent}: {agent: AgentDataType}) => {
             width={50}
             height={50}
           />
-          <div className="text-sm text-gray-500">No results found</div>
+          <div className={`text-sm ${agent.data ? 'text-black font-bold' : 'text-gray-500'}`}>{agent.data || 'No results found'}</div>
       </div>
     </>
   )

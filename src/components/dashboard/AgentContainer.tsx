@@ -1,71 +1,59 @@
 'use client'
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Agent from "@/components/dashboard/Agent";
-
-export interface AgentDataType {
-  id: number
-  agent_name: string
-  data: any
-}
-
+import Loading from "@/components/Loading";
+import { useDashBoardContext } from "@/contexts/DashBoardContext";
+import { initData, AgentDataType, fetchAgentData, fetchAgentDataResponse } from "@/utils/dashboard/fetchAgentData";
+import ErrorDisplayer from "@/components/Error";
 
 const AgentContainer = () => {
-  // 呼叫 API 獲取 agent 資料，沒有資料用預設就可以
-  const [agentData, setAgentData] = useState<AgentDataType[]>(
-    [
-      {
-        id: 1,
-        agent_name: "Active agents",
-        data: null,
-      },
-      {
-        id: 2,
-        agent_name: "Total agents",
-        data: null,
-      },
-      {
-        id: 3,
-        agent_name: "Active Windows agents",
-        data: null,
-      },
-      {
-        id: 4,
-        agent_name: "Windows agents",
-        data: null,
-      },
-      {
-        id: 5,
-        agent_name: "Active Linux agents",
-        data: null,
-      },
-      {
-        id: 6,
-        agent_name: "Linux agents",
-        data: null,
-      },
-      {
-        id: 7,
-        agent_name: "Active MacOS agents",
-        data: null,
-      },
-      {
-        id: 8,
-        agent_name: "MacOs agents",
-        data: null,
-      },
-    ]
-  );
+  const { dateTimeRange } = useDashBoardContext()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const [agentData, setAgentData] = useState<AgentDataType[]>(initData);
+  const [error, setError] = useState<string | null>(null)
 
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        if (isLoading) return
+        setIsLoading(true)
+        if (dateTimeRange?.start && dateTimeRange?.end) {
+          const result: fetchAgentDataResponse = await fetchAgentData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
+          if (result.success) {
+            setAgentData(result.content)
+          } else {
+            throw new Error("Error fetching agent data")
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        setError("Failed to fetch agent data 😢. Please try again later.")
+        setTimeout(() => {
+          setError(null)
+        }, 3000)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [dateTimeRange])
 
   return (
-    <>
+    <div className="w-full h-full relative">
+      {error && <ErrorDisplayer errorMessage={error} setError={setError} /> }
       {
-        agentData.map((agent: any) => (
-          <Agent key={agent.id} agent={agent} />
-        ))
+        isLoading ? <Loading /> :
+          <div className="h-full w-full grid grid-cols-8 gap-4">
+            {
+              agentData.map((agent: any) => (
+                <Agent key={agent.id} agent={agent} />
+              ))
+            }
+          </div>
       }
-    </>
+    </div>
   )
 }
 
