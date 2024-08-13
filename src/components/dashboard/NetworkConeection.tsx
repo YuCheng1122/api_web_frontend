@@ -11,7 +11,7 @@ import ErrorDisplayer from "@/components/Error";
 import {useDashBoardContext} from "@/contexts/DashBoardContext";
 
 // utils
-import {initData, fetchNetworkConnection, fetchNetworkConnectionResponse} from "@/utils/dashboard/fetchNetworkConnection";
+import {initData, fetchNetworkConnection, APIResponseSuccess, APIResponseError} from "@/utils/dashboard/fetchNetworkConnection";
 
 
 const NetworkConnection = () => {
@@ -21,29 +21,27 @@ const NetworkConnection = () => {
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
+
     const fetchData = async () => {
-      try{
-        if(isLoading) return
-        setIsLoading(true)
-        if(dateTimeRange?.start && dateTimeRange?.end){
-          const result: fetchNetworkConnectionResponse = await fetchNetworkConnection({start: dateTimeRange?.start, end: dateTimeRange?.end})
-          if(result.success){
-            setConnectionCount(result.content.count)
-          }else{
-            throw new Error("Error fetching network connection data")
-          }
+     
+      if(isLoading) return
+      setIsLoading(true)
+      if(dateTimeRange?.start && dateTimeRange?.end){
+        const result = await fetchNetworkConnection({start: dateTimeRange?.start, end: dateTimeRange?.end})
+        if(result.success){
+          setConnectionCount(result.content.count)
+        }else{
+          setError("Failed to fetch network connection data 😢. Please try again later.")
+          setTimeout(() => {
+            setError(null)
+          }, 3000)
         }
-      }catch(error){
-        console.log(error)
-        setError("Failed to fetch network connection data 😢. Please try again later.")
-        setTimeout(() => {
-          setError(null)
-        }, 3000)
-      }finally{
-        setIsLoading(false)
       }
+      setIsLoading(false)
+      
     }
     fetchData()
+
   }, [dateTimeRange])
 
 

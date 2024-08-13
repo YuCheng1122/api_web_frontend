@@ -1,7 +1,7 @@
 'use client' 
 
 import React, { createContext, useContext, useState } from "react"
-
+import { AgentDataType } from '@/utils/dashboard/fetchAgentData';
 
 interface DateTimeRange {
   start: Date | null;
@@ -9,17 +9,18 @@ interface DateTimeRange {
 }
 
 interface DashboardContextType {
-    dateTimeRange: DateTimeRange | null;
-    changeDateTimeRange: (start: Date, end: Date) => void;
+  dateTimeRange: DateTimeRange;
+  changeDateTimeRange: (start: Date, end: Date) => void;
+  agentData: AgentDataType[];
+  updateAgentData: (newData: AgentDataType[]) => void;
 }
-
 
 const DashboardContext = createContext<DashboardContextType | undefined>(undefined);
 
 export const DashboardProvider: React.FC<{children: React.ReactNode}> = ({children}) => {
   const [dateTimeRange, setDateTimeRange] = useState<DateTimeRange>({start: null, end: null})
+  const [agentData, setAgentData] = useState<AgentDataType[]>([]);
   
-  // 更新 API 呼叫時間
   const changeDateTimeRange = (start: Date, end: Date) => {
     setDateTimeRange({
       start: start,
@@ -27,14 +28,16 @@ export const DashboardProvider: React.FC<{children: React.ReactNode}> = ({childr
     })
   }
 
+  const updateAgentData = (newData: AgentDataType[]) => {
+    setAgentData(newData);
+  }
+
   return (
-    <DashboardContext.Provider value={{dateTimeRange, changeDateTimeRange}}>
+    <DashboardContext.Provider value={{dateTimeRange, changeDateTimeRange, agentData, updateAgentData}}>
       {children}
     </DashboardContext.Provider>
   )
-
 }
-
 
 export const useDashBoardContext = () => {
   const context = useContext(DashboardContext);

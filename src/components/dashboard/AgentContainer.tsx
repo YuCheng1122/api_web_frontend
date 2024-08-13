@@ -13,7 +13,6 @@ const AgentContainer = () => {
   const [agentData, setAgentData] = useState<AgentDataType[]>(initData);
   const [error, setError] = useState<string | null>(null)
 
-
   useEffect(() => {
     const fetchData = async () => {
       try {
