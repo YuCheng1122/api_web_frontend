@@ -6,7 +6,7 @@ import AgentContainer from "@/components/dashboard/AgentContainer"
 import NetworkConnection from "@/components/dashboard/NetworkConeection"
 import EventTrendGraph from "@/components/dashboard/EventTrendGraph"
 import EventTable from "@/components/dashboard/EventTable"
-import PieGraph from "@/components/dashboard/PieGraph";
+import PieGraphContainer from "@/components/dashboard/PieGraphContainer"
 
 const DashboardPage = () => {
 
@@ -48,10 +48,7 @@ const DashboardPage = () => {
 
       {/* pie chart */}
       <div className="p-2 bg-gray-100 rounded-lg grid grid-cols-2 grid-rows-2 gap-2">
-        <PieGraph title="Top 5 agents" />    
-        <PieGraph title="Top MITRE ATT&CKS" />
-        <PieGraph title="Top 5 Event Counts by Agent Name" />
-        <PieGraph title="Top 5 Event" />
+        <PieGraphContainer />
       </div>
     
     </div>

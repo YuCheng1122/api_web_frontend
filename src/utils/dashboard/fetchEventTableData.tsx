@@ -1,7 +1,10 @@
+import axios from 'axios'
+import Cookies from 'js-cookie'
+
 export interface EventTableDataType {
   id: number
   time: string
-  agent_name: string
+  agent_id: string
   rule_description: string
   rule_mitre_tactic: string
   rule_mitre_id: string
@@ -12,6 +15,7 @@ export interface fetchEventTableDataRequest {
   id: number
   start: Date
   end: Date
+  limit?: number
 }
 
 export interface fetchEventTableDataResponse {
@@ -22,93 +26,41 @@ export interface fetchEventTableDataResponse {
   }
 }
 
-export const initData : {total: number, datas: EventTableDataType[]} = {
+export const initData: { total: number; datas: EventTableDataType[] } = {
   total: 0,
   datas: []
 }
 
-
 export const fetchEventTableData = async (param: fetchEventTableDataRequest): Promise<fetchEventTableDataResponse> => {
-  return new Promise((resolve) => {
-    setTimeout(() => {
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/messages`;
+  
+  try {
+    const header = {
+      'Authorization': Cookies.get('token')
+    }
+    
+    const response = await axios.get(api_url, {
+      params: {
+        start_time: param.start.toISOString(),
+        end_time: param.end.toISOString(),
+        limit: param.limit || 50
+      },
+      headers: header        
+    });
 
-      const result = {
-        total: 100,
-        datas: [
-          {
-            id: 1,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-          {
-            id: 2,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-          {
-            id: 3,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-          {
-            id: 4,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-          {
-            id: 5,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-          {
-            id: 6,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-          {
-            id: 7,
-            time: 'Jul 30, 2024 @ 03:36:11.534',
-            agent_name: 'win10_wazuh_test0718',
-            rule_description: 'VirusTotal: Alert - c:\\users\\vm_user\\downloads\\annabelle.exe - 62 engines detected this file',
-            rule_mitre_tactic: 'Execution',
-            rule_mitre_id: 'T1203',
-            rule_level: 12
-          },
-        ]
-      }
+    const apiData = response.data;
+    console.log('apiData:', apiData);
 
-      const response = {
-        success: true,
-        content: result
-      }
+    return {
+      success: true,
+      content: apiData
+    };
 
-      resolve(response)
-
-    }, 2500)
-  })
-
+  } catch (error: any) {
+    console.error('Error fetching event table data:', error);
+    return {
+      success: false,
+      content: initData
+    };
+  }
 }
