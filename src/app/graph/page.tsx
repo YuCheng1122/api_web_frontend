@@ -47,7 +47,7 @@ const GraphPage = () => {
         console.log(response)
         setGraphData({nodes: response.content.nodes, edges: response.content.edges})
       }else{
-        throw new Error('Failed to fetch graph data')
+        // throw new Error('Failed to fetch graph data') as ErrorType;
       }
     }catch(error){
       console.log(error);

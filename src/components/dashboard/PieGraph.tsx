@@ -1,18 +1,10 @@
 'use client'
 
 // third-party
-import {useState, useEffect} from 'react'
 import ReactECharts from "echarts-for-react";
-
-// context
-import {useDashBoardContext} from '@/contexts/DashBoardContext'
 
 // utils
 import {fetchPieDataType} from '@/utils/dashboard/fetchPieGaphData1'
-
-
-// components
-import ErrorDisplayer from '@/components/Error'
 
 
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {
@@ -50,7 +42,6 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
   return (
     
     <div className="h-full w-full relative flex flex-col p-2 bg-white rounded-lg shadow-lg">
-      {/* {error && <ErrorDisplayer errorMessage={error} setError={setError} /> } */}
       <div className="text-sm font-bold">
         {title}
       </div>

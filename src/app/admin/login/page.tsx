@@ -56,7 +56,7 @@ const LoginPage = () => {
           
           {/* Title */}
           <div className="text-3xl text-gray-700 font-bold">
-          Login 🏳️‍🌈
+            {"Login 🏳️‍🌈"}
           </div>
 
           {/* Input */}
@@ -89,7 +89,7 @@ const LoginPage = () => {
               Login
             </div>
             <div className="text-center text-gray-500 text-sm">
-              If you don't have an account, please <Link href={'/admin/register'} className="text-blue-500 font-bold hover:text-blue-600">Register</Link>
+              If you don&apos;t have an account, please <Link href={'/admin/register'} className="text-blue-500 font-bold hover:text-blue-600">Register</Link>
             </div>
           </div>
           

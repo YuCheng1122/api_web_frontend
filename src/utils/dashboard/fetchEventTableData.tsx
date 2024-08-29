@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 export interface EventTableDataType {
   id: number
   time: string
-  agent_id: string
+  agent_name: string
   rule_description: string
   rule_mitre_tactic: string
   rule_mitre_id: string

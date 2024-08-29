@@ -1,14 +1,12 @@
 import axios from "axios";
-
-
-export interface nodeType {
+export interface NodeType {
   id: string;
   attributes: {
     tags: string[];
   }
 }
 
-export interface edgeType {
+export interface EdgeType {
   source: string;
   target: string;
   attributes: {
@@ -22,13 +20,59 @@ export interface edgeType {
       bytes_toclient: number;
       bytes_toserver: number;
     }
+    event_type: string; //TL Added
   }
 }
 
-
 export interface GraphDataProps {
-  nodes: any[];
-  edges: any[];
+  nodes: NodeType[];
+  edges: EdgeType[];
+}
+//TL Added
+export interface CleanedNodeType {
+  id: string;
+  name: string;
+  symbol: string;
+  symbolSize: number;
+  itemStyle: {
+    color: string;
+  };
+  label: {
+    show: boolean;
+    position: string;
+    distance: number;
+    formatter: (params: any) => string;
+    fontSize: number;
+  };
+}
+//TL Added
+export interface CleanedEdgeType {
+  source: string;
+  target: string;
+  lineStyle: {
+    width: number;
+    curveness: number;
+    color: string;
+  };
+  emphasis: {
+    focus: string;
+    lineStyle: {
+      width: number;
+    };
+  };
+  edgeEffect: {
+    show: boolean;
+    period: number;
+    trailLength: number;
+    color: string;
+    symbol: string;
+    symbolSize: number;
+  };
+}
+//TL Added
+interface CleanedData {
+  nodes: CleanedNodeType[];
+  edges: CleanedEdgeType[];
 }
 
 export interface FetchGraphDataRequestProps {
@@ -42,7 +86,7 @@ export interface FetchGraphDataResponseProps {
   content: any;
 }
 
-
+//TL Added
 export const initData = {
   success: true,
   content: {
@@ -97,11 +141,7 @@ export const initData = {
   } 
 }
 
-
-
 // ------------------------------------------------------------------------------------->
-
-
 
 const isInternalIP = (ip: string) => {
   const internalRanges = [
@@ -113,9 +153,10 @@ const isInternalIP = (ip: string) => {
   return internalRanges.some(regex => regex.test(ip));
 }
 
+//TL Added
+const cleanData = (data: GraphDataProps): CleanedData => {
+  const cleanedData: CleanedData = { nodes: [], edges: [] };
 
-const cleanData = (data: GraphDataProps) => {
-  const cleanedData = { nodes: [], edges: [] };
   // Ensure data.nodes and data.edges are arrays
   if (!Array.isArray(data.nodes)) {
     console.error('data.nodes is not an array:', data.nodes);
@@ -183,7 +224,7 @@ export const fetchGraphData = async (params: FetchGraphDataRequestProps): Promis
   return new Promise((resolve) => {
     setTimeout(() => {
 
-      const data = {
+      const data: GraphDataProps = {
         nodes: [
           {
               id: "192.168.65.135",
@@ -210,8 +251,10 @@ export const fetchGraphData = async (params: FetchGraphDataRequestProps): Promis
                     "source_port": 60561.0,
                     "dest_port": 53.0,
                     "count": 1032,
-                    "flow.bytes_toclient": 0,
-                    "flow.bytes_toserver": 87,
+                    "flow": {
+                      "bytes_toclient": 0,
+                      "bytes_toserver": 87
+                    },
                     "event_type": "flow"
                 }
             },
@@ -225,8 +268,10 @@ export const fetchGraphData = async (params: FetchGraphDataRequestProps): Promis
                     "source_port": 5353.0,
                     "dest_port": 5353.0,
                     "count": 12,
-                    "flow.bytes_toclient": 0,
-                    "flow.bytes_toserver": 87,
+                    "flow": {
+                      "bytes_toclient": 0,
+                      "bytes_toserver": 87
+                    },
                     "event_type": "alert"
                 }
             },
