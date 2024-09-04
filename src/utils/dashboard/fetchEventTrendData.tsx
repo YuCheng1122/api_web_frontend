@@ -1,6 +1,20 @@
 import axios from 'axios'
 import Cookies from 'js-cookie'
 
+const normalizeData = (data: number[]): number[] => {
+  const min = Math.min(...data);
+  const max = Math.max(...data);
+  const range = max - min;
+  
+  if (range === 0) return data;
+
+  return data.map(value => {
+    const normalizedValue = (value - min) / range;
+    const compressionFactor = 0.5;
+    return min + (normalizedValue ** compressionFactor) * range;
+  });
+};
+
 export interface fetchEventTrendDataType {
   label: string[]  
   datas: {
@@ -48,7 +62,14 @@ export const fetchEventTrendData = async (param: fetchEventTrendDataRequest): Pr
     // You may need to adjust this based on the actual API response structure
     const result: fetchEventTrendDataType = {
       label: apiData.label || [],
-      datas: apiData.datas || []
+      datas: apiData.datas.map((dataset: any) => {
+        const values = dataset.data.map(([_, value]: [string, number] ) => value);
+        const normalizedValues = normalizeData(values);
+        return {
+          ...dataset,
+          data: dataset.data.map(([timestamp]: [string, number], index: number) => [timestamp, normalizedValues[index]])
+        };
+      })
     };
 
     return {

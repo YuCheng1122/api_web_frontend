@@ -4,7 +4,7 @@ import Cookies from 'js-cookie'
 export interface EventTableDataType {
   id: number
   time: string
-  agent_name: string
+  agent_id: string
   rule_description: string
   rule_mitre_tactic: string
   rule_mitre_id: string
@@ -43,7 +43,7 @@ export const fetchEventTableData = async (param: fetchEventTableDataRequest): Pr
       params: {
         start_time: param.start.toISOString(),
         end_time: param.end.toISOString(),
-        limit: param.limit || 50
+        limit: 5  // 將 limit 設置為 5
       },
       headers: header        
     });
@@ -53,7 +53,10 @@ export const fetchEventTableData = async (param: fetchEventTableDataRequest): Pr
 
     return {
       success: true,
-      content: apiData
+      content: {
+        total: apiData.total,
+        datas: apiData.datas.slice(0, 5)  // 確保只返回前5筆數據
+      }
     };
 
   } catch (error: any) {

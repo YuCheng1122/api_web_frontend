@@ -51,20 +51,19 @@ const EventTable = () => {
 
   return (
     <div className="h-full w-full relative bg-white flex flex-col gap-2">
-      {error && <ErrorDisplayer errorMessage={error} setError={setError} /> }
-      {
-        isLoading ? <Loading /> :
+      {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
+      {isLoading ? (
+        <Loading />
+      ) : (
         <>
-          <div className="h-fit text-sm font-bold">
-            wazuh_event_up_to_12
-          </div>
+          <div className="h-fit text-sm font-bold">wazuh_event_up_to_12</div>
 
           <div className="flex-grow p-2 overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
                   <th className="w-[15%] p-2">Time</th>
-                  <th className="w-[15%] p-2">Agent Name</th>
+                  <th className="w-[15%] p-2">Agent ID</th>
                   <th className="w-[40%] p-2">Rule Description</th>
                   <th className="w-[10%] p-2">Rule Mitre Tactic</th>
                   <th className="w-[10%] p-2">Rule Mitre ID</th>
@@ -75,7 +74,7 @@ const EventTable = () => {
                 {eventTableData.map((item, index) => (
                   <tr key={index} className="text-gray-600 border-b border-gray-300">
                     <td className="p-2 text-sm">{item.time}</td>
-                    <td className="p-2 text-sm">{item.agent_name}</td>
+                    <td className="p-2 text-sm">{item.agent_id}</td>
                     <td className="p-2 text-sm">{item.rule_description}</td>
                     <td className="p-2 text-sm">{item.rule_mitre_tactic}</td>
                     <td className="p-2 text-sm">{item.rule_mitre_id}</td>
@@ -85,8 +84,9 @@ const EventTable = () => {
               </tbody>
             </table>
           </div>
+          <p className="text-sm text-gray-500 mt-2">顯示前5筆資料</p>
         </>
-      }
+      )}
     </div>
   )
 }

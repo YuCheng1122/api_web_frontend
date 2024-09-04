@@ -25,20 +25,39 @@ const EventTrendGraph = () => {
       text: '事件趨勢 (level 8~14)',
       textStyle: {
         fontSize: '14px'
-      }
+      },
+      left: 'center'
     },
     tooltip: {
       trigger: 'axis'
     },
     legend: {
-      data: chartData.label,
-      right: 'right',
-      orient: 'vertical'
+      type: 'scroll',
+      data: chartData.label.slice(0, 5),
+      right: 10,  // 設置右邊距
+      top: 30,    // 設置頂部邊距
+      orient: 'vertical',
+      align: 'right',  // 圖例文本右對齊
+      textStyle: {
+        fontSize: 10
+      },
+      pageButtonPosition: 'end',
+      formatter: (name) => {
+        // 限制圖例文本長度
+        return name.length > 15 ? name.slice(0, 15) + '...' : name;
+      }
+    },
+    grid: {
+      left: '5%',
+      right: '20%',  // 為圖例留出更多空間
+      top: '15%',
+      bottom: '10%',
+      containLabel: true
     },
     xAxis: {
       type: 'time',
       boundaryGap: false,
-      axiosLabel: {
+      axisLabel: {
         formatter: (value: number) => {
           const date = new Date(value);
           return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
@@ -50,11 +69,14 @@ const EventTrendGraph = () => {
       name: 'Count',
       splitNumber: 5,
       axisLabel: {
-        margin: 16,  // 增加標籤與軸線之間的距離
-        fontSize: 12  // 調整字體大小
-      }
+        margin: 16,
+        fontSize: 12
+      },
+      min: 0,
+      max: 'dataMax',
+      minInterval: 1
     },
-    series: chartData.datas
+    series: chartData.datas.slice(0, 5)
   }
 
   useEffect(() => {

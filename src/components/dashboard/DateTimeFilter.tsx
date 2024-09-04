@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
 import { useDashBoardContext } from "@/contexts/DashBoardContext";
 import { fetchAgentData } from '@/utils/dashboard/fetchAgentData';
@@ -11,33 +11,41 @@ const DateTimeFilter = () => {
   const [endDate, setEndDate] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleSubmit = async () => {
-    if (startDate && endDate) {
-      const start = new Date(startDate);
-      const end = new Date(endDate);
-      
-      if (start > end) {
-        toast.error('Start date must be before end date');
-        return;
-      }
+  useEffect(() => {
+    // 設置默認的時間範圍
+    const now = new Date();
+    const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+    
+    setStartDate(oneDayAgo.toISOString().slice(0, 16));
+    setEndDate(now.toISOString().slice(0, 16));
+    
+    // 只更新 context 中的時間範圍，不觸發數據獲取
+    changeDateTimeRange(oneDayAgo, now);
+  }, []);
 
-      setIsLoading(true);
-      try {
-        const result = await fetchAgentData({ start, end });
-        if (result.success) {
-          changeDateTimeRange(start, end);
-          updateAgentData(result.content);
-          toast.success('Data fetched successfully');
-        } else {
-          toast.error('Failed to fetch data');
-        }
-      } catch (error) {
-        toast.error('An error occurred while fetching data');
-      } finally {
-        setIsLoading(false);
+  const handleSubmit = async () => {
+    const start = new Date(startDate);
+    const end = new Date(endDate);
+
+    if (start > end) {
+      toast.error('Start date must be before end date');
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const result = await fetchAgentData({ start, end });
+      if (result.success) {
+        changeDateTimeRange(start, end);
+        updateAgentData(result.content);
+        toast.success('Data fetched successfully');
+      } else {
+        toast.error('Failed to fetch data');
       }
-    } else {
-      toast.error('Please select both start and end dates');
+    } catch (error) {
+      toast.error('An error occurred while fetching data');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -49,6 +57,7 @@ const DateTimeFilter = () => {
           name='start-date' 
           className='w-full p-2 rounded-lg shadow-lg border border-gray-300' 
           type='datetime-local' 
+          value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
       </div>
@@ -59,6 +68,7 @@ const DateTimeFilter = () => {
           name='end-date' 
           className='w-full p-2 rounded-lg shadow-lg border border-gray-300' 
           type='datetime-local' 
+          value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
       </div>
