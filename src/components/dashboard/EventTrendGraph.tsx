@@ -42,7 +42,7 @@ const EventTrendGraph = () => {
         fontSize: 10
       },
       pageButtonPosition: 'end',
-      formatter: (name) => {
+      formatter: (name: string) => {  // 在這裡明確指定 name 的類型為 string
         // 限制圖例文本長度
         return name.length > 15 ? name.slice(0, 15) + '...' : name;
       }
