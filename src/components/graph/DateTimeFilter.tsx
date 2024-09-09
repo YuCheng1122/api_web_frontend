@@ -7,7 +7,7 @@ interface DateTimeFilterProps {
 
 const DateTimeFilter = ({handleStartDateChange, handleEndDateChange, handleSubmit}: DateTimeFilterProps) => {
   return (
-    <div className="grid grid-cols-3 gap-4 bg-white p-2">
+    <div className="grid grid-cols-3 gap-4 p-2">
     <div className='w-full'>
       <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">Started Time</label>
       <input name='start-date' className='w-full p-2 rounded-lg shadow-lg border border-gray-300' type='datetime-local' onChange={handleStartDateChange}></input>

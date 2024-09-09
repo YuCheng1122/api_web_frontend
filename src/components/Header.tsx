@@ -18,55 +18,53 @@ const Header = () => {
   }
 
   return (
-      <div className="h-[72px] bg-blue-500 text-white px-10 w-full rounded-lg shadow-lg sticky top-0 z-10">
-        <div className='h-full grid grid-cols-3 items-center'>
-          {/* path */}
-          {
-            isLogin && username ?
-              <div className='w-fit'>            
-                <div>
-                  <Link href={'/graph'} className='text-xl font-bold p-2 hover:text-2xl'>
+      <header className="bg-white w-full">
+        <div className="mx-auto px-4 py-4">
+          <div className='flex items-center justify-between'>
+            {/* 左側：標題和導航按鈕 */}
+            <div className='flex items-center space-x-4'>
+              {/* 標題 */}
+              <div className="text-3xl font-bold text-black">
+                <Link href={'/'} className='hover-underline-animation'>
+                  AIXSOAR
+                </Link>
+              </div>
+              
+              {/* 導航按鈕 */}
+              {isLogin && username && (
+                <div className='flex space-x-2'>
+                  <Link href={'/graph'} className='text-xl font-bold p-2 hover-underline-animation'>
                     Graph
                   </Link>
-                  <Link href={'/dashboard'} className='text-xl font-bold p-2 hover:text-2xl'>
+                  <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
                     Dashboard
                   </Link>
                 </div>
-              </div>
-            :
-              <div></div>
-          }
+              )}
+            </div>
 
-
-          {/* title */}
-          <div className="text-3xl font-bold text-center">
-            <Link href={'/'} className='hover:text-4xl'>
-              AIXSOAR
-            </Link>
-          </div>
-
-          {/* account */}
-          <div className='flex flex-col items-center justify-self-end p-2'>
-            <Image 
-              src={'/user.png'}
-              height={30}
-              width={30}
-              alt='user picture'
-              className='p-[1px]'
-            />
-            {
-              isLogin && username ?
-                <div className='text-xl font-semibold cursor-pointer' title='Clicked for logout' onClick={logout}>
+            {/* 右側：用戶賬戶 */}
+            <div className='flex items-center space-x-2'>
+              <Image 
+                src={'/user.png'}
+                height={30}
+                width={30}
+                alt='user picture'
+                className='p-[1px]'
+              />
+              {isLogin && username ? (
+                <div className='text-xl font-semibold cursor-pointer hover-underline-animation' title='Clicked for logout' onClick={logout}>
                   {username}
                 </div>
-              :
-                <Link href={'/admin/login'} className='text-xl font-semibold'>
+              ) : (
+                <Link href={'/admin/login'} className='text-xl font-semibold text-black hover:text-blue-800'>
                   Login
                 </Link>
-            }
-          </div>
-        </div>       
-      </div>
+              )}
+            </div>
+          </div>       
+        </div>
+      </header>
     )
 }
 

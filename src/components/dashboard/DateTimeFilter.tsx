@@ -50,7 +50,7 @@ const DateTimeFilter = () => {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 bg-white p-2">
+    <div className="grid grid-cols-3 gap-4 p-2">
       <div className='w-full'>
         <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">Start Time</label>
         <input 

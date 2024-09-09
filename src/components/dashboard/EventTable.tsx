@@ -63,7 +63,7 @@ const EventTable = () => {
               <thead>
                 <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
                   <th className="w-[15%] p-2">Time</th>
-                  <th className="w-[15%] p-2">Agent ID</th>
+                  <th className="w-[15%] p-2">Agent Name</th>
                   <th className="w-[40%] p-2">Rule Description</th>
                   <th className="w-[10%] p-2">Rule Mitre Tactic</th>
                   <th className="w-[10%] p-2">Rule Mitre ID</th>
@@ -74,7 +74,7 @@ const EventTable = () => {
                 {eventTableData.map((item, index) => (
                   <tr key={index} className="text-gray-600 border-b border-gray-300">
                     <td className="p-2 text-sm">{item.time}</td>
-                    <td className="p-2 text-sm">{item.agent_id}</td>
+                    <td className="p-2 text-sm">{item.agent_name}</td>
                     <td className="p-2 text-sm">{item.rule_description}</td>
                     <td className="p-2 text-sm">{item.rule_mitre_tactic}</td>
                     <td className="p-2 text-sm">{item.rule_mitre_id}</td>

@@ -125,12 +125,13 @@ const GraphPage = () => {
       <div className='h-full w-full grid grid-rows-[auto,1fr] gap-2 p-2'>
 
         {/* datetime filter */}
-        <div className='p-2 bg-gray-100 rounded-lg'>
+        <div className='p-2 rounded-lg'>
           <DateTimeFilter handleStartDateChange={handleStartDateChange} handleEndDateChange={handleEndDateChange} handleSubmit={handleSubmit} />
         </div>
 
         {/* graph display */}
-        <div className='bg-gray-100 rounded-lg p-4'>
+        {/*        
+        <div className='rounded-lg p-4 h-[75vh]'>
           {isLoading ? 
             <Loading /> 
             : 
@@ -140,8 +141,17 @@ const GraphPage = () => {
               style={{ height: '100%', width: '100%', opacity: '0.8', borderRadius: '10px',overflow: 'hidden'}} 
             />
           }
-        </div>
+        </div> 
+        */}
 
+      {/* message */}
+      <div className="relative flex items-center justify-center h-[70vh] p-4 text-center">
+        {/* 包裹 <p> 的內層 div */}
+        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-400 rounded-lg p-8">
+          <p className="text-2xl font-bold">您尚未訂閱此項服務，請洽業務人員。</p>
+        </div>
+      </div>
+        
       </div>
       <ToastContainer />
     </>

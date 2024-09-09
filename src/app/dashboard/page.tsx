@@ -14,7 +14,7 @@ const DashboardPage = () => {
     <div className="h-full grid grid-rows-[auto,1fr,3fr,3fr,6fr] p-2 gap-2">
       
       {/* datetime filter */}
-      <div className="p-2 bg-gray-100 rounded-lg">
+      <div className="p-2 rounded-lg">
         <DateTimeFilter />
       </div>
       
