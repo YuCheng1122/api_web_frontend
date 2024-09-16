@@ -80,6 +80,7 @@ const LoginPage = () => {
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
+                tabIndex={1}
               />
             </div>
 
@@ -90,17 +91,23 @@ const LoginPage = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
+                tabIndex={2} // 確保 Password 輸入框的 tabindex
               />
             </div>
           </div>
 
           {/* Button */}
           <div className="w-full flex flex-col items-center justify-center gap-2">
-            <div className={`w-full px-3 py-2 bg-blue-500 text-center text-white font-bold rounded-lg shadow-lg cursor-pointer ${isLoading ? 'animate-pulse' : ''} hover:bg-blue-600`} onClick={handleLogin}>
+            <button
+              className={`w-full px-3 py-2 bg-blue-500 text-center text-white font-bold rounded-lg shadow-lg cursor-pointer ${isLoading ? 'animate-pulse' : ''} hover:bg-blue-600`}
+              onClick={handleLogin}
+              type="button" // 確保按鈕類型正確
+              tabIndex={3}
+            >
               Login
-            </div>
+            </button>
             <div className="text-center text-gray-500 text-sm">
-              If you don&apos;t have an account, please <Link href={'/admin/register'} className="text-blue-500 font-bold hover:text-blue-600">Register</Link>
+              If you don&apos;t have an account, please <Link href={'/admin/register'} className="text-blue-500 font-bold hover:text-blue-600" tabIndex={4}>Register</Link>
             </div>
           </div>
 

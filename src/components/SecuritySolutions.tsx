@@ -56,7 +56,7 @@ const SecuritySolutions: React.FC = () => {
             }
           });
         },
-        { threshold: 0.1, rootMargin: "0px" }
+        { threshold: 0.01, rootMargin: "0px" }
       );
   
       sectionRefs.current.forEach((section) => {

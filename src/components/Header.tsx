@@ -39,6 +39,9 @@ const Header = () => {
                   <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
                     Dashboard
                   </Link>
+                  <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    Agent Info
+                  </Link>
                 </div>
               )}
             </div>
