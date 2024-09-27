@@ -1,21 +1,29 @@
 import axios from 'axios';
 import { LLMService, LLMResponse, Message } from './types';
 
+interface ChatGPTResponse {
+    choices: { message: { content: string } }[];
+}
+
+const GPT_MODEL = "gpt-3.5-turbo";
+
 export class ChatGPTService implements LLMService {
     private apiKey: string;
-    private apiUrl: string;
+    private apiUrl: string = 'https://api.openai.com/v1/chat/completions';
 
-    constructor(apiKey: string, apiUrl: string = 'https://api.openai.com/v1/chat/completions') {
+    constructor(apiKey: string, apiUrl?: string) {
         this.apiKey = apiKey;
-        this.apiUrl = apiUrl;
+        if (apiUrl) {
+            this.apiUrl = apiUrl;
+        }
     }
 
     async generateResponse(messages: Message[]): Promise<LLMResponse> {
         try {
-            const response = await axios.post(
+            const response = await axios.post<ChatGPTResponse>(
                 this.apiUrl,
                 {
-                    model: "gpt-3.5-turbo",
+                    model: GPT_MODEL,
                     messages: messages,
                 },
                 {

@@ -21,3 +21,13 @@ export interface LLMConfig {
     type: LLMType;
     apiKey?: string;
 }
+
+export interface ChatMessage extends Message {
+    timestamp: Date;
+}
+
+export interface Conversation {
+    id: string;
+    title: string;
+    messages: ChatMessage[];
+}
