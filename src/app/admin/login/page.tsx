@@ -106,9 +106,11 @@ const LoginPage = () => {
             >
               Login
             </button>
+            
             <div className="text-center text-gray-500 text-sm">
-              If you don&apos;t have an account, please <Link href={'/admin/register'} className="text-blue-500 font-bold hover:text-blue-600" tabIndex={4}>Register</Link>
+              If you don&apos;t have an account, please <Link href={'/admin/signup'} className="text-blue-500 font-bold hover:text-blue-600" tabIndex={4}>Sign up</Link>
             </div>
+            
           </div>
 
           {/* Maintenance Mode */}

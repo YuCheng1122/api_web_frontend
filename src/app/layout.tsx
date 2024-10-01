@@ -10,6 +10,9 @@ const inter = Inter({ subsets: ["latin"] });
 export const metadata: Metadata = {
   title: "AIXSOAR Dashboard",
   description: "Advanced Threat Hunting System",
+  icons: {
+    icon: '/logo.webp',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
