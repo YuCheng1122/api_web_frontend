@@ -51,6 +51,20 @@ const Header = () => {
 
             {/* 右側：用戶賬戶 */}
             <div className='flex items-center space-x-2'>
+              {/* 左側：註冊連結 */}
+              {isLogin && username ? (
+                <Link href={'/admin/script'} className='text-xl font-bold p-2 hover-underline-animation'>
+                  軟體下載
+                </Link>
+              ) : (
+                <Link href={'/admin/signup'} className='text-xl font-bold p-2 hover-underline-animation'>
+                  註冊
+                </Link>
+              )}
+
+
+
+              {/* 右側：用戶賬戶 */}
               <Image 
                 src={'/user.png'}
                 height={30}
