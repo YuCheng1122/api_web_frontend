@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { signup } from '../utils/admin/signup'; // 導入 signup 函數
+import { signup } from '../../../utils/admin/signup'; // 導入 signup 函數
 
 const SignUpForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState({
