@@ -42,6 +42,9 @@ const Header = () => {
                   <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
                     Agent Info
                   </Link>
+                  <Link href={'/llm'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    LLM Page
+                  </Link>
                 </div>
               )}
             </div>
