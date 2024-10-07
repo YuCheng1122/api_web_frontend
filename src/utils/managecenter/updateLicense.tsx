@@ -11,7 +11,7 @@ const initData: LicenseDataType = {
   license_amount: 0,
 user_id: 0,
 };
-export const fetchLicense = async (user_id: number,license_amount: string): Promise<fetchLicenseResponse> => {
+export const updateLicense = async (user_id: number,license_amount: string): Promise<fetchLicenseResponse> => {
   const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/license`;
   try {
     const header = {

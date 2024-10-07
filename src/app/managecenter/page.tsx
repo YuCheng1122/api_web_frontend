@@ -6,9 +6,9 @@ import Loading from '@/components/Loading'
 type UserDataType = {
     username: string
     email: string
-    company: string
     license_amount: string
     company_name: string
+    disable: boolean
     id: number
     }
 
