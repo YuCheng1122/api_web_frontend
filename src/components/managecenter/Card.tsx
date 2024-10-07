@@ -1,6 +1,7 @@
 import Image from 'next/image'
 //  props.user type is User
 import {fetchLicense }from '@/utils/managecenter/updateLicense'
+
 type User = {
   user: {
     username: string
@@ -36,6 +37,7 @@ export default function Card(props: User) {
             </div>
         </div>
         <hr className="border-gray-900 mt-3" />
+     
 
         <div className="text-left flex flex-col pl-20 mt-2">
             <p className=' text-lg'> Company: <span className=' text-base'>{props.user.company_name}</span></p>
