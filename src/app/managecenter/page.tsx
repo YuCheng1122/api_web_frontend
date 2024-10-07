@@ -7,7 +7,7 @@ type UserDataType = {
     username: string
     email: string
     company: string
-    license_amount: number
+    license_amount: string
     company_name: string
     id: number
     }

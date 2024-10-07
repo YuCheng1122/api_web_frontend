@@ -1,11 +1,12 @@
 import Image from 'next/image'
 //  props.user type is User
+import {fetchLicense }from '@/utils/managecenter/updateLicense'
 type User = {
   user: {
     username: string
     email: string
     company_name: string
-    license_amount: number
+    license_amount: string
     id: number
   }
 }
@@ -14,6 +15,14 @@ export default function Card(props: User) {
     console.log('id',props.user.id)
     
     console.log(e.target.value)
+    
+    try {
+      fetchLicense(props.user.id, e.target.value)
+    }
+    catch (error) {
+      console.error('Error fetching license data:', error);
+    }
+
   }
     
   return (

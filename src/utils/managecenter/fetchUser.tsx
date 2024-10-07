@@ -31,10 +31,6 @@ export const fetchUser = async (): Promise<fetchUserResponse> => {
     });
 
     const apiData = response.data.users
-
-    
-    
- 
     
     return {
       success: true,
