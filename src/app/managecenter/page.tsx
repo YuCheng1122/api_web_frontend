@@ -9,6 +9,7 @@ type UserDataType = {
     company: string
     license_amount: number
     company_name: string
+    id: number
     }
 
 export default function ManagecenterPage() {
@@ -21,8 +22,6 @@ export default function ManagecenterPage() {
             }
         });
     }, []);
-    console.log('userData:', usersData)
-
   return (
     <div>
      
@@ -36,7 +35,6 @@ export default function ManagecenterPage() {
                     ))
                 ) : (
                     <div className='flex items-center justify-center w-full h-96'>
-
                     <Loading />
                     </div>
                 )
