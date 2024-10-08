@@ -12,7 +12,7 @@ const initData: LicenseDataType = {
 user_id: 0,
 };
 export const updateLicense = async (user_id: number,license_amount: string): Promise<fetchLicenseResponse> => {
-  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/license`;
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/toggle-user-status`;
   try {
     const header = {
       Authorization: Cookies.get("token"),
