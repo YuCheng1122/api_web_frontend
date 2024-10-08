@@ -5,7 +5,9 @@ type UserDataType  = {
     email: string
     company: string
     license_amount: number
+    disabled: boolean
     role: string
+    user_id: number
     }
 type fetchUserResponse = {
     success: boolean
@@ -16,7 +18,9 @@ const initData: UserDataType = {
   email: '',
   company: '',
   license_amount: 0,
-  role: ''
+  disabled: false,
+  role: '',
+  user_id: 0
 };
 
 export const fetchUser = async (): Promise<fetchUserResponse> => {
