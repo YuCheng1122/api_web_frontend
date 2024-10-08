@@ -1,13 +1,7 @@
 import axios from "axios";
 import Cookies from "js-cookie";
-type ApproveDataType = {
-    user_id: number;
-    };
 type fetchApproveResponse = {
     message: string;
-    };
-const initData: ApproveDataType = {
-    user_id: 0,
     };
 export const updateApprove = async (user_id: number): Promise<fetchApproveResponse> => {
     const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/toggle-user-status`;
@@ -25,8 +19,6 @@ export const updateApprove = async (user_id: number): Promise<fetchApproveRespon
             }
             );
         const apiData = response.data.message;
-        console.log(apiData);
-        
         return {
             message: apiData,
         };

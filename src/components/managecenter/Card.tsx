@@ -14,8 +14,6 @@ type User = {
   }
 }
 export default function Card(props: User) {
-  console.log(props.user);
-  
   const LicenseOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {    
     try {
       updateLicense(props.user.user_id, e.target.value)
@@ -29,8 +27,6 @@ export default function Card(props: User) {
     
   const ApproveOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
-      console.log(props.user.user_id);
-      
       updateApprove(props.user.user_id)
       toast.success("Approve data updated successfully");
     }
