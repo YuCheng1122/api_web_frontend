@@ -1,27 +1,40 @@
 pipeline {
     agent any
+    environment {
+        TMPDIR = '/home/docker/jenkins-tmp'
+    }
     
     stages {
         stage('Checkout') {
             steps {
-                // Checkout the code from Git
                 git branch: 'master', url: 'https://github.com/YuCheng1122/api_web_frontend.git'
             }
         }
         
         stage('Display Current Directory') {
             steps {
-                // Display current directory and contents
                 script {
                     sh 'echo "Current directory: $(pwd)"'
                     sh 'ls -l'
                 }
             }
         }
+
+        stage('Check Write Permissions') {
+            steps {
+                script {
+                    sh '''
+                    if [ ! -w /home/docker ]; then
+                        echo "Error: Jenkins does not have write access to /home/docker"
+                        exit 1
+                    fi
+                    '''
+                }
+            }
+        }
         
         stage('Check Git Repo') {
             steps {
-                // Ensure we are in a git repository
                 script {
                     sh '''
                     if [ ! -d .git ]; then
@@ -35,14 +48,12 @@ pipeline {
         
         stage('Pull Latest Changes') {
             steps {
-                // Pull the latest changes from master
                 sh 'git pull origin master'
             }
         }
         
         stage('Switch to Docker Directory') {
             steps {
-                // Change to Docker directory and display its contents
                 dir('/home/docker') {
                     sh '''
                     echo "Switched to Docker directory: $(pwd)"
@@ -54,7 +65,6 @@ pipeline {
         
         stage('Check docker-compose.yml') {
             steps {
-                // Ensure docker-compose.yml exists
                 script {
                     sh '''
                     if [ ! -f docker-compose.yml ]; then
@@ -68,15 +78,24 @@ pipeline {
         
         stage('Stop Old Containers') {
             steps {
-                // Stop running containers
-                sh 'docker-compose down'
+                sh 'sudo docker-compose down'
             }
         }
         
         stage('Build and Start New Containers') {
             steps {
-                // Build and start new containers
-                sh 'docker-compose up --build -d'
+                sh 'sudo docker-compose up --build -d'
+            }
+        }
+
+        stage('Debug Permissions') {
+            steps {
+                sh '''
+                echo "Checking permissions for /home/docker"
+                ls -ld /home/docker
+                echo "Checking permissions for docker-compose.yml"
+                ls -l /home/docker/docker-compose.yml
+                '''
             }
         }
     }
