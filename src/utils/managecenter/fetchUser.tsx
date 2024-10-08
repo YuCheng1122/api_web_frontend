@@ -5,6 +5,7 @@ type UserDataType  = {
     email: string
     company: string
     license_amount: number
+    disabled: boolean
     role: string
     }
 type fetchUserResponse = {
@@ -16,6 +17,7 @@ const initData: UserDataType = {
   email: '',
   company: '',
   license_amount: 0,
+  disabled: false,
   role: ''
 };
 

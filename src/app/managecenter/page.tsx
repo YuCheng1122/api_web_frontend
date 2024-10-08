@@ -8,7 +8,7 @@ type UserDataType = {
     email: string
     license_amount: string
     company_name: string
-    disable: boolean
+    disabled: boolean
     id: number
     }
 
