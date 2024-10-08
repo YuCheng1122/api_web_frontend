@@ -3,7 +3,6 @@ import Image from 'next/image'
 import {updateLicense }from '@/utils/managecenter/updateLicense'
 import { ToastContainer, toast } from "react-toastify";
 import { updateApprove } from '@/utils/managecenter/updateApprove'
-import { log } from 'echarts/types/src/util/log.js';
 type User = {
   user: {
     username: string
@@ -11,13 +10,15 @@ type User = {
     company_name: string
     license_amount: string
     disabled: boolean
-    id: number
+    user_id: number
   }
 }
 export default function Card(props: User) {
+  console.log(props.user);
+  
   const LicenseOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {    
     try {
-      updateLicense(props.user.id, e.target.value)
+      updateLicense(props.user.user_id, e.target.value)
       toast.success("License data updated successfully");
     }
     catch (error) {
@@ -27,9 +28,10 @@ export default function Card(props: User) {
   }
     
   const ApproveOnchange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log(e.target.checked);
     try {
-      updateApprove(props.user.id)
+      console.log(props.user.user_id);
+      
+      updateApprove(props.user.user_id)
       toast.success("Approve data updated successfully");
     }
     catch (error) {
@@ -56,7 +58,7 @@ export default function Card(props: User) {
         </div>
         <div className="flex justify-end pr-12 w-full my-8">
         <label htmlFor={props.user.email} className="flex items-center cursor-pointer border-gray-600 " >
-            <input type="checkbox" id={props.user.email} className="sr-only peer " onChange={ApproveOnchange}  defaultChecked={props.user.disabled} />
+            <input type="checkbox" id={props.user.email} className="sr-only peer " onChange={ApproveOnchange}  defaultChecked={props.user.disabled?false:true} />
             <div className=" block border-gray-600 relative w-20 h-9 p-1 before:absolute before:bg-gray-100 before:w-14 before:h-7 before:p-1 before:rounded-md before:transition-all before:duration-500 before:left-1 peer-checked:before:left-16 peer-checked:before:bg-gray-600">
                 <span className="absolute left-16 top-1/2 transform -translate-y-1/2 text-xs text-gray-300 pl-1 ">Approve</span>
                 <span className="absolute left-2 top-1/2 transform -translate-y-1/2 text-xs text-gray-700 ">Disable</span>

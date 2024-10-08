@@ -9,12 +9,13 @@ type UserDataType = {
     license_amount: string
     company_name: string
     disabled: boolean
-    id: number
+    user_id: number
     }
-
 export default function ManagecenterPage() {
     // fetch user data
     const [usersData, setUsersData] = useState<UserDataType[]>([]);
+    // refetch user data
+
     useEffect(() => {
         fetchUser().then((response) => {
             if (response.success) {
