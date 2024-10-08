@@ -1,7 +1,7 @@
 pipeline {
     agent any
     environment {
-        TMPDIR = '/home/docker/jenkins-tmp'
+        TMPDIR = '/tmp'
     }
     
     stages {
