@@ -22,7 +22,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         const fetchTotalAgents = async () => {
             try {
                 const response = await getTotalAgentsAndLicense();
-                setRemainingAgents(response.total_agents); // 設置 remainingAgents 為 response.total_agents
+                setRemainingAgents(response.total_license - response.total_agents); // 設置 remainingAgents 為 response.total_agents
+                console.log('Agents1:', remainingAgents);
+                console.log('Agents2:', response.total_agents);
+                console.log('Agents3:', response.total_license);
             } catch (error: any) {
                 console.error('Error during fetching total agents and license:', error);
                 const message = error.response?.data?.message || 'Failed to fetch total agents and license';
@@ -46,7 +49,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                             (macos.intel ? quantities.intel : 0) +
                             (macos.apple_silicon ? quantities.apple_silicon : 0);
 
-        // 只有當 totalAgents 大於 0 時才生成 Agent ���稱
+        // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
             const agents = Array.from({ length: totalAgents }, (_, index) => 
                 `${username}-${String(index + 1).padStart(3, '0')}`

@@ -76,6 +76,7 @@ const GraphPage = () => {
   };
 
   const option = {
+    backgroundColor: '#FFFFFF',
     title: {
       text: 'Threat Graph',
       subtext: 'AIXIOR',
@@ -83,12 +84,13 @@ const GraphPage = () => {
       left: 'center',
       textStyle: {
         fontSize: 32,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+        color: '#000000'
       },
       subtextStyle: {
-        fontSize: 12
+        fontSize: 12,
+        color: '#000000'
       }
-
     },
     tooltip: {
       trigger: 'item',
@@ -100,8 +102,34 @@ const GraphPage = () => {
       name: 'Graph',
       type: 'graph',
       layout: 'force',
-      data: graphData.nodes,
-      links: graphData.edges,
+        data: graphData.nodes.map(node => ({
+          ...node,
+          symbol: node.attributes?.tags?.includes('gateway') 
+                  ? 'image://gateway-icon.png' 
+                  : node.attributes?.tags?.includes('internal') 
+                    ? 'image://internal-icon.png' 
+                    : 'circle',  // 默認圖示
+          symbolSize: 38, // 圖示大小
+          label: {
+            show: true, // 顯示標籤
+            position: 'bottom', // 標籤顯示在圖示下方
+            formatter: node.id, // 標籤的內容可以是節點的ID或其他屬性
+            fontSize: 12, // 標籤字體大小
+            color: '#000000' // 標籤字體顏色
+          }
+        })),
+      links: graphData.edges.map(edge => ({
+        ...edge,
+        lineStyle: {
+          normal: {
+            color: '#000000',
+            width: 2, // 線的寬度
+            curveness: 0, // 線的曲率，0為直線
+          }
+        },
+        symbol: ['none', 'arrow'], // 設置起點無箭頭，終點為箭頭
+        symbolSize: 10, // 設置箭頭大小
+      })),
       roam: true,
       force: {
         repulsion: 10000,
@@ -118,6 +146,7 @@ const GraphPage = () => {
       throttle: 100
     }]
   };
+  
 
 
   return (
@@ -129,8 +158,7 @@ const GraphPage = () => {
           <DateTimeFilter handleStartDateChange={handleStartDateChange} handleEndDateChange={handleEndDateChange} handleSubmit={handleSubmit} />
         </div>
 
-        {/* graph display */}
-        {/*        
+        {/* graph display */}     
         <div className='rounded-lg p-4 h-[75vh]'>
           {isLoading ? 
             <Loading /> 
@@ -142,16 +170,7 @@ const GraphPage = () => {
             />
           }
         </div> 
-        */}
 
-      {/* message */}
-      <div className="relative flex items-center justify-center h-[70vh] p-4 text-center">
-        {/* 包裹 <p> 的內層 div */}
-        <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-gray-400 rounded-lg p-8">
-          <p className="text-2xl font-bold">您尚未訂閱此項服務，請洽業務人員。</p>
-        </div>
-      </div>
-        
       </div>
       <ToastContainer />
     </>
