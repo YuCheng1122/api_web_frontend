@@ -104,6 +104,18 @@ const SignUpForm = ({ className }: { className?: string }) => {
                             className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
                         />
                     </div>
+
+                    {/* 憑證數量 */}
+                    <div className="flex flex-col"> 
+                        <input 
+                            type="text" 
+                            name="license" 
+                            placeholder="憑證數量"
+                            onChange={handleChange} 
+                            required
+                            className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        />
+                    </div>                    
                 </div>
 
                 {/* 右邊部分 - 按鈕 */}
