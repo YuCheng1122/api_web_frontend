@@ -6,7 +6,9 @@ import ScriptDownloadForm from '../../../components/admin/script/ScriptDownloadF
 const SignupPage = () => {
     return (
         <div className="flex flex-col rounded-lg items-center justify-center">
+            {/* 直接顯示 ScriptDownloadForm */}
             <ScriptDownloadForm /> 
+            {/* 其他代碼已省略 */}
         </div>
     );
 };

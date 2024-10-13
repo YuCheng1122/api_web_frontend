@@ -24,6 +24,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             try {
                 const response = await getTotalAgentsAndLicense();
                 setRemainingAgents(response.total_license - response.total_agents); // 設置 remainingAgents 為 response.total_agents
+                console.log('Agents1:', remainingAgents);
+                console.log('Agents2:', response.total_agents);
+                console.log('Agents3:', response.total_license);
             } catch (error: any) {
                 console.error('Error during fetching total agents and license:', error);
                 const message = error.response?.data?.message || 'Failed to fetch total agents and license';
