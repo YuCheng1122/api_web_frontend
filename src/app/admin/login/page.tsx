@@ -67,7 +67,7 @@ const LoginPage = () => {
 
           {/* Title */}
           <div className="text-3xl text-gray-700 font-bold">
-            {"Login 🏳️‍🌈"}
+            {"登入 🏳️‍🌈"}
           </div>
 
           {/* Input */}
@@ -76,7 +76,7 @@ const LoginPage = () => {
             <div className="w-full">
               <input
                 type="text"
-                placeholder="Username"
+                placeholder="使用者名稱"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
@@ -87,7 +87,7 @@ const LoginPage = () => {
             <div className="w-full">
               <input
                 type="password"
-                placeholder="Password"
+                placeholder="密碼"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className="w-full px-3 py-2 rounded-lg border border-gray-300 focus:outline-none focus:border-gray-500"
@@ -104,11 +104,11 @@ const LoginPage = () => {
               type="button" // 確保按鈕類型正確
               tabIndex={3}
             >
-              Login
+              登入
             </button>
             
             <div className="text-center text-gray-500 text-sm">
-              If you don&apos;t have an account, please <Link href={'/admin/signup'} className="text-blue-500 font-bold hover:text-blue-600" tabIndex={4}>Sign up</Link>
+              如果你沒有帳號, 請 <Link href={'/admin/signup'} className="text-blue-500 font-bold hover:text-blue-600" tabIndex={4}>註冊</Link>
             </div>
             
           </div>
@@ -116,9 +116,9 @@ const LoginPage = () => {
           {/* Maintenance Mode */}
           {isMaintenanceMode && (
             <div className="bg-yellow-100 border-yellow-400 border-l-4 p-4 mt-4">
-              <p className="font-bold text-yellow-700">System Maintenance 🛠️</p>
+              <p className="font-bold text-yellow-700">系統維護 🛠️</p>
               <p className="text-yellow-700">
-                The system is currently under maintenance. Please try again later.
+                系統目前正在維護中。請稍後再試。
               </p>
             </div>
           )}

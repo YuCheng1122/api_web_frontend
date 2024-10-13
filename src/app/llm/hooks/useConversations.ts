@@ -25,7 +25,7 @@ export const useConversations = () => {
     const createNewConversation = () => {
         const newConversation: Conversation = {
             id: Date.now().toString(),
-            title: `New Conversation ${conversations.length + 1}`,
+            title: `${conversations.length + 1}`,
             messages: []
         };
         setConversations([...conversations, newConversation]);

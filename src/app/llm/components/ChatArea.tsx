@@ -114,7 +114,7 @@ const ChatArea: React.FC<ChatAreaProps> = ({
                         onChange={(e) => setInputMessage(e.target.value)}
                         onKeyPress={handleKeyPress}
                         className="flex-grow p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
-                        placeholder="Type your message here..."
+                        placeholder="在這裡輸入您的消息..."
                         rows={1}
                     />
                     <button

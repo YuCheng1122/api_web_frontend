@@ -21,7 +21,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                 className="w-full bg-blue-500 text-white p-2 rounded-lg mb-4 flex items-center justify-center"
             >
                 <IoAdd size={20} className="mr-2" />
-                New Conversation
+                    新增對話
             </button>
             <div className="space-y-2">
                 {conversations.map(conv => (
@@ -34,7 +34,7 @@ const ConversationList: React.FC<ConversationListProps> = ({
                                 : 'hover:bg-gray-100'
                         }`}
                     >
-                        {conv.title}
+                        {`新對話 ${conv.title}`}
                     </button>
                 ))}
             </div>
