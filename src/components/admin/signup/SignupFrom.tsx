@@ -55,7 +55,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
             <form onSubmit={handleSubmit} className="flex justify-between items-start h-full">
                 {/* 左邊部分 - 表單 */}
                 <div className="flex flex-col w-1/2 pr-4 justify-start space-y-4"> {/* 使用 space-y-4 加入欄位間空隙 */}
-                    <h2 className="text-4xl font-bold mb-6">Sign up</h2> {/* 修改底部間距為 mb-6 */}
+                    <h2 className="text-4xl font-bold mb-6">註冊</h2> {/* 修改底部間距為 mb-6 */}
                     
                     {/* 使用者名稱 */}
                     <div className="flex flex-col">
@@ -104,6 +104,18 @@ const SignUpForm = ({ className }: { className?: string }) => {
                             className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
                         />
                     </div>
+
+                    {/* 憑證數量 */}
+                    <div className="flex flex-col"> 
+                        <input 
+                            type="text" 
+                            name="license" 
+                            placeholder="憑證數量"
+                            onChange={handleChange} 
+                            required
+                            className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                        />
+                    </div>                    
                 </div>
 
                 {/* 右邊部分 - 按鈕 */}
@@ -112,10 +124,10 @@ const SignUpForm = ({ className }: { className?: string }) => {
                         type="submit" 
                         className="bg-blue-500 text-white rounded-full py-7 px-20 text-lg font-semibold hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        Next →
+                        下一步 →
                     </button>
                     <div className="mt-4 text-sm text-center">
-                        Already have an account? <a href="/admin/login" className="text-blue-500 hover:underline">Log in</a>
+                        已有帳號？<a href="/admin/login" className="text-blue-500 hover:underline">登入</a>
                     </div>
                 </div>
             </form>

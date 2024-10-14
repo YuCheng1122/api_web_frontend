@@ -1,6 +1,6 @@
 import JSZip from 'jszip'; // 確保導入 JSZip
 
-export function generateScripts(group: string, stats: any, totalAgentsInput: number) { 
+export async function generateScripts(group: string, stats: any, totalAgentsInput: number, pdfUrl: string) { 
     const zip = new JSZip(); // 使用 JSZip 來創建 ZIP 文件
 
     let totalAgents = 0; // 將變數名稱改為 totalAgentsInput
@@ -30,14 +30,6 @@ export function generateScripts(group: string, stats: any, totalAgentsInput: num
     macPackages.forEach(pkg => {
         totalAgents += pkg.count; // 計算總代理數量
     });
-
-    // 顯示總代理數量
-    const agentCountOutput = document.getElementById('agentCountOutput');
-    if (agentCountOutput) {
-        agentCountOutput.innerText = `總代理數量: ${totalAgentsInput}`; // 修改這行
-    } else {
-        console.error("找不到 ID 為 'agentCountOutput' 的元素");
-    }
 
     // 生成腳本的邏輯
     let currentIndex = 1; // 用於生成索引
@@ -90,6 +82,11 @@ export function generateScripts(group: string, stats: any, totalAgentsInput: num
             }
         }
     });
+
+    // 將 PDF 文件添加到 ZIP
+    const pdfResponse = await fetch(pdfUrl); // 獲取 PDF 文件
+    const pdfBlob = await pdfResponse.blob(); // 將其轉換為 Blob
+    zip.file('Wazuh_agent安裝說明.pdf', pdfBlob); // 將 PDF 文件添加到 ZIP，使用指定的文件名
 
     // 生成 ZIP 文件
     zip.generateAsync({ type: "blob" }).then(function(content) {
