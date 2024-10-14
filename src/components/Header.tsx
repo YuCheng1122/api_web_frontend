@@ -6,17 +6,21 @@ import Link from 'next/link'
 
 // context
 import { useAuthContext } from '@/contexts/AuthContext'
+import { use, useEffect } from 'react'
+
+
 
 
 const Header = () => {
 
-  const { isLogin, username, updateLoginState } = useAuthContext()
-
+  const { isLogin, username, updateLoginState, isadmin } = useAuthContext()
 
   const logout = () => {
     updateLoginState(false, '', null)
   }
-
+  useEffect(() => {
+    isadmin
+  }, [isadmin])
   return (
     <header className="bg-white w-full">
       <div className="mx-auto px-4 py-4">
@@ -45,10 +49,13 @@ const Header = () => {
                 <Link href={'/llm'} className='text-xl font-bold p-2 hover-underline-animation'>
                   LLM Page
                 </Link>
-                <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  Manage center
-                </Link>
-
+                {
+                  isadmin && (
+                    <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      Manage Center
+                    </Link>
+                  )
+                }
               </div>
             )}
           </div>
