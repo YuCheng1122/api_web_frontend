@@ -56,18 +56,18 @@ const EventTable = () => {
         <Loading />
       ) : (
         <>
-          <div className="h-fit text-sm font-bold">wazuh_event_up_to_12</div>
+          <div className="h-fit text-sm font-bold">等級大於12的wazuh事件</div>
 
           <div className="flex-grow p-2 overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
-                  <th className="w-[15%] p-2">Time</th>
-                  <th className="w-[15%] p-2">Agent Name</th>
-                  <th className="w-[40%] p-2">Rule Description</th>
+                  <th className="w-[15%] p-2">時間</th>
+                  <th className="w-[15%] p-2">代理名字</th>
+                  <th className="w-[40%] p-2">規則描述</th>
                   <th className="w-[10%] p-2">Rule Mitre Tactic</th>
                   <th className="w-[10%] p-2">Rule Mitre ID</th>
-                  <th className="w-[10%] p-2">Rule Level</th>
+                  <th className="w-[10%] p-2">規則等級</th>
                 </tr>
               </thead>
               <tbody>

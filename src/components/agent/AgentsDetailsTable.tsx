@@ -64,11 +64,11 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
       <table className="w-full">
         <thead>
           <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
-            <th className="w-[15%] p-2">Agent Name</th>
-            <th className="w-[15%] p-2">IP Address</th>
-            <th className="w-[20%] p-2">Operating System</th>
-            <th className="w-[15%] p-2">Status</th>
-            <th className="w-[25%] p-2">Last Keep Alive</th>
+            <th className="w-[15%] p-2">代理名稱</th>
+            <th className="w-[15%] p-2">IP 地址</th>
+            <th className="w-[20%] p-2">作業系統</th>
+            <th className="w-[15%] p-2">狀態</th>
+            <th className="w-[25%] p-2">最後保持活躍</th>
           </tr>
         </thead>
         <tbody>
@@ -133,7 +133,7 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
             onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
-            &lt; Prev
+            &lt; 上一頁
           </button>
           <div className="flex space-x-2">
             {renderPageNumbers()}
@@ -143,7 +143,7 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
           >
-            Next &gt;
+            下一頁 &gt;
           </button>
         </div>
       </div>
