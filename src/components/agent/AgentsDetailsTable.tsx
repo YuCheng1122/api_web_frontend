@@ -2,6 +2,7 @@
 
 import Image from 'next/image'; // 確保導入 Image 組件
 import { useState } from 'react'; // 新增導入 useState
+import Link from 'next/link'; // 確保導入 Link 組件
 
 interface AgentDetails {
   agent_name: string;
@@ -28,9 +29,9 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
     for (let i = 1; i <= totalPages; i++) {
       if (i <= 5 || i === totalPages || (i >= currentPage - 2 && i <= currentPage + 2)) {
         pageNumbers.push(
-          <button 
-            key={i} 
-            onClick={() => setCurrentPage(i)} 
+          <button
+            key={i}
+            onClick={() => setCurrentPage(i)}
             className={currentPage === i ? 'font-bold hover-underline-animation' : 'hover-underline-animation'}
           >
             {i}
@@ -73,7 +74,11 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
         <tbody>
           {currentItems.map((item, index) => (
             <tr key={index} className="text-gray-600 border-b border-gray-300">
-              <td className="p-2 text-sm">{item.agent_name}</td>
+              <td className="p-2 text-sm">
+                <Link href={`/agentdashboard/${item.agent_name}`}>
+                  <p className="hover:underline">{item.agent_name}</p>
+                </Link>
+              </td>
               <td className="p-2 text-sm">{item.ip}</td>
               <td className="p-2 text-sm">
                 <span className="inline-flex">
@@ -107,9 +112,9 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
       <div className="flex justify-between mt-auto">
         <div className="flex items-center">
           <label htmlFor="itemsPerPage" className="mr-2">每頁顯示</label>
-          <select 
-            id="itemsPerPage" 
-            value={itemsPerPage} 
+          <select
+            id="itemsPerPage"
+            value={itemsPerPage}
             onChange={(e) => {
               setItemsPerPage(Number(e.target.value));
               setCurrentPage(1); // 重置當前頁碼
@@ -123,9 +128,9 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
           <label htmlFor="itemsPerPage" className="ml-2">列</label>
         </div>
         <div className="flex items-center">
-          <button 
-            className="hover-underline-animation mr-6" 
-            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+          <button
+            className="hover-underline-animation mr-6"
+            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
             disabled={currentPage === 1}
           >
             &lt; 上一頁
@@ -133,9 +138,9 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
           <div className="flex space-x-2">
             {renderPageNumbers()}
           </div>
-          <button 
-            className="hover-underline-animation ml-6" 
-            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+          <button
+            className="hover-underline-animation ml-6"
+            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
             disabled={currentPage === totalPages}
           >
             下一頁 &gt;
