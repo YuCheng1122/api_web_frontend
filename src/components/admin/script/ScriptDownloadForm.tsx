@@ -15,8 +15,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
     });
 
     const [agentNames, setAgentNames] = useState<string[]>([]);
-    const {isLogin, username, updateLoginState} = useAuthContext()
+    const { isLogin, username, updateLoginState } = useAuthContext();
     const [remainingAgents, setRemainingAgents] = useState<number>(0); // 初始狀態設為 0
+    const pdfUrl = '/Wazuh_agent安裝說明.pdf'; // 使用相對 URL
 
     useEffect(() => {
         const fetchTotalAgents = async () => {
@@ -122,12 +123,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         const totalAgents = Object.values(stats).reduce((acc, count) => acc + count, 0);
         try {
             const response = await getTotalAgentsAndLicense();
-            setRemainingAgents(response.total_agents); // 設置 remainingAgents 為 response.total_agents
-            console.log('Total Agents:', response.total_agents);
-            if (response.total_agents >= Number(totalAgents)) {
-                generateScripts(username, stats, totalAgents); // 呼叫生成腳本函數，傳遞各個操作系統的代理數量
+            if (response.total_license - response.total_agents >= Number(totalAgents)) {
+                generateScripts(username, stats, totalAgents, pdfUrl); // 呼叫生成腳本函數，傳遞各個操作系統的代理數量和 PDF URL
             } else {
-                alert('agents 數量驗證失敗');
+                alert('代理數量驗證失敗');
             }
         } catch (error: any) {
             console.error('Error during fetching total agents and license:', error);
@@ -140,11 +139,11 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         <div className="bg-white rounded-lg flex flex-col items-center min-h-screen bg-gray-100 p-6 w-[54vw] ">
             {/* 主介面部分 */}
             <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300"> {/*shadow-md 可添加陰影*/}
-                <h2 className="text-lg font-bold mb-4">Script Download</h2>
+                <h2 className="text-lg font-bold mb-4">軟體下載</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
                     {/* 顯示剩下代理數量 */}
                     <div>
-                        <h3>剩下的下載 agents 數量: {remainingAgents}</h3> {/* 顯示剩下的 agents 數 */}
+                        <h3>剩下的下載代理數量: {remainingAgents}</h3> {/* 顯示剩下的 agents 數 */}
                     </div>
                     {/* Linux 部分 */}
                     <div className="border p-4 rounded-lg">
@@ -324,14 +323,14 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
                     >
-                        Download
+                        下載
                     </button>
                 </form>
             </div>
 
             {/* Agent 命名列表 */}
             <div className="bg-white p-4 rounded-lg w-full w-[54vw] max-w-7xl border border-gray-300">
-                <h3 className="text-lg font-bold mb-4">Agent name：</h3>
+                <h3 className="text-lg font-bold mb-4">代理名稱：</h3>
                 <ul className="text-sm grid grid-cols-4 gap-4">
                     {agentNames.map((name, index) => (
                         <li key={index} className="mb-2">

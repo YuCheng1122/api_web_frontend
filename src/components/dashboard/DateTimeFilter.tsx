@@ -52,7 +52,7 @@ const DateTimeFilter = () => {
   return (
     <div className="grid grid-cols-3 gap-4 p-2">
       <div className='w-full'>
-        <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">Start Time</label>
+        <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">開始時間</label>
         <input 
           name='start-date' 
           className='w-full p-2 rounded-lg shadow-lg border border-gray-300' 
@@ -63,7 +63,7 @@ const DateTimeFilter = () => {
       </div>
 
       <div className='w-full'>
-        <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">End Time</label>
+        <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">結束時間</label>
         <input 
           name='end-date' 
           className='w-full p-2 rounded-lg shadow-lg border border-gray-300' 
@@ -78,7 +78,7 @@ const DateTimeFilter = () => {
         disabled={isLoading}
         className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
-        {isLoading ? 'Loading...' : 'Fetch Data'}
+        {isLoading ? 'Loading...' : '取得數據'}
       </button>
       <ToastContainer />
     </div>

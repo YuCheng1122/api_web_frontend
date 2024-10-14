@@ -22,7 +22,7 @@ const EventTrendGraph = () => {
 
   const option = {
     title: {
-      text: '事件趨勢 (level 8~14)',
+      text: '事件趨勢 (等級 8~14)',
       textStyle: {
         fontSize: '14px'
       },
@@ -66,7 +66,7 @@ const EventTrendGraph = () => {
     },
     yAxis: {
       type: 'value',
-      name: 'Count',
+      name: '數量',
       splitNumber: 5,
       axisLabel: {
         margin: 16,
@@ -94,7 +94,7 @@ const EventTrendGraph = () => {
         }
       }catch(error){
         console.log(error)
-        setError("Failed to fetch trend data 😢. Please try again later.")
+        setError("無法獲取趨勢數據 😢。請稍後再試。")
         setTimeout(() => {
           setError(null)
         }, 3000)

@@ -51,10 +51,10 @@ const NetworkConnection = () => {
       {
         isLoading ? <Loading /> :
         <>
-          <div className="font-bold text-sm">total event (level 8~14)</div>
+          <div className="font-bold text-sm">事件總數 (等級 8~14)</div>
           <div className="flex-grow flex flex-col items-center justify-center text-gray-700">
             <div className="font-bold text-[65px]">{connectionCount}</div>
-            <div className="text-[24px]">Count of records</div>
+            <div className="text-[24px]">資料筆數</div>
           </div>
         </>
       }

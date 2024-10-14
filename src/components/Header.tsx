@@ -34,19 +34,19 @@ const Header = () => {
               {isLogin && username && (
                 <div className='flex space-x-2'>
                   <Link href={'/graph'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    Graph
+                    威脅獵捕圖
                   </Link>
                   <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    Dashboard
+                    儀表板
                   </Link>
                   <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    Agent Info
+                    代理資訊  
                   </Link>
                   <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    Chatbot
+                    聊天機器人
                   </Link>
                   <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  Manage center
+                    管理中心
                   </Link>
                 </div>
               )}
@@ -81,7 +81,7 @@ const Header = () => {
                 </div>
               ) : (
                 <Link href={'/admin/login'} className='text-xl font-semibold text-black hover:text-blue-800'>
-                  Login
+                  登入
                 </Link>
               )}
             </div>
