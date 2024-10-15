@@ -22,7 +22,6 @@ export const fetchRansomwareData = async (props: Props): Promise<fetchRansomware
     endtime.setDate(nowtime.getDate() - 1);
     // 時間格式為 "2024-10-05T00:00:00Z"
     const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/agent_detail/agent_ransomware?agent_name=${props.id}&start_time=${endtime.toISOString()}&end_time=${nowtime.toISOString()}`;
-    console.log(api_url);
 
     try {
         const header = {
@@ -32,12 +31,9 @@ export const fetchRansomwareData = async (props: Props): Promise<fetchRansomware
             headers: header
         });
 
-        const apiData = response.data.ransomware_data
-
-        console.log(apiData);
+        const apiData = response.data.ransomware_data;
 
 
-        // 只回傳 name 和 count
 
         return {
             success: true,
