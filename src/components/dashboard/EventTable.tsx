@@ -120,7 +120,7 @@ const EventTable = () => {
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
                 disabled={currentPage === 1}
               >
-                &lt; Prev
+                &lt; 上一頁
               </button>
               <div className="flex space-x-2">
                 {Array.from({ length: totalPages }, (_, i) => (
@@ -138,7 +138,7 @@ const EventTable = () => {
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
                 disabled={currentPage === totalPages}
               >
-                Next &gt;
+                下一頁 &gt;
               </button>
             </div>
           </div>
