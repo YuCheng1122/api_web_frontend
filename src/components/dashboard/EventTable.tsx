@@ -1,21 +1,21 @@
 'use client'
 
 // third-party
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 
 // components
 import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import {useDashBoardContext} from '@/contexts/DashBoardContext'
+import { useDashBoardContext } from '@/contexts/DashBoardContext'
 
 // utils
-import {initData, EventTableDataType, fetchEventTableData} from '@/utils/dashboard/fetchEventTableData'
+import { initData, EventTableDataType, fetchEventTableData } from '@/utils/dashboard/fetchEventTableData'
 
 
 const EventTable = () => {
-  const {dateTimeRange} = useDashBoardContext()
+  const { dateTimeRange } = useDashBoardContext()
   const [eventTableData, setEventTableData] = useState<EventTableDataType[]>(initData.datas)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [total, setTotal] = useState<number>(initData.total)
@@ -23,31 +23,35 @@ const EventTable = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if(isLoading) return
+      if (isLoading) return
       setIsLoading(true)
-      try{
-        if(dateTimeRange?.start && dateTimeRange?.end){
-          const result = await fetchEventTableData({id: 0,start: dateTimeRange?.start, end: dateTimeRange?.end})
-          if(result.success){
+      try {
+        if (dateTimeRange?.start && dateTimeRange?.end) {
+          const result = await fetchEventTableData({ id: 0, start: dateTimeRange?.start, end: dateTimeRange?.end })
+          if (result.success) {
             setEventTableData(result.content.datas)
-          }else{
+          } else {
             throw new Error('Failed to fetch event table data')
           }
         }
-      }catch(error){
+      } catch (error) {
         console.log(error)
         setError("Failed to fetch event table data 😢. Please try again later.")
         setTimeout(() => {
           setError(null)
         }, 3000)
-      }finally{
+      } finally {
         setIsLoading(false)
       }
     }
     fetchData()
   }, [dateTimeRange])
 
-
+  const adjustTime = (timeString: string) => {
+    const date = new Date(timeString);
+    date.setHours(date.getHours() + 8);
+    return date.toISOString().replace('T', ' ').slice(0, 19);
+  };
 
   return (
     <div className="h-full w-full relative bg-white flex flex-col gap-2">
@@ -73,7 +77,7 @@ const EventTable = () => {
               <tbody>
                 {eventTableData.map((item, index) => (
                   <tr key={index} className="text-gray-600 border-b border-gray-300">
-                    <td className="p-2 text-sm">{item.time}</td>
+                    <td className="p-2 text-sm">{adjustTime(item.time)}</td>
                     <td className="p-2 text-sm">{item.agent_name}</td>
                     <td className="p-2 text-sm">{item.rule_description}</td>
                     <td className="p-2 text-sm">{item.rule_mitre_tactic}</td>
