@@ -43,7 +43,7 @@ export const fetchEventTableData = async (param: fetchEventTableDataRequest): Pr
       params: {
         start_time: param.start.toISOString(),
         end_time: param.end.toISOString(),
-        limit: 5  // 將 limit 設置為 5
+        // limit: 5  // 將 limit 設置為 5 的行已被移除
       },
       headers: header
     });
@@ -64,7 +64,7 @@ export const fetchEventTableData = async (param: fetchEventTableDataRequest): Pr
       success: true,
       content: {
         total: apiData.total,
-        datas: adjustedData.slice(0, 5)  // 確保只返回前5筆數據
+        datas: adjustedData // 移除 slice(0, 5) 的限制
       }
     };
 
