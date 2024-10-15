@@ -1,20 +1,21 @@
 'use client'
 
 // third-party
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 
 // components
 import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import {useDashBoardContext} from '@/contexts/DashBoardContext'
+import { useDashBoardContext } from '@/contexts/DashBoardContext'
 
 // utils
-import {initData, EventTableDataType, fetchEventTableData} from '@/utils/dashboard/fetchEventTableData'
+import { initData, EventTableDataType, fetchEventTableData } from '@/utils/dashboard/fetchEventTableData'
 
 
 const EventTable = () => {
+<<<<<<< HEAD
   const {dateTimeRange} = useDashBoardContext()
   const [useSampleData, setUseSampleData] = useState<boolean>(false); // 新增變數來決定資料來源(測試用)
   const [eventTableData, setEventTableData] = useState<EventTableDataType[]>([
@@ -33,6 +34,10 @@ const EventTable = () => {
     { id: 13, time: '2023-10-01 11:00', agent_name: 'Agent 13', rule_description: 'Description 13', rule_mitre_tactic: 'Tactic 13', rule_mitre_id: 'ID 13', rule_level: 10 },
     { id: 14, time: '2023-10-01 11:05', agent_name: 'Agent 14', rule_description: 'Description 14', rule_mitre_tactic: 'Tactic 14', rule_mitre_id: 'ID 14', rule_level: 5 },
   ])
+=======
+  const { dateTimeRange } = useDashBoardContext()
+  const [eventTableData, setEventTableData] = useState<EventTableDataType[]>(initData.datas)
+>>>>>>> origin/master
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1); // 新增狀態管理當前頁碼
@@ -68,7 +73,11 @@ const EventTable = () => {
     fetchData();
   }, [dateTimeRange, useSampleData]); // 添加 useSampleData 作為依賴
 
-
+  const adjustTime = (timeString: string) => {
+    const date = new Date(timeString);
+    date.setHours(date.getHours() + 8);
+    return date.toISOString().replace('T', ' ').slice(0, 19);
+  };
 
   return (
     <div className="h-full w-full relative bg-white flex flex-col gap-2">
@@ -77,24 +86,24 @@ const EventTable = () => {
         <Loading />
       ) : (
         <>
-          <div className="h-fit text-sm font-bold">wazuh_event_up_to_12</div>
+          <div className="h-fit text-sm font-bold">等級大於12的wazuh事件</div>
 
           <div className="flex-grow p-2 overflow-x-auto">
             <table className="w-full">
               <thead>
                 <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
-                  <th className="w-[15%] p-2">Time</th>
-                  <th className="w-[15%] p-2">Agent Name</th>
-                  <th className="w-[40%] p-2">Rule Description</th>
+                  <th className="w-[15%] p-2">時間</th>
+                  <th className="w-[15%] p-2">代理名字</th>
+                  <th className="w-[40%] p-2">規則描述</th>
                   <th className="w-[10%] p-2">Rule Mitre Tactic</th>
                   <th className="w-[10%] p-2">Rule Mitre ID</th>
-                  <th className="w-[10%] p-2">Rule Level</th>
+                  <th className="w-[10%] p-2">規則等級</th>
                 </tr>
               </thead>
               <tbody>
                 {currentItems.map((item, index) => (
                   <tr key={index} className="text-gray-600 border-b border-gray-300">
-                    <td className="p-2 text-sm">{item.time}</td>
+                    <td className="p-2 text-sm">{adjustTime(item.time)}</td>
                     <td className="p-2 text-sm">{item.agent_name}</td>
                     <td className="p-2 text-sm">{item.rule_description}</td>
                     <td className="p-2 text-sm">{item.rule_mitre_tactic}</td>
