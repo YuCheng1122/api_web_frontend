@@ -15,7 +15,6 @@ import { initData, EventTableDataType, fetchEventTableData } from '@/utils/dashb
 
 
 const EventTable = () => {
-<<<<<<< HEAD
   const {dateTimeRange} = useDashBoardContext()
   const [useSampleData, setUseSampleData] = useState<boolean>(false); // 新增變數來決定資料來源(測試用)
   const [eventTableData, setEventTableData] = useState<EventTableDataType[]>([
@@ -34,10 +33,6 @@ const EventTable = () => {
     { id: 13, time: '2023-10-01 11:00', agent_name: 'Agent 13', rule_description: 'Description 13', rule_mitre_tactic: 'Tactic 13', rule_mitre_id: 'ID 13', rule_level: 10 },
     { id: 14, time: '2023-10-01 11:05', agent_name: 'Agent 14', rule_description: 'Description 14', rule_mitre_tactic: 'Tactic 14', rule_mitre_id: 'ID 14', rule_level: 5 },
   ])
-=======
-  const { dateTimeRange } = useDashBoardContext()
-  const [eventTableData, setEventTableData] = useState<EventTableDataType[]>(initData.datas)
->>>>>>> origin/master
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [error, setError] = useState<string | null>(null)
   const [currentPage, setCurrentPage] = useState(1); // 新增狀態管理當前頁碼
