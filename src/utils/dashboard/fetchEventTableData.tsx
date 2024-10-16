@@ -43,7 +43,7 @@ export const fetchEventTableData = async (param: fetchEventTableDataRequest): Pr
       params: {
         start_time: param.start.toISOString(),
         end_time: param.end.toISOString(),
-        // limit: 5  // 將 limit 設置為 5 的行已被移除
+        limit: 40  // 將 limit 設置為 5 的行已被移除
       },
       headers: header
     });
