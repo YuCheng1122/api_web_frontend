@@ -1,18 +1,3 @@
-import axios from 'axios';
-
-export const sendMessage = async (message: string, context: string) => {
-    try {
-        const response = await axios.post('/api/chat', {
-            message,
-            context
-        });
-        return response.data.response;
-    } catch (error) {
-        console.error('Error sending message:', error);
-        throw error;
-    }
-};
-
 export const sendStreamingMessage = async (
     message: string,
     context: string,
