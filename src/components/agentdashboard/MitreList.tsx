@@ -4,6 +4,8 @@ type Mitre = {
 };
 export default function MitreList(props: { mitres: Mitre[] }) {
     const { mitres } = props;
+    console.log(mitres);
+
     return (
         <div className="max-w-sm w-full mx-auto bg-white shadow-lg rounded-lg p-6">
             <div className="flex justify-between items-center">
