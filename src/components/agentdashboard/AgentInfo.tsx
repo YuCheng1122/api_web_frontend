@@ -1,13 +1,11 @@
 type MitreData = {
-    id: string;
-    status: string;
-    ipAddress: string;
-    version: string;
-    groups: string;
+    agent_name: string;
+    agent_id: string;
+    ip: string;
     os: string;
-    clusterNode: string;
-    registrationDate: string;
-    lastKeepAlive: string;
+    os_version: string;
+    agent_status: string;
+    last_keep_alive: string;
 };
 export default function AgentInfo(props: { data: MitreData }) {
     const { data } = props;
@@ -28,24 +26,24 @@ export default function AgentInfo(props: { data: MitreData }) {
         <div className="bg-white shadow rounded-lg p-6 space-x-5 flex flex-row justify-around flex-grow">
             <div className="flex justify-between items-center flex-col">
                 <span className=" text-gray-400">ID</span>
-                <span className="font-bold">{data.id}</span>
+                <span className="font-bold">{data.agent_id}</span>
             </div>
             <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">Status</span>
-                <span className="text-green-500">{data.status}</span>
+                <span className="text-green-500">{data.agent_status}</span>
             </div>
             <div className="flex justify-between flex-no items-center  flex-col">
                 <span className="text-gray-400 whitespace-nowrap">IP Address</span>
-                <span className="font-bold ">{data.ipAddress}</span>
+                <span className="font-bold ">{data.ip}</span>
             </div>
             <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">Version</span>
-                <span className="font-bold">{data.version}</span>
+                <span className="font-bold">{data.os_version}</span>
             </div>
-            <div className="flex justify-between items-center flex-col">
+            {/* <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">Groups</span>
                 <span className="font-bold">{data.groups}</span>
-            </div>
+            </div> */}
             <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">OS</span>
                 <div className="flex items-center">
@@ -64,15 +62,15 @@ export default function AgentInfo(props: { data: MitreData }) {
             </div>
             <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">Cluster Node</span>
-                <span className="font-bold">{data.clusterNode}</span>
+                <span className="font-bold">{data.agent_name}</span>
             </div>
-            <div className="flex justify-between items-center flex-col">
+            {/* <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">Registration Date</span>
                 <span className="font-bold">{data.registrationDate}</span>
-            </div>
+            </div> */}
             <div className="flex justify-between items-center flex-col">
                 <span className="text-gray-400">Last Keep Alive</span>
-                <span className="font-bold">{data.lastKeepAlive}</span>
+                <span className="font-bold">{data.last_keep_alive}</span>
             </div>
         </div>
     );
