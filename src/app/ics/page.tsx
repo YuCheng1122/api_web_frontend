@@ -3,6 +3,15 @@ import React, { use } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { Fetchmobus } from '@/utils/cs/fetchmobus';
 import { useEffect, useState } from 'react';
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog"
+
 
 interface EventRow {
     event_id: string;
@@ -21,12 +30,22 @@ interface EventRow {
 }
 
 export default function EventTable() {
+    const [datas, setDatas] = useState<EventRow[] | null>(null);
+    const [error, setError] = useState<any>(null);
+    const [selectedRow, setSelectedRow] = useState<EventRow | null>(null); // Store selected row
+
+    useEffect(() => {
+        Fetchmobus()
+            .then(response => setDatas(response.content))
+            .catch(err => setError(err));
+    }, []);
+
     const columns: TableColumn<EventRow>[] = [
         {
             name: 'Event ID',
             selector: (row) => row.event_id,
             sortable: true,
-            width: '150px', // 控制寬度
+            width: '150px',
         },
         {
             name: 'Device ID',
@@ -90,43 +109,42 @@ export default function EventTable() {
             sortable: true,
             width: '100px',
         },
-
     ];
-    const [datas, setDatas] = useState<EventRow[] | null>(null);
-    const [error, setError] = useState<any>(null);
-    useEffect(() => {
-        Fetchmobus()
-            .then(response => setDatas(response.content))
-            .catch(err => setError(err));
 
-    }, []);
     if (error) return <div>Error: {error.message}</div>;
     if (!datas) return <div>Loading...</div>;
-    //
-
-    const data: EventRow[] = [
-        {
-            event_id: "1udlhZIBNMPh6DH01RV5",
-            device_id: "device123",
-            timestamp: "2024-10-10T00:00:00+00:00",
-            event_type: "modbus",
-            source_ip: "192.168.1.10",
-            source_port: 502,
-            destination_ip: "192.168.1.100",
-            destination_port: 502,
-            modbus_function: 3,
-            modbus_data: "0x001F",
-            alert: "Modbus Unauthorized Access",
-            register: 40001,
-            error_code: "ILLEGAL_DATA_VALUE",
-        },
-    ];
 
     return (
-        <DataTable
-            columns={columns}
-            data={datas}
-            pagination
-        />
+        <>
+            <DataTable
+                columns={columns}
+                data={datas}
+                pagination
+                onRowClicked={(row) => setSelectedRow(row)} // Set the clicked row
+            />
+
+            {/* Dialog to display selected row details */}
+            {selectedRow && (
+                <Dialog open={Boolean(selectedRow)} onOpenChange={() => setSelectedRow(null)}>
+                    <DialogContent>
+                        <DialogHeader>
+                            <DialogTitle>Event Details</DialogTitle>
+                        </DialogHeader>
+                        <DialogDescription>
+                            <p><strong>Event ID:</strong> {selectedRow.event_id}</p>
+                            <p><strong>Device ID:</strong> {selectedRow.device_id}</p>
+                            <p><strong>Timestamp:</strong> {selectedRow.timestamp}</p>
+                            <p><strong>Event Type:</strong> {selectedRow.event_type}</p>
+                            <p><strong>Source IP:</strong> {selectedRow.source_ip}</p>
+                            <p><strong>Destination IP:</strong> {selectedRow.destination_ip}</p>
+                            <p><strong>Modbus Function:</strong> {selectedRow.modbus_function}</p>
+                            <p><strong>Modbus Data:</strong> {selectedRow.modbus_data}</p>
+                            <p><strong>Alert:</strong> {selectedRow.alert}</p>
+                            {/* Add other fields as necessary */}
+                        </DialogDescription>
+                    </DialogContent>
+                </Dialog>
+            )}
+        </>
     );
 }
