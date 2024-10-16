@@ -49,8 +49,8 @@ const Header = () => {
                     管理中心
                   </Link>
                 )}
-                <Link href={'/cs'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  CS
+                <Link href={'/ics'} className='text-xl font-bold p-2 hover-underline-animation'>
+                  ICS
                 </Link>
               </div>
             )}

@@ -6,7 +6,7 @@ import { usePathname } from 'next/navigation';
 import { fetchAgentDetails } from "@/utils/agentdashboard/fetchAgentInfoData";
 import { fetchMitreData } from "@/utils/agentdashboard/fetchMitreData";
 import { fetchRansomwareData } from "@/utils/agentdashboard/fetchRansomwareData";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 type fetchPieDataType = {
     name: string,
@@ -63,6 +63,8 @@ export default function AgentDashboardPage() {
             }
         }
     }, [pathname]);
+
+
     if (ransomwareError) return <div>Error: {ransomwareError.message}</div>;
     if (!ransomwareData) return <div>Loading...</div>;
 
@@ -96,7 +98,20 @@ export default function AgentDashboardPage() {
     ];
     // Ioc data random 可能1個 或是五個
     const RandomIoc = Ioc.slice(0, Math.floor(Math.random() * Ioc.length));
-    console.log('ransomwareData:', ransomwareData.ransomware_name);
+    const newransomwareData = [...ransomwareData];
+    console.log('ransomwareData:', newransomwareData);
+
+    // substring ransomwareData name
+    const pieransomwareData = newransomwareData.map((ransomware: { name: string, value: number }, index: number) => {
+        // 拿掉錢17個字
+        const name = ransomware.name.substring(45);
+        // 拿掉後面12字
+        const trimmedName = name.substring(0, name.length - 12);
+        return { name: trimmedName, value: ransomware.value };
+    });
+
+    console.log('ransomwareData:', pieransomwareData);
+
 
 
     return (
@@ -108,18 +123,19 @@ export default function AgentDashboardPage() {
                 <p></p>
                 <MitreList mitres={mitreData} />
 
-                <PieGraph title="Ransomware" data={defaultData} />
+                <PieGraph title="Ransomware" data={pieransomwareData} />
                 <div className="flex flex-col space-y-5 bg-white rounded-lg w-1/5 justify-center p-5 overflow-auto">
                     Wanna Cry --{">"}Ransomware file list:
-                    <div className="flex flex-col space-y-2">
-                        {ransomwareData.ransomware_name.map((ransomware_name: string, index: number) => (
-                            <div key={index} className="flex items-center ">
-                                <span className=" text-pretty overflow-hidden">
-                                    {ransomware_name}</span>
-                                <hr className=" border-gray-300 w-full" />
-                            </div>
-                        ))}
-                    </div>
+                    {
+                        ransomwareData.map((ransomware: { name: string }, index: number) => {
+                            return (
+                                <ul key={index} className="border-b-2">
+                                    <li><span>{index + 1} : </span>{ransomware.name}</li>
+                                </ul>
+                            )
+                        }
+                        )
+                    }
                 </div>
                 <PieGraph title="IoC" data={RandomIoc} />
                 <PieGraph title="CVE" data={Randomthreat} />

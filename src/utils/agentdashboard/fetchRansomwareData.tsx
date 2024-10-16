@@ -32,9 +32,6 @@ export const fetchRansomwareData = async (props: Props): Promise<fetchRansomware
         });
 
         const apiData = response.data.ransomware_data;
-
-
-
         return {
             success: true,
             content: apiData
