@@ -1,5 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Anthropic from '@anthropic-ai/sdk';
+import {generateQuestionsPrompt} from "@/components/chatbot/prompts/ChatPrompt";
 
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
@@ -12,26 +13,12 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const { dashboardInfo } = req.body;
             console.log('Dashboard Info:', JSON.stringify(dashboardInfo, null, 2));
 
-            const prompt = `根據以下安全運營平台的儀表板資訊，生成恰好 5 個相關且有洞察力的問題，這些問題是安全分析師可能會問的：
-
-總代理數：${dashboardInfo.totalAgents}
-活躍代理數：${dashboardInfo.activeAgents}
-最活躍代理：${dashboardInfo.topAgent}
-最常見事件：${dashboardInfo.topEvent}
-最新事件趨勢：${JSON.stringify(dashboardInfo.latestEventTrends)}
-
-請提供 5 個有助於分析安全狀況並提供有價值見解的問題。請使用繁體中文回答，並按以下格式呈現每個問題：
-
-問題：[問題內容]
-背景：[簡短解釋為什麼這個問題重要]
-可能的調查方向：[1-2個調查這個問題的建議]
-
-請確保每個問題都有這三個部分，並且內容要具體、相關且有洞察力。`;
+            const prompt = generateQuestionsPrompt(dashboardInfo);
 
             console.log('Sending request to Anthropic API');
             const response = await anthropic.messages.create({
                 model: "claude-3-5-sonnet-20240620",
-                max_tokens: 1500,
+                max_tokens: 4096,
                 messages: [{ role: "user", content: prompt }],
             });
             console.log('Received response from Anthropic API');
@@ -43,7 +30,6 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const generatedText = generatedContent[0].text;
             console.log('Generated Text:', generatedText);
 
-            // 改進的問題解析邏輯
             const formattedQuestions = generatedText
                 .split(/問題(?:：|\d+：)/)
                 .slice(1)

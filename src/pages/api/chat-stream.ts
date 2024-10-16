@@ -25,10 +25,10 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
                 { role: 'user', content: message }
             ];
 
-            const stream = await anthropic.messages.stream({
+            const stream = anthropic.messages.stream({
                 messages,
                 model: 'claude-3-5-sonnet-20240620',
-                max_tokens: 1000,
+                max_tokens: 4096,
                 stream: true,
             });
 
