@@ -42,7 +42,7 @@ const Header = () => {
                   代理資訊
                 </Link>
                 <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  聊天機器人
+                  SenseX
                 </Link>
                 {isadmin && (
                   <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
