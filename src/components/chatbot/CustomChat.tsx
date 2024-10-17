@@ -20,7 +20,15 @@ const CustomChat: React.FC<CustomChatComponentProps> = ({
                                                             setSelectedQuestion,
                                                         }) => {
     const [messages, setMessages] = useState<Message[]>([
-        { text: "您好！👋 我是 AIXSOAR 助手。今天我能為您提供什麼幫助？", isUser: false },
+        { text: "您好！👋 我是您的 SenseX 資安助手。隨時為您提供專業的資安情報與協助。\n" +
+                "\n" +
+                "我可以為您:\n" +
+                "- 分析近期資安趨勢\n" +
+                "- 提供最新威脅情報\n" +
+                "- 解答資安相關疑問\n" +
+                "- 協助制定資安策略\n" +
+                "\n" +
+                "有任何資安相關問題，請隨時詢問。讓我們一同守護您的數位安全！", isUser: false },
     ]);
     const [inputMessage, setInputMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
