@@ -12,16 +12,19 @@ const DateTimeFilter = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
-    // 設置默認的時間範圍（使用 UTC 時間）
     const now = new Date();
     const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
 
     setStartDate(formatToLocalDateTime(oneDayAgo));
     setEndDate(formatToLocalDateTime(now));
 
-    // 更新 context 中的時間範圍（使用 UTC 時間）
     changeDateTimeRange(oneDayAgo, now);
   }, []);
+
+  const handleNowClick = () => {
+    const now = new Date();
+    setEndDate(formatToLocalDateTime(now));
+  };
 
   const handleSubmit = async () => {
     const start = new Date(startDate + 'Z');
@@ -48,7 +51,7 @@ const DateTimeFilter = () => {
       setIsLoading(false);
     }
   };
-  // 輔助函數：將 UTC 日期轉換為本地 datetime-local 格式
+
   const formatToLocalDateTime = (date: Date) => {
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
       .toISOString()
@@ -70,13 +73,22 @@ const DateTimeFilter = () => {
 
       <div className='w-full'>
         <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">結束時間</label>
-        <input
-          name='end-date'
-          className='w-full p-2 rounded-lg shadow-lg border border-gray-300'
-          type='datetime-local'
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
+        <div className="flex items-center">
+          <input
+            name='end-date'
+            className='w-full p-2 rounded-lg shadow-lg border border-gray-300'
+            type='datetime-local'
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleNowClick}
+            className="ml-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+          >
+            Now
+          </button>
+        </div>
       </div>
 
       <button

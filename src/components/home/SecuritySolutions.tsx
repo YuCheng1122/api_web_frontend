@@ -4,72 +4,74 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const solutions = [
   {
-    title: 'NDR',
-    description: 'ATHS NDR 就像是網路中的警察，24 小時不停巡邏，查看網路上有沒有異常的活動。它能即時發現和阻止不尋常的網路行為，保護企業免受各種網路攻擊。',
+    title: 'ThreatAvocado XDR',
+    description: '以 AI 驅動的高效訂閱式安全服務，完全免除軟硬體採購和建置的負擔。虛擬資安官 SenseX 強化威脅偵測、即時回應與全面管理，為企業提供強大的自動防禦與合規支持，確保數位安全無虞。',
     features: [
-      '強大防禦',
-      '無縫整合',
-      '即時監控',
-      '進階分析',
-      '自動化回應',
+      '跨平台支持',
+      '威脅情報即時更新',
+      '直覺式操作介面',
+      '無須額外硬體成本',
+      '支援 Linux、macOS 和 Windows',
+      'AI 智能小幫手',
+      '快速安裝功能',
     ],
   },
   {
-    title: 'EDR',
-    description: 'EDR（終端檢測與回應）是一種先進的資安解決方案，專注於監控和保護企業的終端設備。它能夠檢測、分析和回應終端上的安全威脅。',
-    features: [
-      '終端監控',
-      '即時威脅檢測',
-      '自動化回應',
-      '深度分析',
-      '集中管理',
-    ],
+    title: '特色一：跨平台支持',
+    description: '支援 Linux、macOS 和 Windows',
   },
   {
-    title: 'XDR',
-    description: 'XDR（擴展檢測與回應）是一種整合性的安全解決方案，結合了EDR、NDR等多種技術，提供更全面的威脅檢測和回應能力。',
-    features: [
-      '跨平台整合',
-      '高級威脅檢測',
-      '自動化調查',
-      '統一管理介面',
-      '智能分析報告',
-    ],
+    title: '特色二：威脅情報即時更新',
+    description: '提供最新情資，無須額外採購，為企業減少成本負擔',
+  },
+  {
+    title: '特色三：直覺式操作介面',
+    description: '人性化操作介面，讓您一目瞭然',
+  },
+  {
+    title: '特色四：無須額外硬體成本',
+    description: '免去採購時間成本，有效人力運用',
+  },
+  {
+    title: '特色五：快速安裝功能',
+    description: '免除安裝困擾，讓您一鍵安裝',
+  },
+  {
+    title: '特色六：AI 智能小幫手',
+    description: '為您解答任何問題，是企業最佳資安小幫手',
   },
 ];
 
 const SecuritySolutions: React.FC = () => {
     const [visibleSections, setVisibleSections] = useState<number[]>([]);
     const sectionRefs = useRef<HTMLDivElement[]>([]);
-  
+
     useEffect(() => {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             const index = Number(entry.target.getAttribute('data-index'));
             if (entry.isIntersecting) {
-              // 元素進入可視範圍時，將索引加入 visibleSections
               setVisibleSections((prev) => [...prev, index]);
             } else {
-              // 元素離開可視範圍時，將索引從 visibleSections 移除
               setVisibleSections((prev) => prev.filter((i) => i !== index));
             }
           });
         },
         { threshold: 0.01, rootMargin: "0px" }
       );
-  
+
       sectionRefs.current.forEach((section) => {
         if (section) observer.observe(section);
       });
-  
+
       return () => {
         sectionRefs.current.forEach((section) => {
           if (section) observer.unobserve(section);
         });
       };
     }, []);
-  
+
     return (
       <div className="flex flex-wrap gap-8">
         {solutions.map((solution, index) => (
@@ -77,8 +79,7 @@ const SecuritySolutions: React.FC = () => {
             key={index}
             ref={(el) => { sectionRefs.current[index] = el!; }}
             data-index={index}
-            className={`
-              bg-white shadow-lg rounded-lg overflow-hidden flex w-4/5 
+            className={`bg-white shadow-lg rounded-lg overflow-hidden flex w-4/5 
               ${index % 2 === 0 ? 'mr-auto' : 'ml-auto'} 
               transform transition-transform duration-1000 ease-in-out 
               transition-opacity 
@@ -86,25 +87,25 @@ const SecuritySolutions: React.FC = () => {
             `}
           >
             <div className="px-6 py-4 flex-1">
-              {/* title 的彈出效果 */}
               <h2 className="font-bold text-xl mb-2">{solution.title}</h2>
-              {/* description 的彈出效果 */}
               <p className="text-gray-700 text-base mb-4">{solution.description}</p>
-            </div>
-  
-            <div className="px-6 py-4 w-1/3">
-              {/* h3 的彈出效果 */}
-              <h3 className="font-semibold text-lg mb-2">主要特點：</h3>
-              <ul className="list-disc list-inside">
-                {solution.features.map((feature, fIndex) => (
-                  <li key={fIndex} className="text-gray-600">{feature}</li>
-                ))}
-              </ul>
             </div>
           </div>
         ))}
+        {/* 新增的優惠方案區塊 */}
+        <div className="w-full rounded-lg bg-black text-white py-6 px-8 text-center mt-8">
+          <h2 className="text-2xl font-bold mb-4">資安防護優惠方案</h2>
+          <ul className="list-none">
+            <li className="mb-2">提供20家一個月免費 PoC</li>
+            <li className="mb-2">立即下單~即享一年 XDR 服務 20,000 元</li>
+            <li className="mb-2">快掃 QR code，即享以上優惠!</li>
+          </ul>
+          <div className="mt-6">
+            <img src="/QRCode.png" alt="QR Code" className="mx-auto" />
+          </div>
+        </div>
       </div>
     );
-  };
+};
 
 export default SecuritySolutions;
