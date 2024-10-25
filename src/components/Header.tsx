@@ -40,27 +40,29 @@ const Header = () => {
 
             {/* 導航按鈕 */}
             {isLogin && username && (
-              <div className='flex space-x-4 invisible md:visible'>
-                <Link href={'/graph'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  威脅獵捕圖
-                </Link>
-                <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  儀表板
-                </Link>
-                <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  代理資訊
-                </Link>
-                <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  聊天機器人
-                </Link>
-                {isadmin && (
-                  <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    管理中心
+              <div className='  hidden md:block'>
+                <div className='flex items-center space-x-4'>
+                  <Link href={'/graph'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    威脅獵捕圖
                   </Link>
-                )}
-                <Link href={'/ics'} className='text-xl font-bold p-2 hover-underline-animation'>
-                  ICS
-                </Link>
+                  <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    儀表板
+                  </Link>
+                  <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    代理資訊
+                  </Link>
+                  <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    聊天機器人
+                  </Link>
+                  {isadmin && (
+                    <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      管理中心
+                    </Link>
+                  )}
+                  <Link href={'/ics'} className='text-xl font-bold p-2 hover-underline-animation'>
+                    ICS
+                  </Link>
+                </div>
               </div>
             )}
           </div>
