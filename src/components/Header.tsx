@@ -91,33 +91,37 @@ const Header = () => {
                 <DropdownMenuItem>
                   <Link href={'/'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>首頁</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={'/graph'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>威脅獵捕圖</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={'/dashboard'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>儀表板</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={'/agent'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>代理資訊</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={'/chatbot'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>聊天機器人</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={'/ics'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>ICS</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <Link href={'/admin/script'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>軟體下載</Link>
-                </DropdownMenuItem>
-                <DropdownMenuSeparator />
+                {isLogin && username && (<div>
+
+
+                  <DropdownMenuItem>
+                    <Link href={'/graph'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>威脅獵捕圖</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/dashboard'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>儀表板</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/agent'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>代理資訊</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/chatbot'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>聊天機器人</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/ics'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>ICS</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/admin/script'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>軟體下載</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]' onClick={logout}>登出</div>
+                  </DropdownMenuItem>
+                </div>)}
                 <DropdownMenuItem>
                   <Link href={'/admin/signup'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>註冊</Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem>
                   <Link href={'/admin/login'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>登入</Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <div className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]' onClick={logout}>登出</div>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
