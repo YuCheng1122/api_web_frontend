@@ -23,6 +23,11 @@ const DateTimeFilter = () => {
     changeDateTimeRange(oneDayAgo, now);
   }, []);
 
+  const handleNowClick = () => {
+    const now = new Date();
+    setEndDate(formatToLocalDateTime(now));
+  };
+
   const handleSubmit = async () => {
     const start = new Date(startDate + 'Z');
     const end = new Date(endDate + 'Z');
@@ -70,13 +75,22 @@ const DateTimeFilter = () => {
 
       <div className='w-full'>
         <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">結束時間</label>
-        <input
-          name='end-date'
-          className='w-full p-2 rounded-lg shadow-lg border border-gray-300'
-          type='datetime-local'
-          value={endDate}
-          onChange={(e) => setEndDate(e.target.value)}
-        />
+        <div className="flex items-center">
+          <input
+            name='end-date'
+            className='w-full p-2 rounded-lg shadow-lg border border-gray-300'
+            type='datetime-local'
+            value={endDate}
+            onChange={(e) => setEndDate(e.target.value)}
+          />
+          <button
+            type="button"
+            onClick={handleNowClick}
+            className="ml-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+          >
+            Now
+          </button>
+        </div>
       </div>
 
       <button
