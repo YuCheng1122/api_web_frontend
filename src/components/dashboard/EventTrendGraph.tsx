@@ -1,7 +1,7 @@
 'use client'
 
 // third-party
-import {useState, useEffect} from 'react'
+import { useState, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 
 // components
@@ -9,13 +9,13 @@ import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import {useDashBoardContext} from '@/contexts/DashBoardContext'
+import { useDashBoardContext } from '@/contexts/DashBoardContext'
 
 // utils
-import {initData, fetchEventTrendData, fetchEventTrendDataType} from '@/utils/dashboard/fetchEventTrendData'
+import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/dashboard/fetchEventTrendData'
 
 const EventTrendGraph = () => {
-  const {dateTimeRange} = useDashBoardContext()
+  const { dateTimeRange } = useDashBoardContext()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
   const [error, setError] = useState<string | null>(null)
@@ -81,24 +81,24 @@ const EventTrendGraph = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if(isLoading) return
+      if (isLoading) return
       setIsLoading(true)
-      try{
-        if(dateTimeRange?.start && dateTimeRange?.end){
-          const result = await fetchEventTrendData({start: dateTimeRange?.start, end: dateTimeRange?.end})
-          if(result.success){
+      try {
+        if (dateTimeRange?.start && dateTimeRange?.end) {
+          const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
+          if (result.success) {
             setChartData(result.content)
-          }else{
+          } else {
             throw new Error("Error fetching event trend data")
           }
         }
-      }catch(error){
+      } catch (error) {
         console.log(error)
         setError("無法獲取趨勢數據 😢。請稍後再試。")
         setTimeout(() => {
           setError(null)
         }, 3000)
-      }finally{
+      } finally {
         setIsLoading(false)
       }
     }
@@ -107,9 +107,9 @@ const EventTrendGraph = () => {
 
 
   return (
-    <div className='h-full w-full relative'>
-      {error && <ErrorDisplayer errorMessage={error} setError={setError} /> }
-      {isLoading ? <Loading /> : <ReactECharts option={option} style={{ height: '100%', width: '100%' }} />}
+    <div className='h-full w-full '>
+      {isLoading ? <Loading /> : <ReactECharts option={option} />}
+      {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
     </div>
   )
 }

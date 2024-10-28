@@ -15,10 +15,10 @@ import { initData, EventTableDataType, fetchEventTableData } from '@/utils/dashb
 
 
 const EventTable = () => {
-  const {dateTimeRange} = useDashBoardContext()
+  const { dateTimeRange } = useDashBoardContext()
   const [useSampleData, setUseSampleData] = useState<boolean>(false); // 新增變數來決定資料來源(測試用)
   const [eventTableData, setEventTableData] = useState<EventTableDataType[]>([
-    { id: 1, time: '2023-10-01 10:00', agent_name: 'Agent 1', rule_description: 'Description 1', rule_mitre_tactic: 'Tactic 1', rule_mitre_id: 'ID 1', rule_level: 14},
+    { id: 1, time: '2023-10-01 10:00', agent_name: 'Agent 1', rule_description: 'Description 1', rule_mitre_tactic: 'Tactic 1', rule_mitre_id: 'ID 1', rule_level: 14 },
     { id: 2, time: '2023-10-01 10:05', agent_name: 'Agent 2', rule_description: 'Description 2', rule_mitre_tactic: 'Tactic 2', rule_mitre_id: 'ID 2', rule_level: 2 },
     { id: 3, time: '2023-10-01 10:10', agent_name: 'Agent 3', rule_description: 'Description 3', rule_mitre_tactic: 'Tactic 3', rule_mitre_id: 'ID 3', rule_level: 1 },
     { id: 4, time: '2023-10-01 10:15', agent_name: 'Agent 4', rule_description: 'Description 4', rule_mitre_tactic: 'Tactic 4', rule_mitre_id: 'ID 4', rule_level: 3 },
@@ -75,7 +75,7 @@ const EventTable = () => {
   };
 
   return (
-    <div className="h-full w-full relative bg-white flex flex-col gap-2">
+    <div className="h-full   bg-white flex flex-col gap-2 ">
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
       {isLoading ? (
         <Loading />
@@ -109,33 +109,33 @@ const EventTable = () => {
               </tbody>
             </table>
           </div>
-          
+
           <div className="flex justify-between mt-auto text-gray-500">
             <div className="flex items-center">
               <span>每頁顯示5列</span>
             </div>
             <div className="flex items-center">
-              <button 
-                className="hover-underline-animation mr-6" 
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))} 
+              <button
+                className="hover-underline-animation mr-6"
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
               >
                 &lt; 上一頁
               </button>
               <div className="flex space-x-2">
                 {Array.from({ length: totalPages }, (_, i) => (
-                  <button 
-                    key={i + 1} 
-                    onClick={() => setCurrentPage(i + 1)} 
+                  <button
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
                     className={currentPage === i + 1 ? 'font-bold hover-underline-animation' : 'hover-underline-animation'}
                   >
                     {i + 1}
                   </button>
                 ))}
               </div>
-              <button 
-                className="hover-underline-animation ml-6" 
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))} 
+              <button
+                className="hover-underline-animation ml-6"
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
               >
                 下一頁 &gt;
