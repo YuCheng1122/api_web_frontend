@@ -24,9 +24,6 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             try {
                 const response = await getTotalAgentsAndLicense();
                 setRemainingAgents(response.total_license - response.total_agents); // 設置 remainingAgents 為 response.total_agents
-                console.log('Agents1:', remainingAgents);
-                console.log('Agents2:', response.total_agents);
-                console.log('Agents3:', response.total_license);
             } catch (error: any) {
                 console.error('Error during fetching total agents and license:', error);
                 const message = error.response?.data?.message || 'Failed to fetch total agents and license';
@@ -34,7 +31,19 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             }
         };
 
-        fetchTotalAgents(); // 調用函數以獲取代理數量
+        fetchTotalAgents(); // 
+        // 每次進入頁面時顯示彈窗提示，但只需確認一次
+        const hasConfirmedAlert = sessionStorage.getItem('hasConfirmedAlert');
+        if (!hasConfirmedAlert) {
+            alert(`1. 請依照作業系統點選所需要的版本\n2. 點選作業系統後，請在方框中填寫所需的數量\n3. 壓縮檔附有安裝說明`);
+            sessionStorage.setItem('hasConfirmedAlert', 'true'); // 設置標記，表示已確認過提示
+        }
+
+        // 這裡可以根據需要的條件來重置標記
+        const resetAlertCondition = true; // 這裡替換為你的條件
+        if (resetAlertCondition) {
+            sessionStorage.removeItem('hasConfirmedAlert'); // 移除標記以便下次顯示提示
+        }
     }, []); // 只在組件掛載時執行一次
 
     // 計算所有選中的輸入框數量總和並生成 Agent 名稱
@@ -43,16 +52,16 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
 
         // 根據核取方塊是否選中來計算對應數量的總和
         const totalAgents = (linux.rpm_amd64 ? quantities.rpm_amd64 : 0) +
-                            (linux.rpm_aarch64 ? quantities.rpm_aarch64 : 0) +
-                            (linux.deb_amd64 ? quantities.deb_amd64 : 0) +
-                            (linux.deb_aarch64 ? quantities.deb_aarch64 : 0) +
-                            (windows.msi ? quantities.msi : 0) +
-                            (macos.intel ? quantities.intel : 0) +
-                            (macos.apple_silicon ? quantities.apple_silicon : 0);
+            (linux.rpm_aarch64 ? quantities.rpm_aarch64 : 0) +
+            (linux.deb_amd64 ? quantities.deb_amd64 : 0) +
+            (linux.deb_aarch64 ? quantities.deb_aarch64 : 0) +
+            (windows.msi ? quantities.msi : 0) +
+            (macos.intel ? quantities.intel : 0) +
+            (macos.apple_silicon ? quantities.apple_silicon : 0);
 
         // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
-            const agents = Array.from({ length: totalAgents }, (_, index) => 
+            const agents = Array.from({ length: totalAgents }, (_, index) =>
                 `${username}-${String(index + 1).padStart(3, '0')}`
             );
             setAgentNames(agents);
@@ -142,16 +151,16 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                 <h2 className="text-lg font-bold mb-4">軟體下載</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
                     {/* 顯示剩下代理數量 */}
-                    <div>
+                    <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
                         <h3>剩下的下載代理數量: {remainingAgents}</h3> {/* 顯示剩下的 agents 數 */}
                     </div>
                     {/* Linux 部分 */}
                     <div className="border p-4 rounded-lg">
-                    <h3 className="text-md font-bold mb-2 flex items-center">
-                        {/* 使用 Image 替換原來的表情符號 */}
-                        <Image src="/linux-logo.png" alt="Linux" width={20} height={20} className="mr-2" />
-                        Linux
-                    </h3>
+                        <h3 className="text-md font-bold mb-2 flex items-center">
+                            {/* 使用 Image 替換原來的表情符號 */}
+                            <Image src="/linux-logo.png" alt="Linux" width={20} height={20} className="mr-2" />
+                            Linux
+                        </h3>
                         <div className="flex flex-wrap">
                             <div className="flex items-center space-x-4 mb-4 w-1/2">
                                 <label className="flex items-center">
