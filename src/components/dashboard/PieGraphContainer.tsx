@@ -52,7 +52,7 @@ const PieGraphContainer = () => {
 
 
   return (
-    <div className='flex flex-wrap gap-2 justify-center'>
+    <div className='flex flex-wrap gap-5 justify-center'>
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
       <PieGraph title="Top_agents" data={chartData.top_agents} />
       <PieGraph title="Top_event_counts" data={chartData.top_mitre} />
