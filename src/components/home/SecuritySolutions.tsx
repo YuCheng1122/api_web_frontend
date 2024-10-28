@@ -4,36 +4,31 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const solutions = [
   {
-    title: 'NDR',
-    description: 'ATHS NDR 就像是網路中的警察，24 小時不停巡邏，查看網路上有沒有異常的活動。它能即時發現和阻止不尋常的網路行為，保護企業免受各種網路攻擊。',
+    title: 'ThreatAvocado XDR',
+    description: 'ThreatAvocado XDR 是一款由 AI 驅動的高效訂閱式安全服務，免除企業硬體採購和建置需求。其虛擬資安官 SenseX 強化了威脅偵測、即時回應和全面管理，提供自動化的防禦和合規支持，保障企業數位安全。',
     features: [
-      '強大防禦',
-      '無縫整合',
-      '即時監控',
-      '進階分析',
-      '自動化回應',
+      '無須額外硬體成本',
+      '威脅情報即時更新',
+      '自動化防禦與合規支持',
     ],
   },
   {
-    title: 'EDR',
-    description: 'EDR（終端檢測與回應）是一種先進的資安解決方案，專注於監控和保護企業的終端設備。它能夠檢測、分析和回應終端上的安全威脅。',
+    title: '技術與操作特點',
+    description: 'ThreatAvocado XDR 支援 Linux、macOS 和 Windows 平台，並提供即時威脅情報更新，幫助企業減少額外的硬體成本負擔。人性化操作設計讓系統簡單易用，並配有 AI 智能小幫手解答資安問題，增強管理效率。',
     features: [
-      '終端監控',
-      '即時威脅檢測',
-      '自動化回應',
-      '深度分析',
-      '集中管理',
+      '跨平台支援',
+      '人性化介面設計',
+      '一鍵安裝簡化流程',
+      'AI智能小幫手',
     ],
   },
   {
-    title: 'XDR',
-    description: 'XDR（擴展檢測與回應）是一種整合性的安全解決方案，結合了EDR、NDR等多種技術，提供更全面的威脅檢測和回應能力。',
+    title: '優惠方案',
+    description: '提供 20 家企業一個月的免費 PoC 試用期，隨後享有一年的 XDR 服務特惠價 20,000 元。透過掃描 QR Code，可即刻享受相關優惠，確保智能防禦隨時在線，威脅無所遁形。',
     features: [
-      '跨平台整合',
-      '高級威脅檢測',
-      '自動化調查',
-      '統一管理介面',
-      '智能分析報告',
+      '免費 PoC 試用',
+      '優惠價 XDR 服務',
+      'QR Code 優惠取得', ,
     ],
   },
 ];
@@ -92,7 +87,7 @@ const SecuritySolutions: React.FC = () => {
             <p className="text-gray-700 text-base mb-4">{solution.description}</p>
           </div>
 
-          <div className="px-6 py-4 w-3/5 md:w-1/3">
+          <div className="px-6 py-4 w-3/5  ">
             {/* h3 的彈出效果 */}
             <h3 className="font-semibold text-lg mb-2">主要特點：</h3>
             <ul className="list-disc list-inside">
@@ -101,6 +96,12 @@ const SecuritySolutions: React.FC = () => {
               ))}
             </ul>
           </div>
+          {/* 圖片區塊 */}
+          {index === 2 && (
+            <div className="md:w-1-5  p-5">
+              <img src="/QRCode.png" alt="優惠方案圖示" className="h-20 w-20 object-contain" />
+            </div>
+          )}
 
         </div>
       ))}
