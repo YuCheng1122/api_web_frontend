@@ -41,9 +41,9 @@ const DashboardPage = () => {
 
 
       {/* event */}
-      {/* <div className="p-2 bg-gray-100 rounded-lg ">
+      <div className=" bg-gray-100 rounded-lg flex justify-center  ">
         <EventTable />
-      </div> */}
+      </div>
 
 
       {/* pie chart */}
