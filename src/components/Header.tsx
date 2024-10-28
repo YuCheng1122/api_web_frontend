@@ -25,7 +25,7 @@ const Header = () => {
             {/* 標題 */}
             <div className="text-3xl font-bold text-black">
               <Link href={'/'} className='hover-underline-animation'>
-                AIXSOAR
+                Avocado
               </Link>
             </div>
 

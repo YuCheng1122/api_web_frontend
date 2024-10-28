@@ -7,7 +7,7 @@ export default function Home() {
     <div className="flex flex-col min-h-screen">
       <div className="relative w-full h-[90vh]">
         <Image
-          src="/HomePageVisual.webp"
+          src="/HomePageVisualAvocado.webp"
           alt="AIXSOAR Homepage Visual"
           fill
           style={{ objectFit: 'cover' }}
@@ -15,7 +15,7 @@ export default function Home() {
         />
       </div>
       <div className="container mx-auto px-4 py-8 flex-grow">
-        <h1 className="text-3xl font-bold mb-6 text-center">AIXSOAR Solution</h1>
+        <h1 className="text-3xl font-bold mb-6 text-center">Threatcado XDR</h1>
         <SecuritySolutions />
       </div>
     </div>
