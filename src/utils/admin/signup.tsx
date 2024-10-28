@@ -12,7 +12,7 @@ export const signup = async (formData: {
   email: string;
   company_name: string;
 }): Promise<SignupResponse> => {
-  const api_url = 'https://flask.aixsoar.com/api/auth/signup';
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`
 
   try {
     const response = await axios.post(api_url, formData, {
