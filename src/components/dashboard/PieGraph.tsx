@@ -41,7 +41,7 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
 
   return (
 
-    <div className="h-full w-5/12 min-w-80 flex flex-col p-2 bg-white rounded-lg shadow-lg min-h-80">
+    <div className="h-full mx-2  min-w-80 flex flex-col p-2 bg-white rounded-lg shadow-lg min-h-80">
       <div className="text-sm font-bold">
         {title}
       </div>

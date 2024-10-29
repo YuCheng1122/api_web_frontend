@@ -50,7 +50,7 @@ const NetworkConnection = () => {
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
       {
         isLoading ? <Loading /> :
-          <div className=" flex flex-col h-full">
+          <div className=" flex flex-col h-full mr-2 bg-white rounded-lg shadow-lg p-2">
             <div className="font-bold text-sm">事件總數 (等級 8~14)</div>
             <div className="flex-grow flex flex-col items-center justify-center text-gray-700">
               <div className="font-bold text-[65px]">{connectionCount}</div>

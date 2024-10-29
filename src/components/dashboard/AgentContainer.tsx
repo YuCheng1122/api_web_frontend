@@ -44,7 +44,7 @@ const AgentContainer = () => {
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
       {
         isLoading ? <Loading /> :
-          <div className="h-full w-full flex flex-wrap gap-4">
+          <div className="h-full w-full flex flex-wrap gap-4 justify-center">
             {
               agentData.map((agent: any) => (
                 <Agent key={agent.id} agent={agent} />
