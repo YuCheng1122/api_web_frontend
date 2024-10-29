@@ -52,12 +52,23 @@ const PieGraphContainer = () => {
 
 
   return (
-    <div className='flex flex-wrap gap-5 justify-center'>
+    <div className='flex flex-wrap justify-center space-y-2  '>
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-      <PieGraph title="Top_agents" data={chartData.top_agents} />
-      <PieGraph title="Top_event_counts" data={chartData.top_mitre} />
-      <PieGraph title="Top_events_counts_by_agents" data={chartData.top_event_counts} />
-      <PieGraph title="Top_events" data={chartData.top_events} />
+      <div className=' md:w-1/2 '>
+
+        <PieGraph title="Top_agents" data={chartData.top_agents} />
+      </div>
+      <div className=' md:w-1/2'>
+        <PieGraph title="Top_event_counts" data={chartData.top_mitre} />
+      </div>
+      <div className=' md:w-1/2'>
+
+        <PieGraph title="Top_events_counts_by_agents" data={chartData.top_event_counts} />
+      </div>
+      <div className=' md:w-1/2'>
+        <PieGraph title="Top_events" data={chartData.top_events} />
+
+      </div>
     </div>
   )
 }

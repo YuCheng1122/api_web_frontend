@@ -75,7 +75,7 @@ const EventTable = () => {
   };
 
   return (
-    <div className="h-full w-5/6   bg-white flex flex-col gap-2 p-2 rounded-xl ">
+    <div className="h-full w-full overflow-x-scroll   bg-white flex flex-col gap-2 p-2 rounded-xl ">
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
       {isLoading ? (
         <Loading />

@@ -5,7 +5,7 @@ import Link from "next/link"; // 新增這行
 const Agent = ({ agent }: { agent: AgentDataType }) => {
   return (
     <>
-      <div className="flex flex-col items-center justify-around bg-white rounded-lg shadow-lg min-w-32 sm:max-w-32 p-2">
+      <div className="flex flex-col items-center justify-around bg-white rounded-lg shadow-lg min-w-48 sm:max-w-56 p-2">
         <div className="font-bold">{agent.agent_name}</div>
         <Link href="/agent">
           <Image
