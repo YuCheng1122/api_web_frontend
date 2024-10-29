@@ -53,10 +53,7 @@ const DateTimeFilter = () => {
       setIsLoading(false);
     }
   };
-  const handleNowClick = () => {
-    const now = new Date();
-    setEndDate(formatToLocalDateTime(now));
-  };
+
   // 輔助函數：將 UTC 日期轉換為本地 datetime-local 格式
   const formatToLocalDateTime = (date: Date) => {
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
@@ -98,13 +95,7 @@ const DateTimeFilter = () => {
         </div>
 
       </div>
-      <button
-        type="button"
-        onClick={handleNowClick}
-        className="mt-5 min-w-20 max-h-10 ml-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-      >
-        Now
-      </button>
+
 
       <button
         onClick={handleSubmit}
