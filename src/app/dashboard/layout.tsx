@@ -2,17 +2,22 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import {DashboardProvider} from "@/contexts/DashBoardContext";
+import { DashboardProvider } from "@/contexts/DashBoardContext";
 import { useAuthContext } from "@/contexts/AuthContext";
 
 
-const DashboardLayout: React.FC<{children: React.ReactNode}> = ({children}) => {
+const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const router = useRouter()
-  const {isLogin} = useAuthContext()
+  const { isLogin } = useAuthContext()
 
   useEffect(() => {
-    if (!isLogin) {
-      router.push('/admin/login'); 
+    console.log('isLogin', isLogin);
+
+    if (isLogin) {
+      router.push('/dashboard');
+    }
+    else {
+      router.push('/admin/login');
     }
   }, [isLogin, router]);
 

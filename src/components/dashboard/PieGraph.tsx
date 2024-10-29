@@ -4,7 +4,7 @@
 import ReactECharts from "echarts-for-react";
 
 // utils
-import {fetchPieDataType} from '@/utils/dashboard/fetchPieGaphData1'
+import { fetchPieDataType } from '@/utils/dashboard/fetchPieGaphData1'
 
 
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {
@@ -36,17 +36,17 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
         }
       }
     ]
-  }; 
+  };
 
 
   return (
-    
-    <div className="h-full w-full relative flex flex-col p-2 bg-white rounded-lg shadow-lg">
+
+    <div className="h-full w-5/12 min-w-80 flex flex-col p-2 bg-white rounded-lg shadow-lg min-h-80">
       <div className="text-sm font-bold">
         {title}
       </div>
-      <div className="flex-grow">
-        <ReactECharts option={option} style={{width: "100%", height: "100%"}} />        
+      <div className="flex-grow mt-10">
+        <ReactECharts option={option} className="h-full w-full" />
       </div>
     </div>
   )
