@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { FaPaperPlane } from "react-icons/fa";
 import { sendStreamingMessage } from "@/services/chatService";
-import {CustomChatProps, promptTemplate} from "@/components/chatbot/prompts/ChatPrompt";
+import { CustomChatProps, promptTemplate } from "@/components/chatbot/prompts/ChatPrompt";
 
 interface Message {
     text: string;
@@ -15,12 +15,12 @@ interface CustomChatComponentProps {
 }
 
 const CustomChat: React.FC<CustomChatComponentProps> = ({
-                                                            dashboardInfo,
-                                                            selectedQuestion,
-                                                            setSelectedQuestion,
-                                                        }) => {
+    dashboardInfo,
+    selectedQuestion,
+    setSelectedQuestion,
+}) => {
     const [messages, setMessages] = useState<Message[]>([
-        { text: "您好！👋 我是 AIXSOAR 助手。今天我能為您提供什麼幫助？", isUser: false },
+        { text: "您好！👋 我是 AVOCADO 助手。今天我能為您提供什麼幫助？", isUser: false },
     ]);
     const [inputMessage, setInputMessage] = useState("");
     const [isLoading, setIsLoading] = useState(false);
@@ -56,8 +56,8 @@ const CustomChat: React.FC<CustomChatComponentProps> = ({
             } else if (part.startsWith("[重點]")) {
                 return (
                     <span key={index} className="font-semibold text-blue-600">
-            {part.replace(/\[重點\](.*?)\[\/重點\]/, "$1")}
-          </span>
+                        {part.replace(/\[重點\](.*?)\[\/重點\]/, "$1")}
+                    </span>
                 );
             } else if (part.startsWith("[列表]")) {
                 const items = part
@@ -77,8 +77,8 @@ const CustomChat: React.FC<CustomChatComponentProps> = ({
                         key={index}
                         className="bg-gray-100 p-3 rounded my-3 overflow-x-auto"
                     >
-            <code>{part.replace(/\[代碼\]([\s\S]*?)\[\/代碼\]/, "$1")}</code>
-          </pre>
+                        <code>{part.replace(/\[代碼\]([\s\S]*?)\[\/代碼\]/, "$1")}</code>
+                    </pre>
                 );
             } else {
                 return part.split("\n").map((line, i) => (
@@ -131,9 +131,8 @@ const CustomChat: React.FC<CustomChatComponentProps> = ({
                         className={`${message.isUser ? "text-right" : "text-left"}`}
                     >
                         <div
-                            className={`inline-block p-3 rounded-lg ${
-                                message.isUser ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
-                            }`}
+                            className={`inline-block p-3 rounded-lg ${message.isUser ? "bg-blue-500 text-white" : "bg-gray-200 text-black"
+                                }`}
                         >
                             {message.isUser ? <p>{message.text}</p> : formatMessage(message.text)}
                         </div>
@@ -161,9 +160,8 @@ const CustomChat: React.FC<CustomChatComponentProps> = ({
                     />
                     <button
                         onClick={() => handleSendMessage(inputMessage)}
-                        className={`bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-                            isLoading ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className={`bg-blue-500 text-white p-2 rounded-r-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 ${isLoading ? "opacity-50 cursor-not-allowed" : ""
+                            }`}
                         disabled={isLoading}
                     >
                         <FaPaperPlane />
