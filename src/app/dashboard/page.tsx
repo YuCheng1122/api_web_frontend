@@ -11,7 +11,7 @@ import PieGraphContainer from "@/components/dashboard/PieGraphContainer"
 const DashboardPage = () => {
 
   return (
-    <div className="h-full  p-2 gap-2 w-screen ">
+    <div className="h-full   w-screen ">
 
       {/* datetime filter */}
       <div className="p-2 rounded-lg w-full">
@@ -19,21 +19,21 @@ const DashboardPage = () => {
       </div>
 
       {/* agent status */}
-      <div className="p-2 bg-gray-100 rounded-lg overflow-x-scroll w-full">
+      <div className="p-2 bg-gray-100 rounded-lg overflow-x-scroll w-full pl-5 ">
         <AgentContainer />
       </div>
 
 
       {/* network connection and event trend */}
-      <div className="p-2 bg-gray-100 rounded-lg flex flex-wrap justify-center space-x-2 h-3/5  ">
+      <div className="w-full bg-gray-100 rounded-lg flex flex-wrap justify-center h-2/5 mb-10 sm:mb-5 ">
 
         {/* network connection */}
-        <div className="bg-white rounded-lg shadow-lg  min-w-80  w-5/12  mb-2 ">
+        <div className="md:w-1/2 sm:w-full mb-5 min-w-96     ">
           <NetworkConnection />
         </div>
 
         {/* event trend */}
-        <div className="bg-white rounded-lg shadow-lg min-w-80 w-5/12  items-center ">
+        <div className="bg-white rounded-lg mb-5 shadow-lg md:w-1/2  sm:w-full min-w-96   items-center   ">
           <EventTrendGraph />
         </div>
 
