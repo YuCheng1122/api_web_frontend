@@ -11,46 +11,46 @@ import PieGraphContainer from "@/components/dashboard/PieGraphContainer"
 const DashboardPage = () => {
 
   return (
-    <div className="h-full grid grid-rows-[auto,1fr,3fr,3fr,6fr] p-2 gap-2">
-      
+    <div className="h-full   w-screen ">
+
       {/* datetime filter */}
-      <div className="p-2 rounded-lg">
+      <div className="p-2 rounded-lg w-full">
         <DateTimeFilter />
       </div>
-      
-      {/* agent status */}
-      <div className="p-2 bg-gray-100 rounded-lg ">
-        <AgentContainer />   
-      </div>
-      
 
-      {/* network connection and event trend */} 
-      <div className="p-2 bg-gray-100 rounded-lg grid grid-cols-10 gap-4">
-        
+      {/* agent status */}
+      <div className="p-2 bg-gray-100 rounded-lg overflow-x-scroll w-full pl-5 ">
+        <AgentContainer />
+      </div>
+
+
+      {/* network connection and event trend */}
+      <div className="w-full bg-gray-100 rounded-lg flex flex-wrap justify-center h-2/5 mb-10 sm:mb-5 ">
+
         {/* network connection */}
-        <div className="bg-white rounded-lg shadow-lg col-span-4 p-2 flex flex-col h-full w-full relative">
-          <NetworkConnection />  
+        <div className="md:w-1/2 sm:w-full mb-5 min-w-96     ">
+          <NetworkConnection />
         </div>
 
         {/* event trend */}
-        <div className="bg-white rounded-lg shadow-lg col-span-6 p-2">
+        <div className="bg-white rounded-lg mb-5 shadow-lg md:w-1/2  sm:w-full min-w-96   items-center   ">
           <EventTrendGraph />
         </div>
-      
+
       </div>
-      
+
 
       {/* event */}
-      <div className="p-2 bg-gray-100 rounded-lg">
-          <EventTable />
+      <div className=" bg-gray-100 rounded-lg flex justify-center w-full  ">
+        <EventTable />
       </div>
-      
+
 
       {/* pie chart */}
-      <div className="p-2 bg-gray-100 rounded-lg grid grid-cols-2 grid-rows-2 gap-2">
+      <div className="p-2 bg-gray-100 rounded-lg  w-screen">
         <PieGraphContainer />
       </div>
-    
+
     </div>
   )
 }
