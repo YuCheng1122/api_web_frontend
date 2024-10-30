@@ -8,7 +8,7 @@ import { AuthProvider } from "@/contexts/AuthContext";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AIXSOAR Dashboard",
+  title: "AVOCADO Dashboard",
   description: "Advanced Threat Hunting System",
   icons: {
     icon: '/logo.webp',
