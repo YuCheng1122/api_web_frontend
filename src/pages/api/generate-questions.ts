@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Anthropic from '@anthropic-ai/sdk';
-import {generateQuestionsPrompt} from "@/components/chatbot/prompts/ChatPrompt";
+import { createQuestionGenerationPrompt } from '@/services/chat/prompts';
 
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,
@@ -10,10 +10,11 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (req.method === 'POST') {
         try {
             console.log('Received POST request to generate questions');
-            const { dashboardInfo } = req.body;
+            const { dashboardInfo, messages } = req.body;
             console.log('Dashboard Info:', JSON.stringify(dashboardInfo, null, 2));
+            console.log('Conversation History:', JSON.stringify(messages, null, 2));
 
-            const prompt = generateQuestionsPrompt(dashboardInfo);
+            const prompt = createQuestionGenerationPrompt(dashboardInfo, messages);
 
             console.log('Sending request to Anthropic API');
             const response = await anthropic.messages.create({
@@ -30,17 +31,19 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
             const generatedText = generatedContent[0].text;
             console.log('Generated Text:', generatedText);
 
-            const formattedQuestions = generatedText
-                .split(/問題(?:：|\d+：)/)
-                .slice(1)
-                .map((block: string) => {
-                    const lines = block.split('\n').filter((line: string) => line.trim() !== '');
-                    const question = lines.find((line: string) => !line.startsWith('背景：') && !line.startsWith('可能的調查方向：'))?.trim() || '';
-                    const background = lines.find((line: string) => line.startsWith('背景：'))?.replace('背景：', '').trim() || '';
-                    const investigation = lines.find((line: string) => line.startsWith('可能的調查方向：'))?.replace('可能的調查方向：', '').trim() || '';
+            // 解析XML格式的問題
+            const questions = generatedText.match(/<question>[\s\S]*?<\/question>/g) || [];
+            const formattedQuestions = questions.map(questionBlock => {
+                const content = questionBlock.match(/<content>([\s\S]*?)<\/content>/)?.[1]?.trim() || '';
+                const background = questionBlock.match(/<background>([\s\S]*?)<\/background>/)?.[1]?.trim() || '';
+                const investigation = questionBlock.match(/<investigation>([\s\S]*?)<\/investigation>/)?.[1]?.trim() || '';
 
-                    return { question, background, investigation };
-                });
+                return {
+                    question: content,
+                    background,
+                    investigation
+                };
+            });
 
             console.log('Parsed questions:', JSON.stringify(formattedQuestions, null, 2));
 

@@ -53,6 +53,7 @@ const DateTimeFilter = () => {
       setIsLoading(false);
     }
   };
+
   // 輔助函數：將 UTC 日期轉換為本地 datetime-local 格式
   const formatToLocalDateTime = (date: Date) => {
     return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
@@ -61,42 +62,48 @@ const DateTimeFilter = () => {
   };
 
   return (
-    <div className="grid grid-cols-3 gap-4 p-2">
-      <div className='w-full'>
+    <div className="flex flex-wrap  w-full md:gap-12 gap-5 justify-center ">
+      <div className=''>
         <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">開始時間</label>
         <input
           name='start-date'
-          className='w-full p-2 rounded-lg shadow-lg border border-gray-300'
+          className='p-2 rounded-lg shadow-lg border border-gray-300 md:min-w-96 w-full'
           type='datetime-local'
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
       </div>
 
-      <div className='w-full'>
+      <div className=''>
         <label htmlFor="end-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">結束時間</label>
+
         <div className="flex items-center">
           <input
             name='end-date'
-            className='w-full p-2 rounded-lg shadow-lg border border-gray-300'
+            className='w-full p-2 rounded-lg shadow-lg border border-gray-300 sm:min-w-48 md:min-w-96 '
             type='datetime-local'
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}
           />
-          <button
-            type="button"
-            onClick={handleNowClick}
-            className="ml-2 px-4 py-2 bg-gray-500 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
-          >
-            Now
-          </button>
         </div>
+
       </div>
+      <div className=' h-full flex items-center justify-center'>
+
+        <button
+          type="button"
+          onClick={handleNowClick}
+          className="ml-2 px-4 py-2 bg-gray-500 max-h-12 mt-5 text-white rounded-md hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-opacity-50"
+        >
+          Now
+        </button>
+      </div>
+
 
       <button
         onClick={handleSubmit}
         disabled={isLoading}
-        className={`px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`min-w-48 md:min-w-[600px] px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 ${isLoading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {isLoading ? 'Loading...' : '取得數據'}
       </button>
