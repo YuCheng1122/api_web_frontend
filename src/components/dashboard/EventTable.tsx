@@ -88,7 +88,7 @@ const EventTable = () => {
               <thead>
                 <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
                   <th className="w-[15%] p-2">時間</th>
-                  <th className="w-[15%] p-2">代理名字</th>
+                  <th className="w-[15%] p-2">代理名稱</th>
                   <th className="w-[40%] p-2">規則描述</th>
                   <th className="w-[10%] p-2">Rule Mitre Tactic</th>
                   <th className="w-[10%] p-2">Rule Mitre ID</th>

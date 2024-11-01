@@ -16,21 +16,24 @@ const mockAgentsData = [
     ip: "192.168.0.1",
     os: "Linux",
     status_code: 2,
-    last_keep_alive: "2024-09-01 12:30:45"
+    last_keep_alive: "2024-09-01 12:30:45",
+    registration_time: "2024-09-01 12:00:00"
   },
   {
     agent_name: "Agent 2",
     ip: "192.168.0.2",
     os: "Windows",
     status_code: 0,
-    last_keep_alive: "2024-09-01 12:25:30"
+    last_keep_alive: "2024-09-01 12:25:30",
+    registration_time: "2024-09-01 12:00:00"
   },
   {
     agent_name: "Agent 3",
     ip: "192.168.0.3",
     os: "macOS",
     status_code: 1,
-    last_keep_alive: "2024-09-01 12:20:15"
+    last_keep_alive: "2024-09-01 12:20:15",
+    registration_time: "2024-09-01 12:00:00"
   }
 ];
 
