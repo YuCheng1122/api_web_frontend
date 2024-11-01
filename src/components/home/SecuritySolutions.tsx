@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const solutions = [
   {
-    title: 'NDR',
-    description: 'ATHS NDR 就像是網路中的警察，24 小時不停巡邏，查看網路上有沒有異常的活動。它能即時發現和阻止不尋常的網路行為，保護企業免受各種網路攻擊。',
+    title: '一站式註冊、申請、安裝與開通',
+    description: 'ThreatCado XDR & SenseX 提供完整的一站式服務，從申請到安裝，無縫整合，快速啟動。簡化流程，讓企業迅速啟用資安防護，縮短部署時間並降低IT負擔。',
     features: [
       '無須額外硬體成本',
       '威脅情報即時更新',
@@ -13,8 +13,8 @@ const solutions = [
     ],
   },
   {
-    title: 'EDR',
-    description: 'EDR（終端檢測與回應）是一種先進的資安解決方案，專注於監控和保護企業的終端設備。它能夠檢測、分析和回應終端上的安全威脅。',
+    title: '串接EDR與NDR事件，強化場域防護',
+    description: 'ThreatCado XDR 支援多層次的資安防護，將場域內EDR (Endpoint Detection and Response) 和NDR (Network Detection and Response) 事件即時串接，實現完整的端到端威脅監控與分析。以網路與終端數據互補，提供更精準的威脅檢測和回應。',
     features: [
       '跨平台支援',
       '人性化介面設計',
@@ -23,8 +23,8 @@ const solutions = [
     ],
   },
   {
-    title: 'XDR',
-    description: 'XDR（擴展檢測與回應）是一種整合性的安全解決方案，結合了EDR、NDR等多種技術，提供更全面的威脅檢測和回應能力。',
+    title: '以 SenseX 為核心 AI 威脅獵捕與場域風險評估',
+    description: 'SenseX 作為系統的智慧核心，運用AI語言模型進行威脅獵捕和場域風險評估。SenseX的AI能力能自動檢測潛在威脅，透過學習不斷改進檢測與分析能力，確保企業免受惡意攻擊。此外，風險評估功能能夠根據場域特性提供動態安全建議，有效降低風險，保障營運安全。',
     features: [
       '免費 PoC 試用',
       '優惠價 XDR 服務',
@@ -87,7 +87,7 @@ const SecuritySolutions: React.FC = () => {
             <p className="text-gray-700 text-base mb-4">{solution.description}</p>
           </div>
 
-          <div className="px-6 py-4 w-1/3">
+          <div className="px-6 py-4 w-2/5  ">
             {/* h3 的彈出效果 */}
             <h3 className="font-semibold text-lg mb-2">主要特點：</h3>
             <ul className="list-disc list-inside">
@@ -95,7 +95,16 @@ const SecuritySolutions: React.FC = () => {
                 <li key={fIndex} className="text-gray-600">{feature}</li>
               ))}
             </ul>
+            {/* 圖片區塊 */}
+            {index === 2 && (
+              <div className="md:w-1-5  p-5">
+                <img src="/QRCode.png" alt="優惠方案圖示" className="h-20 w-20 object-contain" />
+              </div>
+            )}
           </div>
+
+
+
         </div>
       ))}
     </div>
