@@ -18,10 +18,7 @@ export default function Home() {
           priority
         />
       </div>
-      <div className="container mx-auto px-4 py-8 flex-grow">
-        <h1 className="text-3xl font-bold mb-6 text-center">AIXSOAR Solution</h1>
-        <SecuritySolutions />
-      </div>
+
     </div>
   );
 }

@@ -4,6 +4,15 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useAuthContext } from '@/contexts/AuthContext'
 import { useEffect } from 'react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
+import { drop } from 'lodash'
 
 const Header = () => {
   const { isLogin, username, updateLoginState, isadmin } = useAuthContext()
@@ -19,8 +28,8 @@ const Header = () => {
 
   return (
     <header className="bg-white w-full">
-      <div className="mx-auto px-4 py-4">
-        <div className='flex items-center justify-between'>
+      <div className="p-4 ">
+        <div className='flex items-center justify-between '>
           {/* 左側：標題和導航按鈕 */}
           <div className='flex items-center space-x-4'>
             {/* 標題 */}
@@ -141,17 +150,48 @@ const Header = () => {
                 className='p-[1px]'
               />
               {isLogin && username ? (
-                <div className='text-xl font-semibold cursor-pointer hover-underline-animation' title='點擊登出' onClick={logout}>
-                  {username}
-                </div>
+                <DropdownMenu>
+                  <DropdownMenuTrigger>
+                    <div className='flex items-center space-x-2'>
+                      <div className='text-xl font-semibold cursor-pointer hover-underline-animation ' title='點擊登出' >
+                        {username}
+                      </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        className="h-6 w-6"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth={2}
+                          d="M19 9l-7 7-7-7"
+                        />
+                      </svg>
+                    </div>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent>
+                    <DropdownMenuLabel>帳戶選單</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem>
+                      <div className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]' onClick={logout}>登出</div>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+
               ) : (
-                <Link href={'/admin/login'} className='text-xl font-semibold text-black hover:text-blue-800'>
+                <Link href={'/admin/login'} className='text-xl font-semibold text-black hover:text-blue-800 '>
                   登入
                 </Link>
               )}
             </div>
+
+
           </div>
         </div>
+      </div>
     </header>
   )
 }
