@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { generateScripts } from './Script'; // 根據實際路徑調整
 import { getTotalAgentsAndLicense } from '../../../utils/admin/TotalLicenseAgent';
+import { fetchNextAgentName } from '../../../utils/admin/fetchCountingAgent'; // 導入 fetchNextAgentName
 
 // context
 import { useAuthContext } from '@/contexts/AuthContext'
@@ -11,10 +12,11 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         linux: { rpm_amd64: false, rpm_aarch64: false, deb_amd64: false, deb_aarch64: false },
         windows: { msi: false },
         macos: { intel: false, apple_silicon: false },
-        quantities: { rpm_amd64: 0, rpm_aarch64: 0, deb_amd64: 0, deb_aarch64: 0, msi: 0, intel: 0, apple_silicon: 0 },
+        quantities: { rpm_amd64: 1, rpm_aarch64: 1, deb_amd64: 1, deb_aarch64: 1, msi: 1, intel: 1, apple_silicon: 1 },
     });
 
     const [agentNames, setAgentNames] = useState<string[]>([]);
+    const [nextAgentName, setNextAgentName] = useState<string | null>(null); // 新增狀態變量
     const { isLogin, username, updateLoginState } = useAuthContext();
     const [remainingAgents, setRemainingAgents] = useState<number>(0); // 初始狀態設為 0
     const pdfUrl = '/Wazuh_agent安裝說明.pdf'; // 使用相對 URL
@@ -31,20 +33,19 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             }
         };
 
-        fetchTotalAgents(); // 
-        // 每次進入頁面時顯示彈窗提示，但只需確認一次
-        const hasConfirmedAlert = sessionStorage.getItem('hasConfirmedAlert');
-        if (!hasConfirmedAlert) {
-            alert(`1. 請依照作業系統點選所需要的版本\n2. 點選作業系統後，請在方框中填寫所需的數量\n3. 壓縮檔附有安裝說明`);
-            sessionStorage.setItem('hasConfirmedAlert', 'true'); // 設置標記，表示已確認過提示
-        }
-
-        // 這裡可以根據需要的條件來重置標記
-        const resetAlertCondition = true; // 這裡替換為你的條件
-        if (resetAlertCondition) {
-            sessionStorage.removeItem('hasConfirmedAlert'); // 移除標記以便下次顯示提示
-        }
+        fetchTotalAgents(); // 調用函數以獲取代理數量
     }, []); // 只在組件掛載時執行一次
+
+    useEffect(() => {
+        const fetchAgentName = async () => {
+            const { success, next_agent_name } = await fetchNextAgentName();
+            if (success) {  // 確保成功獲取資料
+                setAgentNames((prev) => [...prev, next_agent_name]); // 將 next_agent_name 添加到 agentNames 陣列中
+                setNextAgentName(next_agent_name); // 將 next_agent_name 存儲到狀態中
+            }
+        };
+        fetchAgentName(); // 調用函數以獲取代理名稱
+    }, []);
 
     // 計算所有選中的輸入框數量總和並生成 Agent 名稱
     useEffect(() => {
@@ -77,7 +78,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         // 如果取消勾選，將數量加回 remainingAgents
         if (!isChecked) {
             setRemainingAgents(remainingAgents + newQuantities[arch]);
-            newQuantities[arch] = 0; // 將數量設為 0
+            newQuantities[arch] = 1; // 將數量設為 0
+        } else {
+            // 勾選時，remainingAgents 減少 1
+            setRemainingAgents(remainingAgents - 1);
         }
 
         // 只有在 remainingAgents 大於 0 時才允許勾選
@@ -341,11 +345,11 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             <div className="bg-white p-4 rounded-lg w-full w-[54vw] max-w-7xl border border-gray-300">
                 <h3 className="text-lg font-bold mb-4">代理名稱：</h3>
                 <ul className="text-sm grid grid-cols-4 gap-4">
-                    {agentNames.map((name, index) => (
-                        <li key={index} className="mb-2">
-                            {name}
+                    {nextAgentName && ( // 只顯示 next_agent_name
+                        <li className="mb-2">
+                            {nextAgentName}
                         </li>
-                    ))}
+                    )}
                 </ul>
             </div>
         </div>
