@@ -62,7 +62,7 @@ const DateTimeFilter = () => {
   };
 
   return (
-    <div className="flex flex-wrap  w-screen md:gap-12 gap-5 justify-center ">
+    <div className="flex flex-wrap  w-full md:gap-12 gap-5 justify-center ">
       <div className=''>
         <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">開始時間</label>
         <input

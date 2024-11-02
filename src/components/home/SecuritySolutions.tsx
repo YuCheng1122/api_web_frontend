@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from 'react';
 
 const solutions = [
   {
-    title: 'ThreatAvocado XDR',
-    description: 'ThreatAvocado XDR 是一款由 AI 驅動的高效訂閱式安全服務，免除企業硬體採購和建置需求。其虛擬資安官 SenseX 強化了威脅偵測、即時回應和全面管理，提供自動化的防禦和合規支持，保障企業數位安全。',
+    title: '一站式註冊、申請、安裝與開通',
+    description: 'ThreatCado XDR & SenseX 提供完整的一站式服務，從申請到安裝，無縫整合，快速啟動。簡化流程，讓企業迅速啟用資安防護，縮短部署時間並降低IT負擔。',
     features: [
       '無須額外硬體成本',
       '威脅情報即時更新',
@@ -13,8 +13,8 @@ const solutions = [
     ],
   },
   {
-    title: '技術與操作特點',
-    description: 'ThreatAvocado XDR 支援 Linux、macOS 和 Windows 平台，並提供即時威脅情報更新，幫助企業減少額外的硬體成本負擔。人性化操作設計讓系統簡單易用，並配有 AI 智能小幫手解答資安問題，增強管理效率。',
+    title: '串接EDR與NDR事件，強化場域防護',
+    description: 'ThreatCado XDR 支援多層次的資安防護，將場域內EDR (Endpoint Detection and Response) 和NDR (Network Detection and Response) 事件即時串接，實現完整的端到端威脅監控與分析。以網路與終端數據互補，提供更精準的威脅檢測和回應。',
     features: [
       '跨平台支援',
       '人性化介面設計',
@@ -23,8 +23,8 @@ const solutions = [
     ],
   },
   {
-    title: '優惠方案',
-    description: '提供 20 家企業一個月的免費 PoC 試用期，隨後享有一年的 XDR 服務特惠價 20,000 元。透過掃描 QR Code，可即刻享受相關優惠，確保智能防禦隨時在線，威脅無所遁形。',
+    title: '以 SenseX 為核心 AI 威脅獵捕與場域風險評估',
+    description: 'SenseX 作為系統的智慧核心，運用AI語言模型進行威脅獵捕和場域風險評估。SenseX的AI能力能自動檢測潛在威脅，透過學習不斷改進檢測與分析能力，確保企業免受惡意攻擊。此外，風險評估功能能夠根據場域特性提供動態安全建議，有效降低風險，保障營運安全。',
     features: [
       '免費 PoC 試用',
       '優惠價 XDR 服務',
@@ -87,7 +87,7 @@ const SecuritySolutions: React.FC = () => {
             <p className="text-gray-700 text-base mb-4">{solution.description}</p>
           </div>
 
-          <div className="px-6 py-4 w-3/5  ">
+          <div className="px-6 py-4 w-2/5  ">
             {/* h3 的彈出效果 */}
             <h3 className="font-semibold text-lg mb-2">主要特點：</h3>
             <ul className="list-disc list-inside">
@@ -95,13 +95,15 @@ const SecuritySolutions: React.FC = () => {
                 <li key={fIndex} className="text-gray-600">{feature}</li>
               ))}
             </ul>
+            {/* 圖片區塊 */}
+            {index === 2 && (
+              <div className="md:w-1-5  p-5">
+                <img src="/QRCode.png" alt="優惠方案圖示" className="h-20 w-20 object-contain" />
+              </div>
+            )}
           </div>
-          {/* 圖片區塊 */}
-          {index === 2 && (
-            <div className="md:w-1-5  p-5">
-              <img src="/QRCode.png" alt="優惠方案圖示" className="h-20 w-20 object-contain" />
-            </div>
-          )}
+
+
 
         </div>
       ))}
