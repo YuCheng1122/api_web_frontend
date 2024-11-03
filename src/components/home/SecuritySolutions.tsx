@@ -33,6 +33,7 @@ const solutions = [
   },
 ];
 
+
 const SecuritySolutions: React.FC = () => {
   const [visibleSections, setVisibleSections] = useState<number[]>([]);
   const sectionRefs = useRef<HTMLDivElement[]>([]);
