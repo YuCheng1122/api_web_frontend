@@ -1,7 +1,7 @@
 'use client'
 
 import Image from 'next/image'; // 確保導入 Image 組件
-import { useState } from 'react'; // 新增導入 useState
+import { useState, useEffect } from 'react'; // 新增導入 useState 和 useEffect
 import Link from 'next/link'; // 確保導入 Link 組件
 
 interface AgentDetails {
@@ -10,6 +10,7 @@ interface AgentDetails {
   os: string;
   agent_status: string;
   last_keep_alive: string;
+  registration_time: string;
 }
 
 interface AgentsDetailsTableProps {
@@ -20,6 +21,15 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
   const [currentPage, setCurrentPage] = useState(1); // 新增狀態管理當前頁碼
   const [itemsPerPage, setItemsPerPage] = useState(10); // 新增狀態管理每頁顯示的資料數量
   const totalPages = Math.ceil(agentsData.length / itemsPerPage); // 計算總頁數
+  const [showTooltip, setShowTooltip] = useState(false); // 新增狀態管理提示顯示
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setShowTooltip(true); // 設定提示顯示
+    }, 1000); // 1秒後顯示提示
+
+    return () => clearTimeout(timer); // 清除計時器
+  }, []);
 
   // 計算當前頁的資料
   const currentItems = agentsData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
@@ -61,14 +71,26 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
 
   return (
     <div className="flex-grow p-2 overflow-x-auto flex flex-col">
+      {showTooltip && (
+        <div className="absolute bottom-4 left-4 bg-gray-700 text-white p-2 rounded flex items-center">
+          <span>所有代理名稱皆可點擊以查看更多資訊</span>
+          <button 
+            className="ml-2 text-white hover:underline" 
+            onClick={() => setShowTooltip(false)} // 關閉提示
+          >
+            ×
+          </button>
+        </div>
+      )}
       <table className="w-full">
         <thead>
           <tr className="text-left text-gray-700 font-bold border-b border-gray-300">
-            <th className="w-[15%] p-2">代理名稱</th>
-            <th className="w-[15%] p-2">IP 地址</th>
-            <th className="w-[20%] p-2">作業系統</th>
-            <th className="w-[15%] p-2">狀態</th>
-            <th className="w-[25%] p-2">最後保持活躍</th>
+            <th className="w-[10%] p-2">代理名稱</th>
+            <th className="w-[10%] p-2">IP 地址</th>
+            <th className="w-[12%] p-2">作業系統</th>
+            <th className="w-[8%] p-2">狀態</th>
+            <th className="w-[14%] p-2">最後保持活躍</th>
+            <th className="w-[14%] p-2">註冊時間</th>
           </tr>
         </thead>
         <tbody>
@@ -76,7 +98,7 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
             <tr key={index} className="text-gray-600 border-b border-gray-300">
               <td className="p-2 text-sm">
                 <Link href={`/agentdashboard/${item.agent_name}`}>
-                  <p className="hover:underline">{item.agent_name}</p>
+                  <p className="hover:underline" title="點擊以查看更多資訊">{item.agent_name}</p>
                 </Link>
               </td>
               <td className="p-2 text-sm">{item.ip}</td>
@@ -105,6 +127,7 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
                 </span>
               </td>
               <td className="p-2 text-sm">{item.last_keep_alive}</td>
+              <td className="p-2 text-sm">{item.registration_time}</td>
             </tr>
           ))}
         </tbody>
