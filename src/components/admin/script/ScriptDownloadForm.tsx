@@ -37,15 +37,14 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
     }, []); // 只在組件掛載時執行一次
 
     useEffect(() => {
-        const fetchAgentName = async () => {
+        const fetchFirstAgentName = async () => {
             const { success, next_agent_name } = await fetchNextAgentName();
             if (success) {  // 確保成功獲取資料
-                setAgentNames((prev) => [...prev, next_agent_name]); // 將 next_agent_name 添加到 agentNames 陣列中
-                setNextAgentName(next_agent_name); // 將 next_agent_name 存儲到狀態中
+                setAgentNames([next_agent_name]); // 將第一個代理名稱設置為初始值
             }
         };
-        fetchAgentName(); // 調用函數以獲取代理名稱
-    }, []);
+        fetchFirstAgentName(); // 調用函數以獲取第一個代理名稱
+    }, []); 
 
     // 計算所有選中的輸入框數量總和並生成 Agent 名稱
     useEffect(() => {
@@ -63,9 +62,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
             const agents = Array.from({ length: totalAgents }, (_, index) =>
-                `${username}-${String(index + 1).padStart(3, '0')}`
+                `${username}_${String(index + 1).padStart(3, '0')}` // 使用 username 和編號格式
             );
-            setAgentNames(agents);
+            setAgentNames((prev) => [prev[0], ...agents]); // 保留第一個代理名稱並添加後續名稱
         } else {
             setAgentNames([]);  // 預設為空陣列
         }
@@ -152,7 +151,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         <div className="bg-white rounded-lg flex flex-col items-center min-h-screen bg-gray-100 p-6 w-[54vw] ">
             {/* 主介面部分 */}
             <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300"> {/*shadow-md 可添加陰影*/}
-                <h2 className="text-lg font-bold mb-4">軟體下載</h2>
+                <h2 className="text-lg font-bold mb-4">腳本下載</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
                     {/* 顯示剩下代理數量 */}
                     <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}

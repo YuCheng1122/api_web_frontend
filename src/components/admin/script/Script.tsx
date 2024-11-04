@@ -5,7 +5,6 @@ import { fetchNextAgentName } from '../../../utils/admin/fetchCountingAgent'; //
 export async function generateScripts(group: string, stats: any, totalAgentsInput: number, pdfUrl: string) {
     const zip = new JSZip(); // 使用 JSZip 來創建 ZIP 文件
     const { success, next_agent_name } = await fetchNextAgentName();
-    console.log("Fetched Agent Name:", { success, next_agent_name });
 
     let totalAgents = 0; // 將變數名稱改為 totalAgentsInput
 
