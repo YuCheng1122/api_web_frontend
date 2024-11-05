@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { generateScripts } from './Script'; // 根據實際路徑調整
 import { getTotalAgentsAndLicense } from '../../../utils/admin/TotalLicenseAgent';
+import { fetchNextAgentName } from '../../../utils/admin/fetchCountingAgent'; // 導入 fetchNextAgentName
 
 // context
 import { useAuthContext } from '@/contexts/AuthContext'
@@ -11,18 +12,20 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         linux: { rpm_amd64: false, rpm_aarch64: false, deb_amd64: false, deb_aarch64: false },
         windows: { msi: false },
         macos: { intel: false, apple_silicon: false },
-        quantities: { rpm_amd64: 0, rpm_aarch64: 0, deb_amd64: 0, deb_aarch64: 0, msi: 0, intel: 0, apple_silicon: 0 },
+        quantities: { rpm_amd64: 1, rpm_aarch64: 1, deb_amd64: 1, deb_aarch64: 1, msi: 1, intel: 1, apple_silicon: 1 },
     });
 
     const [agentNames, setAgentNames] = useState<string[]>([]);
-    const { isLogin, username, updateLoginState } = useAuthContext()
+    const [nextAgentName, setNextAgentName] = useState<string | null>(null); // 新增狀態變量
+    const { isLogin, username, updateLoginState } = useAuthContext();
     const [remainingAgents, setRemainingAgents] = useState<number>(0); // 初始狀態設為 0
+    const pdfUrl = '/Wazuh_agent安裝說明.pdf'; // 使用相對 URL
 
     useEffect(() => {
         const fetchTotalAgents = async () => {
             try {
                 const response = await getTotalAgentsAndLicense();
-                setRemainingAgents(response.total_agents); // 設置 remainingAgents 為 response.total_agents
+                setRemainingAgents(response.total_license - response.total_agents); // 設置 remainingAgents 為 response.total_agents
             } catch (error: any) {
                 console.error('Error during fetching total agents and license:', error);
                 const message = error.response?.data?.message || 'Failed to fetch total agents and license';
@@ -32,6 +35,17 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
 
         fetchTotalAgents(); // 調用函數以獲取代理數量
     }, []); // 只在組件掛載時執行一次
+
+    useEffect(() => {
+        const fetchAgentName = async () => {
+            const { success, next_agent_name } = await fetchNextAgentName();
+            if (success) {  // 確保成功獲取資料
+                setAgentNames((prev) => [...prev, next_agent_name]); // 將 next_agent_name 添加到 agentNames 陣列中
+                setNextAgentName(next_agent_name); // 將 next_agent_name 存儲到狀態中
+            }
+        };
+        fetchAgentName(); // 調用函數以獲取代理名稱
+    }, []);
 
     // 計算所有選中的輸入框數量總和並生成 Agent 名稱
     useEffect(() => {
@@ -46,7 +60,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             (macos.intel ? quantities.intel : 0) +
             (macos.apple_silicon ? quantities.apple_silicon : 0);
 
-        // 只有當 totalAgents 大於 0 時才生成 Agent ���稱
+        // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
             const agents = Array.from({ length: totalAgents }, (_, index) =>
                 `${username}-${String(index + 1).padStart(3, '0')}`
@@ -64,7 +78,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         // 如果取消勾選，將數量加回 remainingAgents
         if (!isChecked) {
             setRemainingAgents(remainingAgents + newQuantities[arch]);
-            newQuantities[arch] = 0; // 將數量設為 0
+            newQuantities[arch] = 1; // 將數量設為 0
+        } else {
+            // 勾選時，remainingAgents 減少 1
+            setRemainingAgents(remainingAgents - 1);
         }
 
         // 只有在 remainingAgents 大於 0 時才允許勾選
@@ -119,12 +136,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         const totalAgents = Object.values(stats).reduce((acc, count) => acc + count, 0);
         try {
             const response = await getTotalAgentsAndLicense();
-            setRemainingAgents(response.total_agents); // 設置 remainingAgents 為 response.total_agents
-            console.log('Total Agents:', response.total_agents);
-            if (response.total_agents >= Number(totalAgents)) {
-                generateScripts(username, stats, totalAgents); // 呼叫生成腳本函數，傳遞各個操作系統的代理數量
+            if (response.total_license - response.total_agents >= Number(totalAgents)) {
+                generateScripts(username, stats, totalAgents, pdfUrl); // 呼叫生成腳本函數，傳遞各個操作系統的代理數量和 PDF URL
             } else {
-                alert('agents 數量驗證失敗');
+                alert('代理數量驗證失敗');
             }
         } catch (error: any) {
             console.error('Error during fetching total agents and license:', error);
@@ -133,15 +148,27 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         }
     };
 
+    // 提取編號部分
+    const agentNumber = nextAgentName?.split('_')[1]; // 使用 '?' 以防 nextAgentName 為 null
+    let currentIndex = agentNumber ? parseInt(agentNumber, 10) : 0; // 將編號轉換為整數，若為 null 則設為 0
+
+    // 計算代理名稱
+    const agentNamesList = agentNames.map((_, index) => {
+        return `${username}-${String(currentIndex + index).padStart(3, '0')}`; // 使用 currentIndex 開始生成代理名稱
+    });
+
     return (
         <div className="bg-white rounded-lg flex flex-col items-center min-h-screen bg-gray-100 p-6 w-[54vw] ">
             {/* 主介面部分 */}
             <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300"> {/*shadow-md 可添加陰影*/}
-                <h2 className="text-lg font-bold mb-4">Script Download</h2>
+                <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
+                    <h2 className="text-xl font-bold mb-4">軟體下載</h2>
+                    <a href="/Wazuh_agent安裝說明.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-lg">安裝說明</a> {/* 將字體大小改為 text-lg */}
+                </div>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
                     {/* 顯示剩下代理數量 */}
-                    <div>
-                        <h3>剩下的下載 agents 數量: {remainingAgents}</h3> {/* 顯示剩下的 agents 數 */}
+                    <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
+                        <h3>剩下的下載代理數量: {remainingAgents}</h3> {/* 顯示剩下的 agents 數 */}
                     </div>
                     {/* Linux 部分 */}
                     <div className="border p-4 rounded-lg">
@@ -321,18 +348,18 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
                     >
-                        Download
+                        下載
                     </button>
                 </form>
             </div>
 
             {/* Agent 命名列表 */}
             <div className="bg-white p-4 rounded-lg w-full w-[54vw] max-w-7xl border border-gray-300">
-                <h3 className="text-lg font-bold mb-4">Agent name：</h3>
+                <h3 className="text-lg font-bold mb-4">代理名稱：</h3>
                 <ul className="text-sm grid grid-cols-4 gap-4">
-                    {agentNames.map((name, index) => (
-                        <li key={index} className="mb-2">
-                            {name}
+                    {agentNamesList.map((agentName) => ( // 使用 agentNamesList 來顯示代理名稱
+                        <li className="mb-2" key={agentName}>
+                            {agentName}
                         </li>
                     ))}
                 </ul>
