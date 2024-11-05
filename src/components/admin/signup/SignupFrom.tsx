@@ -6,7 +6,8 @@ const SignUpForm = ({ className }: { className?: string }) => {
         username: '',
         password: '',
         email: '',
-        company_name: ''
+        company_name: '',
+        license_amount: ''
     });
 
     const [message, setMessage] = useState(''); // 用來存儲提示信息
@@ -22,7 +23,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
         // 驗證使用者名稱
         const usernameRegex = /^[a-zA-Z0-9]{1,16}$/; // 只允許字母和數字，且長度不超過8字元
         if (!usernameRegex.test(formData.username)) {
-            setMessage('使用者名稱只能包含字母和數字，且不得超過8字元');
+            setMessage('使用者名稱只能包含字母和數字，且不得超過16字元');
             setMessageType('error');
             setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
             return; // 如果不符合規則，則不提交表單
@@ -96,7 +97,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
                         <input 
                             type="text" 
                             name="username" 
-                            placeholder="使用者名稱"
+                            placeholder="使用者名稱 (僅限英數且不得超過16字元)"
                             onChange={handleChange} 
                             required
                             className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -108,7 +109,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
                         <input 
                             type="password" 
                             name="password" 
-                            placeholder="密碼"
+                            placeholder="密碼 (至少8個字元)"
                             onChange={handleChange} 
                             required
                             className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
@@ -143,7 +144,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
                     <div className="flex flex-col"> 
                         <input 
                             type="text" 
-                            name="license" 
+                            name="license_amount" 
                             placeholder="憑證數量"
                             onChange={handleChange} 
                             required
