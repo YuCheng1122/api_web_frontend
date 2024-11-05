@@ -162,7 +162,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             {/* 主介面部分 */}
             <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300"> {/*shadow-md 可添加陰影*/}
                 <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
-                    <h2 className="text-xl font-bold mb-4">軟體下載</h2> 
+                    <h2 className="text-xl font-bold mb-4">軟體下載</h2>
                     <a href="/Wazuh_agent安裝說明.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-lg">安裝說明</a> {/* 將字體大小改為 text-lg */}
                 </div>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
