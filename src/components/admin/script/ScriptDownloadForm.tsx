@@ -63,9 +63,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
             const agents = Array.from({ length: totalAgents }, (_, index) =>
-                `${username}-${String(index + 1).padStart(3, '0')}`
+                `${username}_${String(index + 1).padStart(3, '0')}` // 使用 username 和編號格式
             );
-            setAgentNames(agents);
+            setAgentNames((prev) => [prev[0], ...agents]); // 保留第一個代理名稱並添加後續名稱
         } else {
             setAgentNames([]);  // 預設為空陣列
         }
@@ -361,7 +361,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         <li className="mb-2" key={agentName}>
                             {agentName}
                         </li>
-                    ))}
+                    )}
                 </ul>
             </div>
         </div>
