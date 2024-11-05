@@ -1,6 +1,8 @@
 import JSZip from 'jszip'; // 確保導入 JSZip
+import { hostname } from 'os';
+import { fetchNextAgentName } from '../../../utils/admin/fetchCountingAgent'; // 導入 fetchNextAgentName
 
-export function generateScripts(group: string, stats: any, totalAgentsInput: number) {
+export async function generateScripts(group: string, stats: any, totalAgentsInput: number, pdfUrl: string) {
     const zip = new JSZip(); // 使用 JSZip 來創建 ZIP 文件
     const { success, next_agent_name } = await fetchNextAgentName();
     console.log("Fetched Agent Name:", { success, next_agent_name });
@@ -85,6 +87,11 @@ export function generateScripts(group: string, stats: any, totalAgentsInput: num
             }
         }
     });
+
+    // 將 PDF 文件添加到 ZIP
+    const pdfResponse = await fetch(pdfUrl); // 獲取 PDF 文件
+    const pdfBlob = await pdfResponse.blob(); // 將其轉換為 Blob
+    zip.file('Wazuh_agent安裝說明.pdf', pdfBlob); // 將 PDF 文件添加到 ZIP，使用指定的文件名
 
     // 生成 ZIP 文件
     zip.generateAsync({ type: "blob" }).then(function (content) {
