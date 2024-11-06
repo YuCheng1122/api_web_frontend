@@ -3,7 +3,7 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuthContext } from '@/contexts/AuthContext'
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,13 +12,19 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { drop } from 'lodash'
+import { useRouter } from 'next/navigation'
+
 
 const Header = () => {
   const { isLogin, username, updateLoginState, isadmin } = useAuthContext()
 
+
+
+  const router = useRouter()
   const logout = () => {
     updateLoginState(false, '', null)
+    router.push('/')
+
   }
 
 
