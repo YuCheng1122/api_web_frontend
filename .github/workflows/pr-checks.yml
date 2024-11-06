@@ -3,7 +3,6 @@ name: Basic PR Checks
 on:
   pull_request:
     types: [opened, synchronize, reopened]
-    # 不指定 branches，這樣會檢查所有分支間的 PR
 
 jobs:
   check-branch-status:
@@ -13,7 +12,6 @@ jobs:
         with:
           fetch-depth: 0
       
-      # 檢查分支是否最新
       - name: Check if branch is up to date
         run: |
           TARGET_BRANCH="${{ github.base_ref }}"
@@ -26,7 +24,6 @@ jobs:
             exit 1
           fi
       
-      # 檢查衝突
       - name: Check for merge conflicts
         run: |
           TARGET_BRANCH="${{ github.base_ref }}"
