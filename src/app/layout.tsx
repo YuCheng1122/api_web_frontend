@@ -20,10 +20,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${inter.className} min-h-screen bg-gray-200`}>
         <AuthProvider>
-          <div className="flex flex-col min-h-screen">
+          <div className="flex flex-col min-h-screen ">
             <Header />
             <hr className="border-gray-900" />
-            <main className="flex-grow">
+            <main className="flex-grow relative">
               {children}
             </main>
           </div>

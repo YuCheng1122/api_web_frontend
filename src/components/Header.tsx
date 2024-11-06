@@ -27,52 +27,53 @@ const Header = () => {
 
   }
 
-
   useEffect(() => {
     // 您可以在這裡添加與 isadmin 相關的副作用
   }, [isadmin])
 
   return (
-    <header className="bg-white w-full">
-      <div className="p-4 ">
-        <div className='flex items-center justify-between '>
+    <header className="bg-white w-full sticky top-0 z-50 ">
+      <div className="p-4  ">
+        < div className='flex items-center justify-between ' >
           {/* 左側：標題和導航按鈕 */}
-          <div className='flex items-center space-x-4'>
+          < div className='flex items-center space-x-4' >
             {/* 標題 */}
-            <div className="text-3xl font-bold text-black">
+            < div className="text-3xl font-bold text-black" >
               <Link href={'/'} className='hover-underline-animation'>
                 AVOCADO
               </Link>
-            </div>
+            </div >
 
             {/* 導航按鈕 */}
-            {isLogin && username && (
-              <div className='  hidden md:block'>
-                <div className='flex items-center space-x-4'>
-                  <Link href={'/graph'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    威脅獵捕圖
-                  </Link>
-                  <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    儀表板
-                  </Link>
-                  <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    代理資訊
-                  </Link>
-                  <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    聊天機器人
-                  </Link>
-                  {isadmin && (
-                    <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
-                      管理中心
+            {
+              isLogin && username && (
+                <div className='  hidden md:block'>
+                  <div className='flex items-center space-x-4'>
+                    <Link href={'/graph'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      威脅獵捕圖
                     </Link>
-                  )}
-                  <Link href={'/ics'} className='text-xl font-bold p-2 hover-underline-animation'>
-                    ICS
-                  </Link>
+                    <Link href={'/dashboard'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      儀表板
+                    </Link>
+                    <Link href={'/agent'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      代理資訊
+                    </Link>
+                    <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      聊天機器人
+                    </Link>
+                    {isadmin && (
+                      <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
+                        管理中心
+                      </Link>
+                    )}
+                    <Link href={'/ics'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      ICS
+                    </Link>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
+              )
+            }
+          </div >
           <div className='visible md:invisible ' >
             <DropdownMenu >
               <DropdownMenuTrigger>
@@ -196,9 +197,9 @@ const Header = () => {
 
 
           </div>
-        </div>
-      </div>
-    </header>
+        </div >
+      </div >
+    </header >
   )
 }
 
