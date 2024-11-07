@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import { signup } from '../../../utils/admin/signup'; // 導入 signup 函數
-
+import PasswordInput from '@/components/admin/signup/PasswordInput';
 const SignUpForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState({
         username: '',
         password: '',
         email: '',
-        company_name: ''
+        company_name: '',
+        checkpassword: ''
     });
 
     const [message, setMessage] = useState(''); // 用來存儲提示信息
@@ -53,8 +54,16 @@ const SignUpForm = ({ className }: { className?: string }) => {
             return; // 如果不符合規則，則不提交表單
         }
 
+        if (formData.password !== formData.checkpassword) {
+            setMessage('密碼不一致');
+            setMessageType('error');
+            setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
+            return; // 如果不符合規則，則不提交表單
+        }
+        const { checkpassword, ...signupData } = formData;
+
         try {
-            const result = await signup(formData); // 調用 signup 函數送出表單
+            const result = await signup(signupData); // 調用 signup 函數送出表單
 
             // 如果 signup 返回的 success 為 false，顯示錯誤信息
             if (!result.success) {
@@ -82,6 +91,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
             }, 3000);
         }
     };
+    console.log('formData:', formData);
 
     return (
         <div className="bg-white flex  justify-center rounded-lg p-6 shadow-md md:w-[60vw] sm:w-full sm:h-full  md:h-full xl:h-[60vh]"> {/* 修改寬高 */}
@@ -106,10 +116,14 @@ const SignUpForm = ({ className }: { className?: string }) => {
 
                     {/* 密碼 */}
                     <div className="flex flex-col">
+                        <PasswordInput handleChange={handleChange} />
+
+                    </div>
+                    <div className="flex flex-col">
                         <input
                             type="password"
-                            name="password"
-                            placeholder="密碼"
+                            name="checkpassword"
+                            placeholder="確認密碼"
                             onChange={handleChange}
                             required
                             className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -139,6 +153,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
                             className="flex-1 p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                         />
                     </div>
+
 
                     {/* 憑證數量 */}
                     <div className="flex flex-col">
