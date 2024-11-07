@@ -11,6 +11,7 @@ export const signup = async (formData: {
   password: string;
   email: string;
   company_name: string;
+  license_amount: string;
 }): Promise<SignupResponse> => {
   const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`
 

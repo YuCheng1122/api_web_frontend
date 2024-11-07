@@ -81,7 +81,7 @@ const EventTable = () => {
         <Loading />
       ) : (
         <>
-          <div className="h-fit text-sm font-bold">等級大於12的wazuh事件</div>
+          <div className="h-fit text-sm font-bold">風險等級大於8的事件統計</div>
 
           <div className="flex-grow p-2 overflow-x-auto">
             <table className="w-full">
