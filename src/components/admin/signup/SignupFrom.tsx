@@ -7,7 +7,8 @@ const SignUpForm = ({ className }: { className?: string }) => {
         password: '',
         email: '',
         company_name: '',
-        checkpassword: ''
+        checkpassword: '',
+        license_amount: ''
     });
 
     const [message, setMessage] = useState(''); // 用來存儲提示信息
@@ -61,8 +62,11 @@ const SignUpForm = ({ className }: { className?: string }) => {
             return; // 如果不符合規則，則不提交表單
         }
         const { checkpassword, ...signupData } = formData;
+        console.log('signupData:', signupData);
+
 
         try {
+
             const result = await signup(signupData); // 調用 signup 函數送出表單
 
             // 如果 signup 返回的 success 為 false，顯示錯誤信息
@@ -159,7 +163,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
                     <div className="flex flex-col">
                         <input
                             type="text"
-                            name="license"
+                            name="license_amount"
                             placeholder="憑證數量"
                             onChange={handleChange}
                             required
