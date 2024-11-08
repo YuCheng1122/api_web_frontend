@@ -5,8 +5,8 @@ import SignUpForm from '../../../components/admin/signup/SignupFrom'; // 引入�
 
 const SignupPage = () => {
     return (
-        <div className="flex flex-col items-center justify-center">
-            <div className="h-[18vh]"></div>
+        <div className="flex flex-col items-center justify-center  h-full w-full min-h-[80vh]">
+
             <SignUpForm /> {/* 調用表單組件 */}
         </div>
     );

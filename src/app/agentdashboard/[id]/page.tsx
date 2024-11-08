@@ -124,7 +124,7 @@ export default function AgentDashboardPage() {
                 <MitreList mitres={mitreData} />
 
                 <PieGraph title="Ransomware" data={pieransomwareData} />
-                <div className="flex flex-col space-y-5 bg-white rounded-lg w-1/5 justify-center p-5 overflow-auto">
+                <div className="flex flex-col space-y-5 bg-white rounded-lg w-1/5 justify-center p-5 overflow-auto min-w-48">
                     Wanna Cry --{">"}Ransomware file list:
                     {
                         ransomwareData.map((ransomware: { name: string }, index: number) => {

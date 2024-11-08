@@ -22,7 +22,7 @@ const EventTrendGraph = () => {
 
   const option = {
     title: {
-      text: '事件趨勢 (等級 8~14)',
+      text: '事件趨勢',
       textStyle: {
         fontSize: '14px'
       },
