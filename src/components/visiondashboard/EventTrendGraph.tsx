@@ -4,20 +4,19 @@
 import { useState, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 
-// componentsy
+// components
 import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import { useVisionBoardContext } from '@/contexts/VisionBoardContext';
 
 
 // utils
-import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/visiondashboard/fetchEventTrendData';
+import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/dashboard/fetchEventTrendData'
+import { set } from 'lodash';
 
 const EventTrendGraph = () => {
 
-  const { dateTimeRange } = useVisionBoardContext()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
   const [error, setError] = useState<string | null>(null)
@@ -80,38 +79,51 @@ const EventTrendGraph = () => {
     },
     series: chartData.datas.slice(0, 5)
   }
-
-
+  const defaultdata: fetchEventTrendDataType = {
+    label: ['CVE-2024-44244', 'CVE-2024-40857', 'CVE-2024-40866', 'CVE-2024-44155', 'CVE-2024-44187'],
+    datas: [
+      { name: 'CVE-2024-44244', type: 'bar', data: [['CVE-2024-44244', 1048]] },
+      { name: 'CVE-2024-40857', type: 'bar', data: [['CVE-2024-40857', 735]] },
+      { name: 'CVE-2024-40866', type: 'bar', data: [['CVE-2024-40866', 580]] },
+      { name: 'CVE-2024-44155', type: 'bar', data: [['CVE-2024-44155', 484]] },
+      { name: 'CVE-2024-44187', type: 'bar', data: [['CVE-2024-44187', 300]] }
+    ]
+  };
   useEffect(() => {
-    const fetchData = async () => {
+    setChartData(defaultdata);
+  }, []);
 
-      try {
-        if (dateTimeRange?.start && dateTimeRange?.end) {
-          const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
-          if (result.success) {
-            setChartData(result.content)
-          } else {
-            throw new Error("Error fetching event trend data")
-          }
-        }
-      } catch (error) {
-        console.log(error)
-        setError("無法獲取趨勢數據 😢。請稍後再試。")
-        setTimeout(() => {
-          setError(null)
-        }, 3000)
-      } finally {
-        setIsLoading(false)
-      }
-    }
-    setIsLoading(true)
-    fetchData()
-  }, [dateTimeRange])
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     if (isLoading) return
+  //     setIsLoading(true)
+  //     try {
+  //       if (dateTimeRange?.start && dateTimeRange?.end) {
+  //         const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
+  //         if (result.success) {
+  //           setChartData(result.content)
+  //         } else {
+  //           throw new Error("Error fetching event trend data")
+  //         }
+  //       }
+  //     } catch (error) {
+  //       console.log(error)
+  //       setError("無法獲取趨勢數據 😢。請稍後再試。")
+  //       setTimeout(() => {
+  //         setError(null)
+  //       }, 3000)
+  //     } finally {
+  //       setIsLoading(false)
+  //     }
+  //   }
+  //   fetchData()
+  // }, [dateTimeRange])
 
 
   return (
     <div className='h-full w-full '>
-      {isLoading ? <Loading /> : <div className=' bg-white rounded-md'><ReactECharts option={option} /></div>}
+      {isLoading ? <Loading /> : <ReactECharts option={option} />}
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
     </div>
   )

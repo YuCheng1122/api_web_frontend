@@ -64,6 +64,9 @@ const Header = () => {
                     <Link href={'/visionboard'} className='text-xl font-bold p-2 hover-underline-animation'>
                       視覺化儀表板
                     </Link>
+                    <Link href={'/visionboard'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      視覺化儀表板
+                    </Link>
                     {isadmin && (
                       <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
                         管理中心
