@@ -61,6 +61,9 @@ const Header = () => {
                     <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
                       聊天機器人
                     </Link>
+                    <Link href={'/visionboard'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      視覺化儀表板
+                    </Link>
                     {isadmin && (
                       <Link href={'/managecenter'} className='text-xl font-bold p-2 hover-underline-animation'>
                         管理中心
@@ -116,6 +119,9 @@ const Header = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href={'/ics'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>ICS</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/visionboard'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>視覺化儀表板</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href={'/admin/script'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>軟體下載</Link>
