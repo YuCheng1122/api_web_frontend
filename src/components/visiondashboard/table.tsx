@@ -29,22 +29,20 @@ export default function Table() {
     ]
 
     return (
-        <div className='flex flex-col gap-2 min-h-96'>
 
-            <div className="flex justify-between items-center">
-                <h1 className="text-2xl font-bold">Vision Board</h1>
-            </div>
-            <div className="flex flex-col gap-2">
-                <DataTable
-                    columns={columns}
-                    data={agentsData}
-                    pagination
-                    highlightOnHover
-                    pointerOnHover
-                    paginationPerPage={5}
-                    paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 30]}
-                />
-            </div>
+
+
+        <div className="flex flex-col ">
+            <DataTable
+                columns={columns}
+                data={agentsData}
+                pagination
+                highlightOnHover
+                pointerOnHover
+                paginationPerPage={5}
+                paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 30]}
+            />
+
 
 
         </div>

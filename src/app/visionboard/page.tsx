@@ -16,34 +16,32 @@ export default function Visionboardpage() {
 
     return (
         <>
-            <div className='min-h-[90vh] p-3 bg-gray-100 rounded-lg overflow-scroll'>
-                <div className="h-full w-full relative bg-white flex flex-col gap-2">
-                    <div className="flex justify-between items-center">
-                        <h1 className="text-2xl font-bold">Vision Board</h1>
-                    </div>
-                    <div className='flex flex-row gap-2 min-h-48'>
-                        <PieGraph title="Vulnerability" data={data} />
-                        <PieGraph title="Vulnerability" data={data} />
-                    </div>
-                    <div className="flex flex-row gap-2">
-                        <Table />
-                        <Table />
-                    </div>
-                    <div className="flex flex-row gap-2">
-                        <BarChartComponent />
-                        <BarChartComponent />
+            <div className='h-full p-3 bg-gray-100 rounded-lg '>
+                <div className="h-full w-full flex flex-wrap  ">
+                    <div className='flex flex-col gap-2 xl:w-2/5  h-full w-full p-5 '>
+                        <div className='flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center h-full max-h-96 mb-5'>
+                            <PieGraph title="Vulnerability" data={data} />
+                            <PieGraph title="Vulnerability" data={data} />
+                        </div>
+                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center min-h-96">
+                            <Table />
+                            <Table />
+                        </div>
+                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full justify-center min-h-48">
+                            <BarChartComponent />
+                            <BarChartComponent />
 
+                        </div>
                     </div>
-                    <div className="flex flex-row gap-2">
+
+                    <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col">
                         <EventTrendGraph />
 
+                        <div className='flex md:flex-row sm:flex-row  flex-col   w-full  justify-center min-h-96 gap-2 '>
+                            <PieGraph title="Vulnerability" data={data} />
+                            <PieGraph title="Vulnerability" data={data} />
+                        </div>
                     </div>
-
-                    <div className='flex flex-row gap-2 min-h-48'>
-                        <PieGraph title="Vulnerability" data={data} />
-                        <PieGraph title="Vulnerability" data={data} />
-                    </div>
-
 
                 </div>
             </div>
