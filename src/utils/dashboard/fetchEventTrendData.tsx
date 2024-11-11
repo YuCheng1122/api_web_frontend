@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { log } from 'console';
+
 import Cookies from 'js-cookie'
 
 const normalizeData = (data: number[]): number[] => {

@@ -105,6 +105,9 @@ const EventTrendGraph = () => {
     fetchData()
   }, [dateTimeRange])
 
+  console.log(chartData);
+
+
 
   return (
     <div className='h-full w-full '>

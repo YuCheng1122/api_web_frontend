@@ -4,7 +4,7 @@
 import { useState, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 
-// components
+// componentsy
 import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
@@ -12,13 +12,13 @@ import ErrorDisplayer from '@/components/Error'
 
 
 // utils
-import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/dashboard/fetchEventTrendData'
+import { fetchEventTrendDataType } from '@/utils/dashboard/fetchEventTrendData'
 import { set } from 'lodash';
 
 const EventTrendGraph = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
+  const [chartData, setChartData] = useState<fetchEventTrendDataType>({ label: [], datas: [] })
   const [error, setError] = useState<string | null>(null)
 
   const option = {
@@ -80,13 +80,147 @@ const EventTrendGraph = () => {
     series: chartData.datas.slice(0, 5)
   }
   const defaultdata: fetchEventTrendDataType = {
-    label: ['CVE-2024-44244', 'CVE-2024-40857', 'CVE-2024-40866', 'CVE-2024-44155', 'CVE-2024-44187'],
+    label: [
+      "Service startup type was changed",
+      "Software protection service scheduled successfully.",
+      "Registry Value Integrity Checksum Changed",
+      "Windows System error event",
+      "Registry Key Integrity Checksum Changed",
+    ],
     datas: [
-      { name: 'CVE-2024-44244', type: 'bar', data: [['CVE-2024-44244', 1048]] },
-      { name: 'CVE-2024-40857', type: 'bar', data: [['CVE-2024-40857', 735]] },
-      { name: 'CVE-2024-40866', type: 'bar', data: [['CVE-2024-40866', 580]] },
-      { name: 'CVE-2024-44155', type: 'bar', data: [['CVE-2024-44155', 484]] },
-      { name: 'CVE-2024-44187', type: 'bar', data: [['CVE-2024-44187', 300]] }
+
+
+      {
+        "name": "Service startup type was changed",
+        "type": "line",
+        "data": [
+          [
+            "2024-11-10T12:50:33.695000Z",
+            418
+          ],
+          [
+            "2024-11-10T18:50:33.695000Z",
+            96
+          ],
+          [
+            "2024-11-11T00:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T06:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T12:50:33.695000Z",
+            0
+          ]
+        ]
+      },
+      {
+        "name": "Software protection service scheduled successfully.",
+        "type": "line",
+        "data": [
+          [
+            "2024-11-10T12:50:33.695000Z",
+            354
+          ],
+          [
+            "2024-11-10T18:50:33.695000Z",
+            140
+          ],
+          [
+            "2024-11-11T00:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T06:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T12:50:33.695000Z",
+            0
+          ]
+        ]
+      },
+      {
+        "name": "Registry Value Integrity Checksum Changed",
+        "type": "line",
+        "data": [
+          [
+            "2024-11-10T12:50:33.695000Z",
+            199
+          ],
+          [
+            "2024-11-10T18:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T00:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T06:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T12:50:33.695000Z",
+            0
+          ]
+        ]
+      },
+      {
+        "name": "Windows System error event",
+        "type": "line",
+        "data": [
+          [
+            "2024-11-10T12:50:33.695000Z",
+            148
+          ],
+          [
+            "2024-11-10T18:50:33.695000Z",
+            74
+          ],
+          [
+            "2024-11-11T00:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T06:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T12:50:33.695000Z",
+            0
+          ]
+        ]
+      },
+      {
+        "name": "Registry Key Integrity Checksum Changed",
+        "type": "line",
+        "data": [
+          [
+            "2024-11-10T12:50:33.695000Z",
+            101
+          ],
+          [
+            "2024-11-10T18:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T00:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T06:50:33.695000Z",
+            0
+          ],
+          [
+            "2024-11-11T12:50:33.695000Z",
+            0
+          ]
+        ]
+      },
+
     ]
   };
   useEffect(() => {
