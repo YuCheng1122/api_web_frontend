@@ -3,6 +3,7 @@ import Table from '../../components/visiondashboard/table'
 import PieGraph from '@/components/agentdashboard/PieGraph'
 import BarChartComponent from '@/components/visiondashboard/bar'
 import EventTrendGraph from '@/components/visiondashboard/EventTrendGraph'
+import AlertComponent from '@/components/visiondashboard/alert'
 
 export default function Visionboardpage() {
     // pie graph data
@@ -11,7 +12,7 @@ export default function Visionboardpage() {
         { value: 735, name: 'CVE-2024-40857' },
         { value: 580, name: 'CVE-2024-40866' },
         { value: 484, name: 'CVE-2024-44155' },
-        { value: 300, name: 'CVE-2024-44187' }
+
     ]
 
     return (
@@ -25,7 +26,7 @@ export default function Visionboardpage() {
                         </div>
                         <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center min-h-96">
                             <Table />
-                            <Table />
+
                         </div>
                         <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full justify-center min-h-48">
                             <BarChartComponent />
@@ -35,6 +36,7 @@ export default function Visionboardpage() {
                     </div>
 
                     <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col">
+                        <AlertComponent />
                         <EventTrendGraph />
 
                         <div className='flex md:flex-row sm:flex-row  flex-col   w-full  justify-center min-h-96 gap-2 '>

@@ -8,32 +8,66 @@ import { fetchPieDataType } from '@/utils/dashboard/fetchPieGaphData1'
 
 
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {
+  const processedData = data.map(item => ({
+    ...item,
+    name: item.name.length > 5 ? item.name.substring(9, 14) : item.name
+  }));
 
 
   const option = {
     title: {
       text: title,
-      left: 'center'
+      left: 'center',
+      top: 'top',
+      textStyle: {
+        fontSize: 16,
+        fontWeight: 'bold'
+      }
     },
     tooltip: {
       trigger: 'item'
     },
     legend: {
       orient: 'vertical',
-      left: 'right'
+      right: 10,
+      top: 'center',
+      width: 100, // Limit width to control overflow
+      height: 200, // Adjust height if necessary
+      textStyle: {
+        fontSize: 12,
+        overflow: 'truncate' // Truncate overflowing text
+      },
+      tooltip: {
+        show: true // Enable tooltip on legend items to show full text on hover
+      }
     },
     series: [
       {
         type: 'pie',
-        radius: '50%',
-        data: data,
+        radius: ['40%', '60%'], // Adjusted inner and outer radius for better appearance
+        avoidLabelOverlap: true,
+        label: {
+          show: false, // Hide labels on the pie slices for a cleaner look
+          position: 'center'
+        },
         emphasis: {
+          label: {
+            show: true,
+            fontSize: '14',
+            fontWeight: 'bold'
+          },
           itemStyle: {
             shadowBlur: 10,
             shadowOffsetX: 0,
             shadowColor: 'rgba(0, 0, 0, 0.5)'
           }
-        }
+        },
+        labelLine: {
+          show: true,
+          length: 15,
+          length2: 10
+        },
+        data: processedData
       }
     ]
   };
