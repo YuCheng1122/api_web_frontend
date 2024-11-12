@@ -38,24 +38,22 @@ const chartConfig = {
     label: {
         color: "hsl(var(--background))",
     },
+
 } satisfies ChartConfig
 
 export default function BarChartComponent() {
     return (
-        <Card className="h-full w-full">
-            <CardHeader>
-                <CardTitle>Bar Chart - Custom Label</CardTitle>
-                <CardDescription>January - June 2024</CardDescription>
-            </CardHeader>
+        <Card className="max-h-[350px] w-full">
             <CardContent>
                 <ChartContainer config={chartConfig}>
                     <BarChart
                         accessibilityLayer
                         data={chartData}
                         layout="vertical"
-                        margin={{
-                            right: 16,
-                        }}
+                        barCategoryGap="50%" // Adjust gap between bars
+                        barGap={0}
+
+
                     >
                         <CartesianGrid horizontal={false} />
                         <YAxis
@@ -77,6 +75,7 @@ export default function BarChartComponent() {
                             layout="vertical"
                             fill="var(--color-desktop)"
                             radius={4}
+                            barSize={12}
                         >
                             <LabelList
                                 dataKey="month"

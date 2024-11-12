@@ -39,8 +39,8 @@ export default function Table() {
                 pagination
                 highlightOnHover
                 pointerOnHover
-                paginationPerPage={5}
-                paginationRowsPerPageOptions={[5, 10, 15, 20, 25, 30]}
+                paginationPerPage={3}
+                paginationRowsPerPageOptions={[3, 6, 9, 12]}
             />
 
 

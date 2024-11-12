@@ -24,15 +24,17 @@ export default function Visionboardpage() {
                             <PieGraph title="Vulnerability" data={data} />
                             <PieGraph title="Vulnerability" data={data} />
                         </div>
-                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center min-h-96">
+                        <div className="w-full h-full flex items-center justify-center"> {/* Set fixed height */}
+                            <BarChartComponent />
+                        </div>
+
+                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center min-h-48">
                             <Table />
-
                         </div>
-                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full justify-center min-h-48">
+                        {/* <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full justify-center min-h-48">
                             <BarChartComponent />
-                            <BarChartComponent />
-
-                        </div>
+                        
+                        </div> */}
                     </div>
 
                     <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col">
