@@ -42,7 +42,7 @@ const chartConfig = {
 
 export default function BarChartComponent() {
     return (
-        <Card>
+        <Card className="h-full w-full">
             <CardHeader>
                 <CardTitle>Bar Chart - Custom Label</CardTitle>
                 <CardDescription>January - June 2024</CardDescription>

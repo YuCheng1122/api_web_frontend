@@ -32,7 +32,7 @@ export default function Table() {
 
 
 
-        <div className="flex flex-col ">
+        <div className="flex flex-col rounded-xl w-full ">
             <DataTable
                 columns={columns}
                 data={agentsData}
