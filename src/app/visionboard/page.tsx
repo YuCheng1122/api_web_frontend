@@ -4,6 +4,7 @@ import PieGraph from '@/components/agentdashboard/PieGraph'
 import BarChartComponent from '@/components/visiondashboard/bar'
 import EventTrendGraph from '@/components/visiondashboard/EventTrendGraph'
 import AlertComponent from '@/components/visiondashboard/alert'
+import DateTimeFilter from '@/components/visiondashboard/DateTimeFilter'
 
 export default function Visionboardpage() {
     // pie graph data
@@ -20,6 +21,10 @@ export default function Visionboardpage() {
             <div className='h-full p-3 bg-gray-100 rounded-lg '>
                 <div className="h-full w-full flex flex-wrap  ">
                     <div className='flex flex-col gap-2 xl:w-2/5  h-full w-full p-5 '>
+                        <div className="flex flex-col gap-2 w-full h-1/2">
+                            <DateTimeFilter />
+                        </div>
+
                         <div className='flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center h-full max-h-96 mb-5'>
                             <PieGraph title="Vulnerability" data={data} />
                             <PieGraph title="Vulnerability" data={data} />
