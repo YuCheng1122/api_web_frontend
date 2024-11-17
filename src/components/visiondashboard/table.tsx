@@ -121,7 +121,7 @@ export default function Table() {
             name: '規則 MITRE 編號',
             selector: (row) => row.rule_mitre_id,
             sortable: true,
-            width: '150px',
+            width: '110px',
         },
         {
             name: '規則級別',
