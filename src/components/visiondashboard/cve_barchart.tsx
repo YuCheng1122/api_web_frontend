@@ -8,13 +8,11 @@ import React from "react";
 
 import { useState, useEffect } from 'react'
 
-import ErrorDisplayer from '@/components/Error' // Adjust the import path as necessary
-
 // context
 import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 
 // utils
-import { initData, EntireDataType, fetchCVEBarData } from '@/utils/visiondashboard/fetchCVEBarData'
+import { initData, EntireDataType, fetchMaliciousBarData } from '@/utils/visiondashboard/fetchCVEBarData'
 
 import {
     Card,
@@ -42,12 +40,13 @@ export default function CVEBarChartComponent() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-
+        if (isLoading) return
+        setIsLoading(true)
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
-                    const response = await fetchCVEBarData({ start: dateTimeRange.start, end: dateTimeRange.end })
+                    const response = await fetchMaliciousBarData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
                         setChartData(response.content)
                     } else {
@@ -64,7 +63,6 @@ export default function CVEBarChartComponent() {
                 setIsLoading(false)
             }
         }
-        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
@@ -77,77 +75,62 @@ export default function CVEBarChartComponent() {
             color: "hsl(var(--background))",
         },
     } satisfies ChartConfig
-    console.log(chartData);
-
 
     return (
-        <>
-            {
-                isLoading && <div>Loading...</div>
-            }
-            {
-                error && <ErrorDisplayer errorMessage={error} setError={setError} />
-            }
-            {
-                chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><p className=' text-2xl font-bold'>CVE分析</p> <p>目前沒有發現CVE攻擊</p></div> :
-                    <Card className="h-full md:min-w-[660px]">
-                        <CardHeader>
-                            <CardTitle>CVE分析</CardTitle>
-                            <CardDescription>攻擊次數</CardDescription>
-                        </CardHeader>
-                        <CardContent>
-                            <ChartContainer config={chartConfig}>
-                                <BarChart
-                                    accessibilityLayer
-                                    data={chartData}
-                                    layout="vertical"
-                                    margin={{
-                                        right: 16,
-                                    }}
-                                >
-                                    <CartesianGrid horizontal={false} />
-                                    <YAxis
-                                        dataKey="cve_name"
-                                        type="category"
-                                        tickLine={false}
-                                        tickMargin={10}
-                                        axisLine={false}
-                                        tickFormatter={(value) => value.slice(0, 3)}
-                                        hide
-                                    />
-                                    <XAxis dataKey="count" type="number" hide />
-                                    <ChartTooltip
-                                        cursor={false}
-                                        content={<ChartTooltipContent indicator="line" />}
-                                    />
-                                    <Bar
-                                        dataKey="count"
-                                        layout="vertical"
-                                        fill="var(--color-count)"
-                                        radius={4}
-                                    >
-                                        <LabelList
-                                            dataKey="cve_name"
-                                            position="insideLeft"
-                                            offset={8}
-                                            className="fill-[--color-label]"
-                                            fontSize={12}
-                                        />
-                                        <LabelList
-                                            dataKey="count"
-                                            position="right"
-                                            offset={8}
-                                            className="fill-foreground"
-                                            fontSize={12}
-                                        />
-                                    </Bar>
-                                </BarChart>
-                            </ChartContainer>
-                        </CardContent>
-                    </Card>
-
-
-            }
-        </>
+        <Card className="h-full md:min-w-[660px]">
+            <CardHeader>
+                <CardTitle>Bar Chart - malicious_file_barchart</CardTitle>
+                <CardDescription>file count</CardDescription>
+            </CardHeader>
+            <CardContent>
+                <ChartContainer config={chartConfig}>
+                    <BarChart
+                        accessibilityLayer
+                        data={chartData}
+                        layout="vertical"
+                        margin={{
+                            right: 16,
+                        }}
+                    >
+                        <CartesianGrid horizontal={false} />
+                        <YAxis
+                            dataKey="cve_name"
+                            type="category"
+                            tickLine={false}
+                            tickMargin={10}
+                            axisLine={false}
+                            tickFormatter={(value) => value.slice(0, 3)}
+                            hide
+                        />
+                        <XAxis dataKey="count" type="number" hide />
+                        <ChartTooltip
+                            cursor={false}
+                            content={<ChartTooltipContent indicator="line" />}
+                        />
+                        <Bar
+                            dataKey="count"
+                            layout="vertical"
+                            fill="var(--color-count)"
+                            radius={4}
+                        >
+                            <LabelList
+                                dataKey="cve_name"
+                                position="insideLeft"
+                                offset={8}
+                                className="fill-[--color-label]"
+                                fontSize={12}
+                            />
+                            <LabelList
+                                dataKey="count"
+                                position="right"
+                                offset={8}
+                                className="fill-foreground"
+                                fontSize={12}
+                            />
+                        </Bar>
+                    </BarChart>
+                </ChartContainer>
+            </CardContent>
+        </Card>
     )
 }

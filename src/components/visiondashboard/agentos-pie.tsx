@@ -44,7 +44,6 @@ export default function AgentOSPie() {
         }
         fetchData()
     }, [dateTimeRange])
-    console.log('chartData', chartData);
 
 
 
