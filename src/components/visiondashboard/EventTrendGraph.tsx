@@ -19,7 +19,7 @@ const EventTrendGraph = () => {
 
   const { dateTimeRange } = useVisionBoardContext()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [chartData, setChartData] = useState<fetchEventTrendDataType>({ label: [], datas: [] })
+  const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
   const [error, setError] = useState<string | null>(null)
 
   const option = {
