@@ -7,7 +7,7 @@ import ErrorDisplayer from '@/components/Error'
 
 // utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/utils/visiondashboard/fetchAuthenticationpiechartData'
-import PieGraph from '@/components/visiondashboard/PieGraph'
+import PieGraph from '@/components/agentdashboard/PieGraph'
 
 export default function AgentAuthenticationPie() {
     // pie graph data
@@ -19,18 +19,15 @@ export default function AgentAuthenticationPie() {
 
 
     useEffect(() => {
-
-
+        if (isLoading) return
+        setIsLoading(true)
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        //  select data top 5
-                        const data = response.content.authentication_piechart
-                        const top5Data = data.slice(0, 5)
-                        setChartData({ authentication_piechart: top5Data })
+                        setChartData(response.content)
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -45,7 +42,6 @@ export default function AgentAuthenticationPie() {
                 setIsLoading(false)
             }
         }
-        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
@@ -53,9 +49,7 @@ export default function AgentAuthenticationPie() {
     return (
         <>
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            {
-                chartData.authentication_piechart.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>身份驗證分析</p> <p>目前尚未有不合法驗證</p></div> : <PieGraph title="身份驗證分析" data={chartData.authentication_piechart} />
-            }
+            <PieGraph title="Agent Summary" data={chartData.authentication_piechart} />
         </>
     )
 }

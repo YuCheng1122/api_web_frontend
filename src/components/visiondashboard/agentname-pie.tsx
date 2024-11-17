@@ -7,7 +7,7 @@ import ErrorDisplayer from '@/components/Error'
 
 // utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/utils/visiondashboard/fetchAgentnamePiegraphData'
-import PieGraph from '@/components/visiondashboard/PieGraph'
+import PieGraph from '@/components/agentdashboard/PieGraph'
 
 export default function AgentNamePie() {
     // pie graph data
@@ -19,18 +19,15 @@ export default function AgentNamePie() {
 
 
     useEffect(() => {
-
+        if (isLoading) return
+        setIsLoading(true)
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        // select data top 5
-                        const data = response.content.agent_name
-                        const top5Data = data.slice(0, 5)
-                        setChartData({ agent_name: top5Data })
-
+                        setChartData(response.content)
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -45,21 +42,14 @@ export default function AgentNamePie() {
                 setIsLoading(false)
             }
         }
-        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
 
-
     return (
         <>
-            {
-                isLoading && <div>Loading...</div>
-            }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            {
-                chartData.agent_name.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>代理機器</p> <p>未連接任何外部設備</p></div> : <PieGraph title="代理機器數量" data={chartData.agent_name} />
-            }
+            <PieGraph title="Agent Name" data={chartData.agent_name} />
         </>
     )
 }
