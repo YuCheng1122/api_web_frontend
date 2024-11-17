@@ -83,6 +83,9 @@ export default function App() {
 
         fetchData()
     }, [dateTimeRange])
+    console.log(chartData);
+
+
 
 
     return (
