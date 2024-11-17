@@ -45,7 +45,7 @@ export const initData: fetchEventTrendDataType = {
 }
 
 export const fetchEventTrendData = async (param: fetchEventTrendDataRequest): Promise<fetchEventTrendDataResponse> => {
-  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/line-chart`;
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dashboard/ttp_linechart`;
 
   try {
     const header = {
@@ -60,25 +60,20 @@ export const fetchEventTrendData = async (param: fetchEventTrendDataRequest): Pr
       headers: header
     });
 
-    const apiData = response.data;
-    console.log('apiData:', apiData);
-
-    // Assuming the API returns data in a format similar to the mock data
-    // You may need to adjust this based on the actual API response structure
+    const apiData = response.data.content.ttp_linechart[0]
+    type DataPoint = { time: string; value: number };
     const result: fetchEventTrendDataType = {
-      label: apiData.label || [],
+      label: apiData.label.map((item: { label: string }) => item.label),
       datas: apiData.datas.map((dataset: any) => {
-        const values = dataset.data.map(([_, value]: [string, number]) => value);
-        console.log('values:', values);
-
+        const values = dataset.data.map((data: DataPoint) => data.value);
         const normalizedValues = normalizeData(values);
+
         return {
           ...dataset,
-          data: dataset.data.map(([timestamp]: [string, number], index: number) => [timestamp, normalizedValues[index]])
+          data: dataset.data.map((data: DataPoint, index: number) => [data.time, normalizedValues[index]])
         };
-      })
+      }),
     };
-    console.log('result:', result);
 
 
     return {

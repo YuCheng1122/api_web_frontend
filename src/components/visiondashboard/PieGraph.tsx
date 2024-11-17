@@ -8,10 +8,7 @@ import { fetchPieDataType } from '@/utils/dashboard/fetchPieGaphData1'
 
 
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {
-  const processedData = data.map(item => ({
-    ...item,
-    name: item.name.length > 5 ? item.name.substring(9, 14) : item.name
-  }));
+
 
 
   const option = {
@@ -67,7 +64,7 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
           length: 15,
           length2: 10
         },
-        data: processedData
+        data: data
       }
     ]
   };

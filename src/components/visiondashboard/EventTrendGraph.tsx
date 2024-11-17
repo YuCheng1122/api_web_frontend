@@ -4,18 +4,20 @@
 import { useState, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 
-// components
+// componentsy
 import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import { useDashBoardContext } from '@/contexts/DashBoardContext'
+import { useVisionBoardContext } from '@/contexts/VisionBoardContext';
+
 
 // utils
-import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/dashboard/fetchEventTrendData'
+import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/visiondashboard/fetchEventTrendData';
 
 const EventTrendGraph = () => {
-  const { dateTimeRange } = useDashBoardContext()
+
+  const { dateTimeRange } = useVisionBoardContext()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
   const [error, setError] = useState<string | null>(null)
@@ -79,10 +81,10 @@ const EventTrendGraph = () => {
     series: chartData.datas.slice(0, 5)
   }
 
+
   useEffect(() => {
     const fetchData = async () => {
-      if (isLoading) return
-      setIsLoading(true)
+
       try {
         if (dateTimeRange?.start && dateTimeRange?.end) {
           const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
@@ -102,11 +104,9 @@ const EventTrendGraph = () => {
         setIsLoading(false)
       }
     }
+    setIsLoading(true)
     fetchData()
   }, [dateTimeRange])
-
-  console.log(chartData);
-
 
 
   return (
