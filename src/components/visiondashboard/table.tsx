@@ -93,41 +93,41 @@ export default function Table() {
 
     const columns: TableColumn<tableData>[] = [
         {
-            name: 'timestamp',
+            name: '時間戳記',
             selector: (row) => row.timestamp.slice(0, 10),
             sortable: true,
             width: '110px',
         },
         {
-            name: 'agent_name',
+            name: '代理機器',
             selector: (row) => row.agent_name,
             sortable: true,
             width: '120px',
         },
         {
-            name: 'rule_description',
+            name: '規則說明',
             selector: (row) => row.rule_description,
             sortable: true,
-            width: '145px',
+            width: '250px',
 
         },
         {
-            name: 'rule_mitre_tactic',
+            name: '規則 MITRE 策略',
             selector: (row) => row.rule_mitre_tactic,
             sortable: true,
-            width: '140px',
+            width: '200px',
         },
         {
-            name: 'rule_mitre_id',
+            name: '規則 MITRE 編號',
             selector: (row) => row.rule_mitre_id,
             sortable: true,
-            width: '100px',
+            width: '150px',
         },
         {
-            name: 'rule_level',
+            name: '規則級別',
             selector: (row) => row.rule_level,
             sortable: true,
-            width: '100px',
+            width: '150px',
         },
 
 

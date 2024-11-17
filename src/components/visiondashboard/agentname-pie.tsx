@@ -58,7 +58,7 @@ export default function AgentNamePie() {
             }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
-                chartData.agent_name.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><h1>Agent Name</h1> <p>No data available</p></div> : <PieGraph title="Agent Name" data={chartData.agent_name} />
+                chartData.agent_name.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>代理機器</p> <p>未連接任何外部設備</p></div> : <PieGraph title="代理機器數量" data={chartData.agent_name} />
             }
         </>
     )

@@ -19,14 +19,7 @@ export interface fetchBarResponse {
 }
 
 export const initData: EntireDataType[] = [
-    {
-        malicious_file: 'test',
-        count: 10
-    },
-    {
-        malicious_file: 'test2',
-        count: 10
-    }
+
 ];
 
 

@@ -83,11 +83,11 @@ export default function BarChartComponent() {
             }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
-                chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><h1>Malicious</h1> <p>No data available</p></div> :
+                chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><p className=' text-2xl font-bold'>惡意檔案分析</p> <p>目前未檢測到任何威脅</p></div> :
                     <Card className="h-full md:min-w-[660px]">
                         <CardHeader>
-                            <CardTitle>Bar Chart - malicious_file_barchart</CardTitle>
-                            <CardDescription>file count</CardDescription>
+                            <CardTitle>惡意檔案分析</CardTitle>
+                            <CardDescription>檔案 數量</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <ChartContainer config={chartConfig}>
