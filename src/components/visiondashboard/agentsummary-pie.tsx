@@ -7,7 +7,7 @@ import ErrorDisplayer from '@/components/Error'
 
 // utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/utils/visiondashboard/fetchAgentsummaryPiegraphData'
-import PieGraph from '@/components/agentdashboard/PieGraph'
+import PieGraph from '@/components/visiondashboard/PieGraph'
 
 export default function AgentSummaryPie() {
     // pie graph data

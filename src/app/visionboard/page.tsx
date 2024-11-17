@@ -24,10 +24,10 @@ export default function Visionboardpage() {
                     <div className='flex flex-col gap-2 xl:w-2/5  h-full w-full p-5 '>
 
 
-                        <div className='flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center h-full max-h-96 mb-5'>
-
+                        <div className='flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center h-96 mb-5'>
+                            <AgentAuthenticationPie />
                             <AgentNamePie />
-                            <AgentOSPie />
+
                         </div>
                         <div className="w-full h-full flex items-center justify-center"> {/* Set fixed height */}
                             <BarChartComponent />
@@ -48,7 +48,8 @@ export default function Visionboardpage() {
 
                         <div className='flex md:flex-row sm:flex-row  flex-col   w-full  justify-center min-h-96 gap-2 '>
                             <AgentSummaryPie />
-                            <AgentAuthenticationPie />
+                            <AgentOSPie />
+
                         </div>
                     </div>
 
