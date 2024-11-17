@@ -12,7 +12,7 @@ import { useState, useEffect } from 'react'
 import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 
 // utils
-import { initData, EntireDataType, fetchMaliciousBarData } from '@/utils/visiondashboard/fetchmaliciousBarData'
+import { initData, EntireDataType, fetchMaliciousBarData } from '@/utils/visiondashboard/fetchCVEBarData'
 
 import {
     Card,
@@ -32,7 +32,7 @@ import {
 
 
 
-export default function BarChartComponent() {
+export default function CVEBarChartComponent() {
 
     const { dateTimeRange } = useVisionBoardContext()
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -94,7 +94,7 @@ export default function BarChartComponent() {
                     >
                         <CartesianGrid horizontal={false} />
                         <YAxis
-                            dataKey="malicious_file"
+                            dataKey="cve_name"
                             type="category"
                             tickLine={false}
                             tickMargin={10}
@@ -114,7 +114,7 @@ export default function BarChartComponent() {
                             radius={4}
                         >
                             <LabelList
-                                dataKey="malicious_file"
+                                dataKey="cve_name"
                                 position="insideLeft"
                                 offset={8}
                                 className="fill-[--color-label]"

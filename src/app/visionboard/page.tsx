@@ -8,6 +8,7 @@ import AgentNamePie from '@/components/visiondashboard/agentname-pie'
 import AgentOSPie from '@/components/visiondashboard/agentos-pie'
 import AgentSummaryPie from '@/components/visiondashboard/agentsummary-pie'
 import AgentAuthenticationPie from '@/components/visiondashboard/authentication_pie'
+import CVEBarChartComponent from '@/components/visiondashboard/cve_barchart'
 
 
 
@@ -18,7 +19,7 @@ export default function Visionboardpage() {
         <>
             <div className='h-full p-3 bg-gray-100 rounded-lg '>
                 <div className="h-full w-full flex flex-wrap  ">
-                    <div className="flex flex-col gap-2 w-full h-1/2">
+                    <div className="flex flex-col gap-2 w-full h-1/2 mb-5">
                         <DateTimeFilter />
                     </div>
                     <div className='flex flex-col gap-2 xl:w-2/5  h-full w-full p-5 '>
@@ -29,20 +30,16 @@ export default function Visionboardpage() {
                             <AgentNamePie />
 
                         </div>
-                        <div className="w-full h-full flex items-center justify-center"> {/* Set fixed height */}
+                        <div className="w-full h-full flex flex-wrap items-center justify-center "> {/* Set fixed height */}
+
                             <BarChartComponent />
+                            <CVEBarChartComponent />
                         </div>
 
-                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center min-h-48">
-                            <Table />
-                        </div>
-                        {/* <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full justify-center min-h-48">
-                            <BarChartComponent />
-                        
-                        </div> */}
+
                     </div>
 
-                    <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col">
+                    <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col gap-10">
                         <AlertComponent />
                         <EventTrendGraph />
 
@@ -50,6 +47,9 @@ export default function Visionboardpage() {
                             <AgentSummaryPie />
                             <AgentOSPie />
 
+                        </div>
+                        <div className="flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center min-h-48">
+                            <Table />
                         </div>
                     </div>
 
