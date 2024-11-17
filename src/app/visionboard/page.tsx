@@ -30,7 +30,7 @@ export default function Visionboardpage() {
                             <AgentNamePie />
 
                         </div>
-                        <div className="w-full h-full flex flex-wrap items-center justify-center "> {/* Set fixed height */}
+                        <div className="w-full h-full flex flex-wrap items-center justify-center min-h-96 gap-5"> {/* Set fixed height */}
 
                             <BarChartComponent />
                             <CVEBarChartComponent />

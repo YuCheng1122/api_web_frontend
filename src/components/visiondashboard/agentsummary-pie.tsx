@@ -9,6 +9,7 @@ import ErrorDisplayer from '@/components/Error'
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/utils/visiondashboard/fetchAgentsummaryPiegraphData'
 import PieGraph from '@/components/visiondashboard/PieGraph'
 
+
 export default function AgentSummaryPie() {
     // pie graph data
     const { dateTimeRange } = useVisionBoardContext()
@@ -19,8 +20,7 @@ export default function AgentSummaryPie() {
 
 
     useEffect(() => {
-        if (isLoading) return
-        setIsLoading(true)
+
         const fetchData = async () => {
             try {
                 setChartData(initData)
@@ -42,14 +42,25 @@ export default function AgentSummaryPie() {
                 setIsLoading(false)
             }
         }
+        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
 
+
+
+
+
     return (
         <>
+            {
+                isLoading && <div>Loading...</div>
+            }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            <PieGraph title="Agent Summary" data={chartData.agent_summary} />
+            {
+                chartData.agent_summary.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><h1>Agent Summary</h1> <p>No data available</p></div> : <PieGraph title="Agent Summary" data={chartData.agent_summary} />
+            }
+
         </>
     )
 }

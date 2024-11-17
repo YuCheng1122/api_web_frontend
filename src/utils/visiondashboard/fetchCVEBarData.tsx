@@ -31,8 +31,8 @@ export const initData: EntireDataType[] = [
 
 
 
-export const fetchMaliciousBarData = async (param: fetchBarDataRequest): Promise<fetchBarResponse> => {
-    const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}api/dashboard/malicious_file_barchart`;
+export const fetchCVEBarData = async (param: fetchBarDataRequest): Promise<fetchBarResponse> => {
+    const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}api/dashboard/cve_barchart`;
 
     try {
         const header = {
@@ -48,6 +48,8 @@ export const fetchMaliciousBarData = async (param: fetchBarDataRequest): Promise
         });
 
         const apiData = response.data.content.cve_barchart;
+        console.log('apiData:', apiData);
+
 
         return {
             success: true,

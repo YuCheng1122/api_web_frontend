@@ -84,8 +84,7 @@ const EventTrendGraph = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      if (isLoading) return
-      setIsLoading(true)
+
       try {
         if (dateTimeRange?.start && dateTimeRange?.end) {
           const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
@@ -105,6 +104,7 @@ const EventTrendGraph = () => {
         setIsLoading(false)
       }
     }
+    setIsLoading(true)
     fetchData()
   }, [dateTimeRange])
 

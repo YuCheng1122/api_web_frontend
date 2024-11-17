@@ -57,8 +57,7 @@ export default function App() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        if (isLoading) return
-        setIsLoading(true)
+
         const fetchData = async () => {
             try {
                 setChartData(initData)
@@ -80,21 +79,23 @@ export default function App() {
                 setIsLoading(false)
             }
         }
+        setIsLoading(true)
+
         fetchData()
     }, [dateTimeRange])
+    console.log(chartData);
+
+
 
 
 
 
     return (
         <>
+            {isLoading && <div>Loading...</div>}
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            <AlertComponent
-                critical_severity={chartData.critical_severity}
-                high_severity={chartData.high_severity}
-                medium_severity={chartData.medium_severity}
-                low_severity={chartData.low_severity}
-            />
+
+            <AlertComponent critical_severity={chartData.critical_severity} high_severity={chartData.high_severity} medium_severity={chartData.medium_severity} low_severity={chartData.low_severity} />
         </>
     );
 }

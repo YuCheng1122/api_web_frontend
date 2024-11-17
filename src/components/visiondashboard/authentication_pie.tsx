@@ -19,15 +19,18 @@ export default function AgentAuthenticationPie() {
 
 
     useEffect(() => {
-        if (isLoading) return
-        setIsLoading(true)
+
+
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        setChartData(response.content)
+                        //  select data top 5
+                        const data = response.content.authentication_piechart
+                        const top5Data = data.slice(0, 5)
+                        setChartData({ authentication_piechart: top5Data })
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -42,6 +45,7 @@ export default function AgentAuthenticationPie() {
                 setIsLoading(false)
             }
         }
+        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
@@ -49,7 +53,10 @@ export default function AgentAuthenticationPie() {
     return (
         <>
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            <PieGraph title="Agent Summary" data={chartData.authentication_piechart} />
+            {
+
+                chartData.authentication_piechart.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><h1>Authentication</h1> <p>No data available</p></div> : <PieGraph title="Authentication" data={chartData.authentication_piechart} />
+            }
         </>
     )
 }
