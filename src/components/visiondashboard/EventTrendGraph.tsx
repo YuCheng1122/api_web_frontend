@@ -111,7 +111,7 @@ const EventTrendGraph = () => {
 
   return (
     <div className='h-full w-full '>
-      {isLoading ? <Loading /> : <ReactECharts option={option} />}
+      {isLoading ? <Loading /> : <div className=' bg-white rounded-md'><ReactECharts option={option} /></div>}
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
     </div>
   )

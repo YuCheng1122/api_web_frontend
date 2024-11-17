@@ -19,14 +19,6 @@ export interface fetchBarResponse {
 }
 
 export const initData: EntireDataType[] = [
-    {
-        cve_name: 'test',
-        count: 10
-    },
-    {
-        cve_name: 'test2',
-        count: 10
-    }
 ];
 
 

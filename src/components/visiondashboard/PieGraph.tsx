@@ -26,12 +26,12 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
     },
     legend: {
       orient: 'vertical',
-      right: 10,
-      top: 'center',
+      right: 0,
+      top: 'bottom',
       width: 100, // Limit width to control overflow
-      height: 200, // Adjust height if necessary
+      height: 60, // Adjust height if necessary
       textStyle: {
-        fontSize: 12,
+        fontSize: 10,
         overflow: 'truncate' // Truncate overflowing text
       },
       tooltip: {
@@ -73,9 +73,6 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
   return (
 
     <div className=" sm:max-w-[200px] sm:max-h-[300px] md:max-w-[500px] md:max-h-[400px] xl:max-w-[500px] 2xl:max-w-[600px]  w-full  flex flex-col p-2 bg-white rounded-lg shadow-lg min-h-48">
-      <div className="text-sm font-bold">
-        {title}
-      </div>
       <div className="flex-grow">
         <ReactECharts option={option} style={{ width: "100%", height: "100%" }} />
       </div>
