@@ -9,16 +9,17 @@ import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
+import { useVisionBoardContext } from '@/contexts/VisionBoardContext';
 
 
 // utils
-import { fetchEventTrendDataType } from '@/utils/dashboard/fetchEventTrendData'
-import { set } from 'lodash';
+import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/visiondashboard/fetchEventTrendData';
 
 const EventTrendGraph = () => {
 
+  const { dateTimeRange } = useVisionBoardContext()
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [chartData, setChartData] = useState<fetchEventTrendDataType>({ label: [], datas: [] })
+  const [chartData, setChartData] = useState<fetchEventTrendDataType>(initData)
   const [error, setError] = useState<string | null>(null)
 
   const option = {
@@ -79,180 +80,33 @@ const EventTrendGraph = () => {
     },
     series: chartData.datas.slice(0, 5)
   }
-  const defaultdata: fetchEventTrendDataType = {
-    label: [
-      "Service startup type was changed",
-      "Software protection service scheduled successfully.",
-      "Registry Value Integrity Checksum Changed",
-      "Windows System error event",
-      "Registry Key Integrity Checksum Changed",
-    ],
-    datas: [
 
 
-      {
-        "name": "Service startup type was changed",
-        "type": "line",
-        "data": [
-          [
-            "2024-11-10T12:50:33.695000Z",
-            418
-          ],
-          [
-            "2024-11-10T18:50:33.695000Z",
-            96
-          ],
-          [
-            "2024-11-11T00:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T06:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T12:50:33.695000Z",
-            0
-          ]
-        ]
-      },
-      {
-        "name": "Software protection service scheduled successfully.",
-        "type": "line",
-        "data": [
-          [
-            "2024-11-10T12:50:33.695000Z",
-            354
-          ],
-          [
-            "2024-11-10T18:50:33.695000Z",
-            140
-          ],
-          [
-            "2024-11-11T00:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T06:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T12:50:33.695000Z",
-            0
-          ]
-        ]
-      },
-      {
-        "name": "Registry Value Integrity Checksum Changed",
-        "type": "line",
-        "data": [
-          [
-            "2024-11-10T12:50:33.695000Z",
-            199
-          ],
-          [
-            "2024-11-10T18:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T00:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T06:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T12:50:33.695000Z",
-            0
-          ]
-        ]
-      },
-      {
-        "name": "Windows System error event",
-        "type": "line",
-        "data": [
-          [
-            "2024-11-10T12:50:33.695000Z",
-            148
-          ],
-          [
-            "2024-11-10T18:50:33.695000Z",
-            74
-          ],
-          [
-            "2024-11-11T00:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T06:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T12:50:33.695000Z",
-            0
-          ]
-        ]
-      },
-      {
-        "name": "Registry Key Integrity Checksum Changed",
-        "type": "line",
-        "data": [
-          [
-            "2024-11-10T12:50:33.695000Z",
-            101
-          ],
-          [
-            "2024-11-10T18:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T00:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T06:50:33.695000Z",
-            0
-          ],
-          [
-            "2024-11-11T12:50:33.695000Z",
-            0
-          ]
-        ]
-      },
-
-    ]
-  };
   useEffect(() => {
-    setChartData(defaultdata);
-  }, []);
-
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     if (isLoading) return
-  //     setIsLoading(true)
-  //     try {
-  //       if (dateTimeRange?.start && dateTimeRange?.end) {
-  //         const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
-  //         if (result.success) {
-  //           setChartData(result.content)
-  //         } else {
-  //           throw new Error("Error fetching event trend data")
-  //         }
-  //       }
-  //     } catch (error) {
-  //       console.log(error)
-  //       setError("無法獲取趨勢數據 😢。請稍後再試。")
-  //       setTimeout(() => {
-  //         setError(null)
-  //       }, 3000)
-  //     } finally {
-  //       setIsLoading(false)
-  //     }
-  //   }
-  //   fetchData()
-  // }, [dateTimeRange])
+    const fetchData = async () => {
+      if (isLoading) return
+      setIsLoading(true)
+      try {
+        if (dateTimeRange?.start && dateTimeRange?.end) {
+          const result = await fetchEventTrendData({ start: dateTimeRange?.start, end: dateTimeRange?.end })
+          if (result.success) {
+            setChartData(result.content)
+          } else {
+            throw new Error("Error fetching event trend data")
+          }
+        }
+      } catch (error) {
+        console.log(error)
+        setError("無法獲取趨勢數據 😢。請稍後再試。")
+        setTimeout(() => {
+          setError(null)
+        }, 3000)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    fetchData()
+  }, [dateTimeRange])
 
 
   return (
