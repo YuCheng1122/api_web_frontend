@@ -60,8 +60,7 @@ export default function Table() {
 
     useEffect(() => {
         const fetchData = async () => {
-            if (isLoading) return;
-            setIsLoading(true);
+
             try {
                 if (!useSampleData && dateTimeRange?.start && dateTimeRange?.end) {
                     const result = await fetchEventTableData({ id: 0, start: dateTimeRange?.start, end: dateTimeRange?.end });
@@ -81,6 +80,7 @@ export default function Table() {
                 setIsLoading(false);
             }
         };
+        setIsLoading(true);
         fetchData();
     }, [dateTimeRange, useSampleData]); // 添加 useSampleData 作為依賴
 
@@ -135,20 +135,26 @@ export default function Table() {
     ]
 
     return (
-
-
-
         <div className="flex flex-col rounded-xl w-full ">
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            <DataTable
-                columns={columns}
-                data={eventTableData}
-                pagination
-                highlightOnHover
-                pointerOnHover
-                paginationPerPage={3}
-                paginationRowsPerPageOptions={[3, 6, 9, 12]}
-            />
+            {
+                isLoading ? <Loading /> :
+                    <DataTable
+                        columns={columns}
+                        data={currentItems}
+                        pagination
+                        paginationServer
+                        paginationTotalRows={eventTableData.length}
+                        paginationPerPage={itemsPerPage}
+                        paginationRowsPerPageOptions={[5, 10, 15, 20]}
+                        onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
+                            setCurrentPage(currentPage);
+                        }}
+                        onChangePage={(currentPage) => {
+                            setCurrentPage(currentPage);
+                        }}
+                    />
+            }
 
 
 

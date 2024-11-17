@@ -17,17 +17,17 @@ export default function AgentOSPie() {
     const [error, setError] = useState<string | null>(null)
 
 
-
     useEffect(() => {
-        if (isLoading) return
-        setIsLoading(true)
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        setChartData(response.content)
+                        // select data top 5
+                        const data = response.content.agent_os
+                        const top5Data = data.slice(0, 5)
+                        setChartData({ agent_os: top5Data })
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -42,6 +42,7 @@ export default function AgentOSPie() {
                 setIsLoading(false)
             }
         }
+        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
@@ -49,8 +50,13 @@ export default function AgentOSPie() {
 
     return (
         <>
+            {
+                isLoading && <div>Loading...</div>
+            }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            <PieGraph title="Agent OS" data={chartData.agent_os} />
+            {
+                chartData.agent_os.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><h1>Agent OS</h1> <p>No data available</p></div> : <PieGraph title="Agent OS" data={chartData.agent_os} />
+            }
         </>
     )
 }

@@ -5,6 +5,7 @@
 import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React from "react";
+import ErrorDisplayer from '@/components/Error' // Adjust the import path as necessary
 
 import { useState, useEffect } from 'react'
 
@@ -12,7 +13,7 @@ import { useState, useEffect } from 'react'
 import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 
 // utils
-import { initData, EntireDataType, fetchMaliciousBarData } from '@/utils/visiondashboard/fetchmaliciousBarData'
+import { initData, EntireDataType, fetchMaliciousBarData } from '@/utils/visiondashboard/fetchMaliciousBarData'
 
 import {
     Card,
@@ -40,8 +41,6 @@ export default function BarChartComponent() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        if (isLoading) return
-        setIsLoading(true)
         const fetchData = async () => {
             try {
                 setChartData(initData)
@@ -63,6 +62,7 @@ export default function BarChartComponent() {
                 setIsLoading(false)
             }
         }
+        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
@@ -77,60 +77,73 @@ export default function BarChartComponent() {
     } satisfies ChartConfig
 
     return (
-        <Card className="h-full md:min-w-[660px]">
-            <CardHeader>
-                <CardTitle>Bar Chart - malicious_file_barchart</CardTitle>
-                <CardDescription>file count</CardDescription>
-            </CardHeader>
-            <CardContent>
-                <ChartContainer config={chartConfig}>
-                    <BarChart
-                        accessibilityLayer
-                        data={chartData}
-                        layout="vertical"
-                        margin={{
-                            right: 16,
-                        }}
-                    >
-                        <CartesianGrid horizontal={false} />
-                        <YAxis
-                            dataKey="malicious_file"
-                            type="category"
-                            tickLine={false}
-                            tickMargin={10}
-                            axisLine={false}
-                            tickFormatter={(value) => value.slice(0, 3)}
-                            hide
-                        />
-                        <XAxis dataKey="count" type="number" hide />
-                        <ChartTooltip
-                            cursor={false}
-                            content={<ChartTooltipContent indicator="line" />}
-                        />
-                        <Bar
-                            dataKey="count"
-                            layout="vertical"
-                            fill="var(--color-count)"
-                            radius={4}
-                        >
-                            <LabelList
-                                dataKey="malicious_file"
-                                position="insideLeft"
-                                offset={8}
-                                className="fill-[--color-label]"
-                                fontSize={12}
-                            />
-                            <LabelList
-                                dataKey="count"
-                                position="right"
-                                offset={8}
-                                className="fill-foreground"
-                                fontSize={12}
-                            />
-                        </Bar>
-                    </BarChart>
-                </ChartContainer>
-            </CardContent>
-        </Card>
+        <>
+            {
+                isLoading && <div>Loading...</div>
+            }
+            {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
+            {
+                chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><h1>Malicious</h1> <p>No data available</p></div> :
+                    <Card className="h-full md:min-w-[660px]">
+                        <CardHeader>
+                            <CardTitle>Bar Chart - malicious_file_barchart</CardTitle>
+                            <CardDescription>file count</CardDescription>
+                        </CardHeader>
+                        <CardContent>
+                            <ChartContainer config={chartConfig}>
+                                <BarChart
+                                    accessibilityLayer
+                                    data={chartData}
+                                    layout="vertical"
+                                    margin={{
+                                        right: 16,
+                                    }}
+                                >
+                                    <CartesianGrid horizontal={false} />
+                                    <YAxis
+                                        dataKey="malicious_file"
+                                        type="category"
+                                        tickLine={false}
+                                        tickMargin={10}
+                                        axisLine={false}
+                                        tickFormatter={(value) => value.slice(0, 3)}
+                                        hide
+                                    />
+                                    <XAxis dataKey="count" type="number" hide />
+                                    <ChartTooltip
+                                        cursor={false}
+                                        content={<ChartTooltipContent indicator="line" />}
+                                    />
+                                    <Bar
+                                        dataKey="count"
+                                        layout="vertical"
+                                        fill="var(--color-count)"
+                                        radius={4}
+                                    >
+                                        <LabelList
+                                            dataKey="malicious_file"
+                                            position="insideLeft"
+                                            offset={8}
+                                            className="fill-[--color-label]"
+                                            fontSize={12}
+                                        />
+                                        <LabelList
+                                            dataKey="count"
+                                            position="right"
+                                            offset={8}
+                                            className="fill-foreground"
+                                            fontSize={12}
+                                        />
+                                    </Bar>
+                                </BarChart>
+                            </ChartContainer>
+                        </CardContent>
+                    </Card>
+
+
+            }
+
+        </>
+
     )
 }

@@ -19,15 +19,18 @@ export default function AgentNamePie() {
 
 
     useEffect(() => {
-        if (isLoading) return
-        setIsLoading(true)
+
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        setChartData(response.content)
+                        // select data top 5
+                        const data = response.content.agent_name
+                        const top5Data = data.slice(0, 5)
+                        setChartData({ agent_name: top5Data })
+
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -42,14 +45,21 @@ export default function AgentNamePie() {
                 setIsLoading(false)
             }
         }
+        setIsLoading(true)
         fetchData()
     }, [dateTimeRange])
 
 
+
     return (
         <>
+            {
+                isLoading && <div>Loading...</div>
+            }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
-            <PieGraph title="Agent Name" data={chartData.agent_name} />
+            {
+                chartData.agent_name.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><h1>Agent Name</h1> <p>No data available</p></div> : <PieGraph title="Agent Name" data={chartData.agent_name} />
+            }
         </>
     )
 }
