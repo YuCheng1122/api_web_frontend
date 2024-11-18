@@ -19,18 +19,16 @@ export default function Visionboardpage() {
         <>
             <div className='h-full p-3 bg-gray-100 rounded-lg '>
                 <div className="h-full w-full flex flex-wrap  ">
-                    <div className="flex flex-col gap-2 w-full h-1/2 mb-5">
+                    <div className="flex flex-col gap-3 w-full h-1/2 mb-[120px] md:mb-10 sm:mb-10 xl:mb-10">
                         <DateTimeFilter />
                     </div>
-                    <div className='flex flex-col gap-2 xl:w-2/5  h-full w-full p-5 '>
-
-
-                        <div className='flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center h-96 mb-5'>
+                    <div className='flex flex-col gap-10 xl:w-2/5  h-full w-full px-5 mb-5  '>
+                        <div className='flex md:flex-row sm:flex-row  flex-col gap-2  w-full  justify-center h-96 mb-20 md:mb-0 sm:mb-0 xl:mb-0'>
                             <AgentAuthenticationPie />
                             <AgentNamePie />
 
                         </div>
-                        <div className="w-full h-full flex flex-wrap items-center justify-center min-h-96 gap-5"> {/* Set fixed height */}
+                        <div className="w-full h-full flex flex-wrap items-center justify-center min-h-96 gap-10 md:gap-20"> {/* Set fixed height */}
 
                             <BarChartComponent />
                             <CVEBarChartComponent />

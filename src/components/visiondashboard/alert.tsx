@@ -20,7 +20,7 @@ type AlertProps = {
 
 const AlertComponent: React.FC<AlertProps> = ({ critical_severity, high_severity, medium_severity, low_severity }) => {
     return (
-        <div className="p-6 bg-white rounded-lg shadow-md w-full max-w-4xl mx-auto">
+        <div className="p-6 bg-white rounded-lg shadow-md w-full  ">
             <h2 className="text-right text-gray-500 text-xs font-semibold mb-4">LAST 24 HOURS ALERTS</h2>
             <div className="grid grid-cols-4 gap-6 text-center">
                 <AlertCard label="最嚴重" value={critical_severity} color="text-red-500" rule="需要馬上改善" />
