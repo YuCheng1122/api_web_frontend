@@ -55,7 +55,7 @@ export default function AgentOSPie() {
             }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
-                chartData.agent_os.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>代理機器作業系統</p> <p>目前沒有安裝設備</p></div> : <PieGraph title="代理機器作業系統" data={chartData.agent_os} />
+                chartData.agent_os.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col min-h-96"><p className=' text-2xl font-bold'>代理機器作業系統</p> <p>目前沒有安裝設備</p></div> : <PieGraph title="代理機器作業系統" data={chartData.agent_os} />
             }
         </>
     )
