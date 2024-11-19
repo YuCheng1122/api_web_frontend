@@ -43,7 +43,7 @@ type AlertCardProps = {
 
 const AlertCard: React.FC<AlertCardProps> = ({ label, value, color, rule }) => {
     return (
-        <div className="p-4 bg-gray-100 rounded-lg">
+        <div className="p-4 bg-gray-100 rounded-lg min-h-48 flex items-center flex-col justify-center gap-3">
             <h3 className="text-lg font-semibold">{label}</h3>
             <p className={`text-4xl font-bold ${color}`}>{value}</p>
             <p className="text-sm text-gray-600 mt-2">{rule}</p>
