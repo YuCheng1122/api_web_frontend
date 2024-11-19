@@ -43,7 +43,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     linuxPackages.forEach(pkg => {
         for (let i = 1; i <= pkg.count; i++) {
             const index = String(currentIndex++).padStart(3, '0'); // 更新 index
-            const hostName = `${group}_${index}`;
+            const hostName = next_agent_name;
             let script = '';
 
             // 根據 pkg.type 生成相應的腳本
@@ -75,7 +75,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     macPackages.forEach(pkg => {
         for (let i = 1; i <= pkg.count; i++) {
             const index = String(currentIndex++).padStart(3, '0'); // 更新 index
-            const hostName = `${group}_${index}`;
+            const hostName = next_agent_name;
             let script = '';
 
             if (pkg.type === 'intel') {
