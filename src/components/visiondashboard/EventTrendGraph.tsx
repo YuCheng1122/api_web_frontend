@@ -110,8 +110,8 @@ const EventTrendGraph = () => {
 
 
   return (
-    <div className='h-full w-full '>
-      {isLoading ? <Loading /> : <div className=' bg-white rounded-md'><ReactECharts option={option} /></div>}
+    <div className='h-full w-full min-h-[350px]  bg-white rounded-md pt-10'>
+      {isLoading ? <Loading /> : <div className=''><ReactECharts option={option} /></div>}
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
     </div>
   )
