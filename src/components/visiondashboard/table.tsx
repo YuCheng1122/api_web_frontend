@@ -52,11 +52,17 @@ export default function Table() {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const [error, setError] = useState<string | null>(null)
     const [currentPage, setCurrentPage] = useState(1); // 新增狀態管理當前頁碼
-    const itemsPerPage = 5; // 固定每頁顯示5列
+    const [itemsPerPage, setItemsPerPage] = useState(5); // 新增狀態管理每頁顯示的資料筆數
     const totalPages = Math.ceil(eventTableData.length / itemsPerPage); // 計算總頁數
 
     // 計算當前頁的資料
     const currentItems = eventTableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+    useEffect(() => {
+        console.log(currentPage);
+    }, [currentPage]);
+
+
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -96,19 +102,19 @@ export default function Table() {
             name: '時間戳記',
             selector: (row) => row.timestamp.slice(0, 10),
             sortable: true,
-            width: '110px',
+            width: '200px',
         },
         {
             name: '場域設備',
             selector: (row) => row.agent_name,
             sortable: true,
-            width: '120px',
+            width: '200px',
         },
         {
             name: '規則說明',
             selector: (row) => row.rule_description,
             sortable: true,
-            width: '250px',
+            width: '400px',
 
         },
         {
@@ -121,13 +127,13 @@ export default function Table() {
             name: '規則 MITRE 編號',
             selector: (row) => row.rule_mitre_id,
             sortable: true,
-            width: '110px',
+            width: '200px',
         },
         {
             name: '規則級別',
             selector: (row) => row.rule_level,
             sortable: true,
-            width: '150px',
+            width: '10px',
         },
 
 
@@ -147,8 +153,8 @@ export default function Table() {
                         paginationTotalRows={eventTableData.length}
                         paginationPerPage={itemsPerPage}
                         paginationRowsPerPageOptions={[5, 10, 15, 20]}
-                        onChangeRowsPerPage={(currentRowsPerPage, currentPage) => {
-                            setCurrentPage(currentPage);
+                        onChangeRowsPerPage={(currentRowsPerPage) => {
+                            setItemsPerPage(currentRowsPerPage);
                         }}
                         onChangePage={(currentPage) => {
                             setCurrentPage(currentPage);
