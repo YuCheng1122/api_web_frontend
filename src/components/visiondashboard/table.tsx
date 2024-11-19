@@ -99,7 +99,7 @@ export default function Table() {
             width: '110px',
         },
         {
-            name: '代理機器',
+            name: '場域設備',
             selector: (row) => row.agent_name,
             sortable: true,
             width: '120px',
