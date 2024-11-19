@@ -54,16 +54,9 @@ export default function AgentAuthenticationPie() {
         <>
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
-<<<<<<< HEAD
-<<<<<<< HEAD
-                chartData.authentication_piechart.length <= 0 ? <div className="min-h-96 w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>身份驗證分析</p> <p>目前尚未有不合法驗證</p></div> : <PieGraph title="身份驗證分析" data={chartData.authentication_piechart} />
-=======
 
-                chartData.authentication_piechart.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>身份驗證分析</p> <p>目前尚未有不合法驗證</p></div> : <PieGraph title="身份驗證分析" data={chartData.authentication_piechart} />
->>>>>>> 6fd6bf2 (fix: chinese & piechart css error)
-=======
                 chartData.authentication_piechart.length <= 0 ? <div className="min-h-96 w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>身份驗證分析</p> <p>目前尚未有不合法驗證</p></div> : <PieGraph title="身份驗證分析" data={chartData.authentication_piechart} />
->>>>>>> 1db0142 (fix: page Alignment)
+
             }
         </>
     )
