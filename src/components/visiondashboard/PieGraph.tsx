@@ -73,7 +73,6 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
   return (
 
     <div className=" sm:max-w-[200px] sm:max-h-[300px] md:max-w-[500px] md:max-h-[400px] xl:max-w-[500px] 2xl:max-w-[600px]  w-full  flex flex-col p-2 bg-white rounded-lg shadow-lg min-h-48">
-
       <div className="flex-grow">
         <ReactECharts option={option} style={{ width: "100%", height: "100%" }} />
       </div>

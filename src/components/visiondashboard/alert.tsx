@@ -23,10 +23,12 @@ const AlertComponent: React.FC<AlertProps> = ({ critical_severity, high_severity
         <div className="p-6 bg-white rounded-lg shadow-md w-full  ">
             <h2 className="text-right text-gray-500 text-xs font-semibold mb-4">LAST 24 HOURS ALERTS</h2>
             <div className="grid grid-cols-4 gap-6 text-center">
+
                 <AlertCard label="最嚴重" value={critical_severity} color="text-red-500" rule="需要馬上改善" />
                 <AlertCard label="高嚴重" value={high_severity} color="text-yellow-500" rule="警惕嚴防設備安全" />
                 <AlertCard label="中嚴重" value={medium_severity} color="text-blue-500" rule="要求改善" />
                 <AlertCard label="低嚴重" value={low_severity} color="text-teal-500" rule="警訊" />
+
             </div>
         </div>
     );
@@ -84,7 +86,6 @@ export default function App() {
         fetchData()
     }, [dateTimeRange])
     console.log(chartData);
-
 
 
 

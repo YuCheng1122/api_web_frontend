@@ -59,6 +59,7 @@ export default function AgentSummaryPie() {
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
                 chartData.agent_summary.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>代理機器連線數</p> <p>尚未有設備連線</p></div> : <PieGraph title="代理機器連線情形" data={chartData.agent_summary} />
+
             }
 
         </>

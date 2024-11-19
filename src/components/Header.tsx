@@ -62,7 +62,6 @@ const Header = () => {
 
                       SenseX 聊天機器人
                     </Link>
-
                     <Link href={'/visionboard'} className='text-xl font-bold p-2 hover-underline-animation'>
                       視覺化儀表板
                     </Link>

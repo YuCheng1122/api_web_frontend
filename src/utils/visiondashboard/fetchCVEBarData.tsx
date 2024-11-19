@@ -19,7 +19,6 @@ export interface fetchBarResponse {
 }
 
 export const initData: EntireDataType[] = [
-
 ];
 
 
