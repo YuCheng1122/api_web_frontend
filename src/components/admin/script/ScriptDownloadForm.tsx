@@ -40,7 +40,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         const fetchAgentName = async () => {
             const { success, next_agent_name } = await fetchNextAgentName();
             if (success) {  // 確保成功獲取資料
-                setAgentNames((prev) => [...prev, next_agent_name]); // 將 next_agent_name 添加到 agentNames 陣列中
+                setAgentNames([next_agent_name]); // 將 next_agent_name 設置為 agentNames 陣列的唯一元素
                 setNextAgentName(next_agent_name); // 將 next_agent_name 存儲到狀態中
             }
         };
