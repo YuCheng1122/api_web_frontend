@@ -316,7 +316,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 <span className="ml-2">Intel</span>
                                 <input
                                     type="number"
-                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊���選中時顯示數字
                                     onChange={(e) => handleQuantityChange('intel', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -366,7 +366,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         <li key={index} className="mb-2">
                             {name}
                         </li>
-                    )}
+                    ))}
                 </ul>
             </div>
         </div>
