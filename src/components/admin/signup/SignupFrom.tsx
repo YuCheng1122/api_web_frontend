@@ -98,12 +98,12 @@ const SignUpForm = ({ className }: { className?: string }) => {
     console.log('formData:', formData);
 
     return (
-        <div className="bg-white flex  justify-center rounded-lg p-6 shadow-md md:w-[60vw] sm:w-full sm:h-full  md:h-full xl:h-[60vh]"> {/* 修改寬高 */}
+        <div className="bg-white flex  justify-center rounded-lg p-2 shadow-md md:w-[60vw] sm:w-full sm:h-full  md:h-full xl:h-[70vh]"> {/* 修改寬高 */}
             {/* 使用 flexbox 將左側表單和右側按鈕分開 */}
             <form onSubmit={handleSubmit} className="flex flex-wrap min-w-48 justify-between items-start h-full mt-10 ">
                 {/* 左邊部分 - 表單 */}
                 <div className="flex flex-col min-w-72 justify-start space-y-4 md:mr-5 sm:mr-0 "> {/* 使用 space-y-4 加入欄位間空隙 */}
-                    <h2 className="text-4xl font-bold mb-3">註冊</h2> {/* 修改底部間距為 mb-6 */}
+                    <h2 className="text-4xl font-bold mb-1">註冊</h2> {/* 修改底部間距為 mb-6 */}
                     <hr className="border-gray-300" />
 
                     {/* 使用者名稱 */}
