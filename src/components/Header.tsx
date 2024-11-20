@@ -12,8 +12,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { useRouter } from 'next/navigation'
-
 
 const Header = () => {
   const { isLogin, username, updateLoginState, isadmin } = useAuthContext()
@@ -32,9 +30,9 @@ const Header = () => {
   }, [isadmin])
 
   return (
-    <header className="bg-white w-full sticky top-0 z-50 ">
-      <div className="p-4  ">
-        < div className='flex items-center justify-between ' >
+    <header className="bg-white w-screen">
+      <div className="mx-auto px-4 py-4">
+        <div className='flex items-center justify-between'>
           {/* 左側：標題和導航按鈕 */}
           < div className='flex items-center space-x-4' >
             {/* 標題 */}

@@ -24,6 +24,40 @@ const SignUpForm = ({ className }: { className?: string }) => {
         // 驗證使用者名稱
         const usernameRegex = /^[a-zA-Z0-9]{1,16}$/; // 只允許字母和數字，且長度不超過8字元
         if (!usernameRegex.test(formData.username)) {
+            setMessage('使用者名稱只能包含字母和數字，且不得超過8字元');
+            setMessageType('error');
+            setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
+            return; // 如果不符合規則，則不提交表單
+        }
+
+        // 驗證密碼（例如：至少8個字元，包含字母和數字）
+        if (formData.password.length < 8) {
+            setMessage('密碼必須至少8個字元');
+            setMessageType('error');
+            setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
+            return; // 如果不符合規則，則不提交表單
+        }
+
+        // 驗證電子信箱格式
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 簡單的電子信箱格式驗證
+        if (!emailRegex.test(formData.email)) {
+            setMessage('請輸入有效的電子信箱');
+            setMessageType('error');
+            setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
+            return; // 如果不符合規則，則不提交表單
+        }
+
+        // 驗證公司名稱（可根據需求添加規則）
+        if (formData.company_name.trim() === '') {
+            setMessage('公司名稱不得為空');
+            setMessageType('error');
+            setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
+            return; // 如果不符合規則，則不提交表單
+        }
+
+        // 驗證使用者名稱
+        const usernameRegex = /^[a-zA-Z0-9]{1,16}$/; // 只允許字母和數字，且長度不超過8字元
+        if (!usernameRegex.test(formData.username)) {
             setMessage('使用者名稱只能包含字母和數字，且不得超過16字元');
             setMessageType('error');
             setTimeout(() => setMessage(''), 3000); // 3秒後清除訊息
