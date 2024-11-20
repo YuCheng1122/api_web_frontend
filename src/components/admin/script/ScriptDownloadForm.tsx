@@ -74,20 +74,19 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
     const handleCheckboxChange = (os: string, arch: string) => {
         const isChecked = !formData[os][arch];
         const newQuantities = { ...formData.quantities };
-
-        // 如果取消勾選，將數量加回 remainingAgents
-        if (!isChecked) {
-            setRemainingAgents(remainingAgents + newQuantities[arch]);
-            newQuantities[arch] = 1; // 將數量設為 0
-        } else {
-            // 勾選時，remainingAgents 減少 1
-            setRemainingAgents(remainingAgents - 1);
-        }
-
         // 只有在 remainingAgents 大於 0 時才允許勾選
         if (isChecked && remainingAgents === 0) {
             alert('無法勾選，剩餘代理數量為 0');
             return; // 直接返回，不更新
+        }
+
+        // 勾選時，remainingAgents 減少 1
+        if (isChecked) {
+            setRemainingAgents(remainingAgents - 1);
+        } else {
+            // 如果取消勾選，將數量加回 remainingAgents
+            setRemainingAgents(remainingAgents + newQuantities[arch]);
+            newQuantities[arch] = 1; // 將數量設為 0
         }
 
         setFormData((prevFormData) => ({
@@ -348,7 +347,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
                     >
-                        下載
+                        下載<br />
+                        windows 11 請執行&quot;Set-ExecutionPolicy Bypass -Scope Process&quot;<br />
+                        詳情請檢視安裝說明
                     </button>
                 </form>
             </div>
