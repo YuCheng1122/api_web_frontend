@@ -10,7 +10,7 @@ interface CustomChatComponentProps {
 }
 
 const INITIAL_MESSAGE = {
-    text: "您好！👋 我是 AIXSOAR 助手。今天我能為您提供什麼幫助？",
+    text: "您好！👋 我是 SenseX 助手。今天我能為您提供什麼幫助？",
     isUser: false,
     timestamp: new Date()
 };

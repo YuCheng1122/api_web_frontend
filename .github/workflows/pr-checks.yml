@@ -1,0 +1,36 @@
+name: Basic PR Checks
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  check-branch-status:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Check if branch is up to date
+        run: |
+          TARGET_BRANCH="${{ github.base_ref }}"
+          git fetch origin ${TARGET_BRANCH}
+          BEHIND_BY=$(git rev-list --count HEAD..origin/${TARGET_BRANCH})
+          if [ $BEHIND_BY -gt 0 ]; then
+            echo "⚠️ 您的分支落後目標分支 $BEHIND_BY 個提交"
+            echo "請執行以下命令更新您的分支："
+            echo "git pull origin ${TARGET_BRANCH}"
+            exit 1
+          fi
+      
+      - name: Check for merge conflicts
+        run: |
+          TARGET_BRANCH="${{ github.base_ref }}"
+          git fetch origin ${TARGET_BRANCH}
+          if git merge-tree "$(git merge-base HEAD origin/${TARGET_BRANCH})" origin/${TARGET_BRANCH} HEAD | grep -A3 "^<<<<<"; then
+            echo "⚠️ 檢測到潛在的合併衝突"
+            echo "請先合併目標分支到您的分支："
+            echo "git pull origin ${TARGET_BRANCH}"
+            exit 1
+          fi

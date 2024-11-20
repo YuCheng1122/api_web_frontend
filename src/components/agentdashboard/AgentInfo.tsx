@@ -23,7 +23,7 @@ export default function AgentInfo(props: { data: MitreData }) {
     };
 
     return (
-        <div className="bg-white shadow rounded-lg p-6 space-x-5 flex flex-row justify-around flex-grow">
+        <div className="bg-white shadow rounded-lg p-6 space-x-5 flex flex-row justify-around flex-wrap">
             <div className="flex justify-between items-center flex-col">
                 <span className=" text-gray-400">ID</span>
                 <span className="font-bold">{data.agent_id}</span>
