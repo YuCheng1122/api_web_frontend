@@ -1,9 +1,10 @@
 'use client'
 
 import React from 'react';
-import CustomChat from '../features/chatbot/components/CustomChat';
-import DashboardSummary from '../features/chatbot/components/DashboardSummary';
-import useDashboardInfo from '../../hooks/useDashboardInfo';
+import CustomChat from './components/CustomChat';
+import DashboardSummary from './components/DashboardSummary';
+import { useChat } from './hooks/useChat';
+import useDashboardInfo from '../../../hooks/useDashboardInfo';
 
 const ChatbotPage = () => {
     const dashboardInfo = useDashboardInfo();
