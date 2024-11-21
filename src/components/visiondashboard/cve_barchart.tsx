@@ -90,7 +90,7 @@ export default function CVEBarChartComponent() {
             }
             {
                 chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><p className=' text-2xl font-bold'>CVE分析</p> <p>目前沒有發現CVE漏洞</p></div> :
-                    <Card className="h-full md:min-w-[660px]">
+                    <Card className="h-full md:min-w-[500px]">
                         <CardHeader>
                             <CardTitle>CVE分析</CardTitle>
                             <CardDescription>攻擊次數</CardDescription>

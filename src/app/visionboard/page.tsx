@@ -38,7 +38,7 @@ export default function Visionboardpage() {
 
 
                     </div>
-                    <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col gap-6 ">
+                    <div className="flex  w-full xl:w-3/5  min-h-96 h-1/2 flex-col gap-2 ">
                         <AlertComponent />
                         <EventTrendGraph />
                         <div className='flex md:flex-row sm:flex-row  flex-col  w-full  justify-center min-h-96 gap-2 '>

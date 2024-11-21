@@ -93,7 +93,7 @@ export default function AgentnameBarChartComponent() {
             }
             {
                 chartData.agent_name.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col  h-96 "><p className=' text-2xl font-bold'>場域設備事件數量</p> <p>未發生何事件</p></div> :
-                    <Card className="h-full md:min-w-[550px]">
+                    <Card className="h-full w-full min-h-96 flex justify-center flex-col">
                         <CardHeader>
                             <CardTitle>場域設備事件數量</CardTitle>
                             <CardDescription>發生次數</CardDescription>
