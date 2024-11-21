@@ -1,13 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
-import { DashboardInfo } from '../types/chat';
+import { Message } from '../types/chat';
 import { useChat } from '../hooks/useChat';
 import { MessageFormatter } from "./MessageFormatter";
 import { DynamicQuestions } from "./DynamicQuestions";
-
-interface CustomChatProps {
-    dashboardInfo: DashboardInfo;
-}
 
 const INITIAL_MESSAGE = {
     text: "您好！👋 我是 SenseX 助手。今天我能為您提供什麼幫助？",
@@ -15,9 +11,7 @@ const INITIAL_MESSAGE = {
     timestamp: new Date()
 };
 
-const CustomChat: React.FC<CustomChatProps> = ({
-    dashboardInfo,
-}) => {
+const CustomChat: React.FC = () => {
     const {
         messages,
         isLoading,
@@ -25,7 +19,6 @@ const CustomChat: React.FC<CustomChatProps> = ({
         streamingMessage,
         sendMessage
     } = useChat({
-        dashboardInfo,
         initialMessages: [INITIAL_MESSAGE]
     });
 
@@ -117,7 +110,6 @@ const CustomChat: React.FC<CustomChatProps> = ({
             </div>
             <div className="w-80 bg-white rounded-lg shadow-md p-4 overflow-y-auto">
                 <DynamicQuestions
-                    dashboardInfo={dashboardInfo}
                     messages={messages}
                     onQuestionSelect={handleQuestionSelect}
                     shouldGenerateNew={shouldGenerateNew}

@@ -1,5 +1,12 @@
 import { DashboardInfo, Message } from '../types/chat';
 
+const getDefaultValue = (value: any, defaultValue: any) => {
+    if (value === undefined || value === null || value === '') {
+        return defaultValue;
+    }
+    return value;
+};
+
 export const createSystemPrompt = (dashboardInfo: DashboardInfo): string => `
 <prompt>
     <language>
@@ -15,38 +22,38 @@ export const createSystemPrompt = (dashboardInfo: DashboardInfo): string => `
         - 引導用戶理解整體安全概念
     </assistantRole>
     <systemStatus>
-        <totalAgents>${dashboardInfo.totalAgents}</totalAgents>
-        <activeAgents>${dashboardInfo.activeAgents}</activeAgents>
-        <topAgent>${dashboardInfo.topAgent}</topAgent>
-        <topEvent>${dashboardInfo.topEvent}</topEvent>
-        <topMitre>${dashboardInfo.topMitre}</topMitre>
-        <totalEvents>${dashboardInfo.totalEvents}</totalEvents>
-        <latestEventTrends>${JSON.stringify(dashboardInfo.latestEventTrends)}</latestEventTrends>
+        <totalAgents>${getDefaultValue(dashboardInfo.totalAgents, 0)}</totalAgents>
+        <activeAgents>${getDefaultValue(dashboardInfo.activeAgents, 0)}</activeAgents>
+        <topAgent>${getDefaultValue(dashboardInfo.topAgent, 'N/A')}</topAgent>
+        <topEvent>${getDefaultValue(dashboardInfo.topEvent, 'N/A')}</topEvent>
+        <topMitre>${getDefaultValue(dashboardInfo.topMitre, 'N/A')}</topMitre>
+        <totalEvents>${getDefaultValue(dashboardInfo.totalEvents, 0)}</totalEvents>
+        <latestEventTrends>${JSON.stringify(dashboardInfo.latestEventTrends || [])}</latestEventTrends>
         <agentDistribution>
             <windows>
-                <total>${dashboardInfo.agentDistribution.windows.total}</total>
-                <active>${dashboardInfo.agentDistribution.windows.active}</active>
+                <total>${getDefaultValue(dashboardInfo.agentDistribution?.windows?.total, 0)}</total>
+                <active>${getDefaultValue(dashboardInfo.agentDistribution?.windows?.active, 0)}</active>
             </windows>
             <linux>
-                <total>${dashboardInfo.agentDistribution.linux.total}</total>
-                <active>${dashboardInfo.agentDistribution.linux.active}</active>
+                <total>${getDefaultValue(dashboardInfo.agentDistribution?.linux?.total, 0)}</total>
+                <active>${getDefaultValue(dashboardInfo.agentDistribution?.linux?.active, 0)}</active>
             </linux>
             <macos>
-                <total>${dashboardInfo.agentDistribution.macos.total}</total>
-                <active>${dashboardInfo.agentDistribution.macos.active}</active>
+                <total>${getDefaultValue(dashboardInfo.agentDistribution?.macos?.total, 0)}</total>
+                <active>${getDefaultValue(dashboardInfo.agentDistribution?.macos?.active, 0)}</active>
             </macos>
         </agentDistribution>
         <recentEvents>
-            ${dashboardInfo.recentEvents
+            ${(dashboardInfo.recentEvents || [])
                 .map(
                     (event) => `
                 <event>
-                    <time>${event.time}</time>
-                    <agentName>${event.agent_name}</agentName>
-                    <ruleDescription>${event.rule_description}</ruleDescription>
-                    <ruleMitreTactic>${event.rule_mitre_tactic}</ruleMitreTactic>
-                    <ruleMitreId>${event.rule_mitre_id}</ruleMitreId>
-                    <ruleLevel>${event.rule_level}</ruleLevel>
+                    <time>${getDefaultValue(event.time, 'N/A')}</time>
+                    <agentName>${getDefaultValue(event.agent_name, 'N/A')}</agentName>
+                    <ruleDescription>${getDefaultValue(event.rule_description, 'N/A')}</ruleDescription>
+                    <ruleMitreTactic>${getDefaultValue(event.rule_mitre_tactic, 'N/A')}</ruleMitreTactic>
+                    <ruleMitreId>${getDefaultValue(event.rule_mitre_id, 'N/A')}</ruleMitreId>
+                    <ruleLevel>${getDefaultValue(event.rule_level, 0)}</ruleLevel>
                 </event>
             `
                 )
@@ -107,41 +114,41 @@ export const createQuestionGenerationPrompt = (dashboardInfo: DashboardInfo, mes
 
 <systemInfo>
     <agents>
-        <total>${dashboardInfo.totalAgents}</total>
-        <active>${dashboardInfo.activeAgents}</active>
-        <mostActive>${dashboardInfo.topAgent}</mostActive>
+        <total>${getDefaultValue(dashboardInfo.totalAgents, 0)}</total>
+        <active>${getDefaultValue(dashboardInfo.activeAgents, 0)}</active>
+        <mostActive>${getDefaultValue(dashboardInfo.topAgent, 'N/A')}</mostActive>
     </agents>
     <events>
-        <total>${dashboardInfo.totalEvents}</total>
-        <mostCommon>${dashboardInfo.topEvent}</mostCommon>
-        <mitreTactic>${dashboardInfo.topMitre}</mitreTactic>
-        <trends>${JSON.stringify(dashboardInfo.latestEventTrends)}</trends>
+        <total>${getDefaultValue(dashboardInfo.totalEvents, 0)}</total>
+        <mostCommon>${getDefaultValue(dashboardInfo.topEvent, 'N/A')}</mostCommon>
+        <mitreTactic>${getDefaultValue(dashboardInfo.topMitre, 'N/A')}</mitreTactic>
+        <trends>${JSON.stringify(dashboardInfo.latestEventTrends || [])}</trends>
     </events>
     <distribution>
         <windows>
-            <total>${dashboardInfo.agentDistribution.windows.total}</total>
-            <active>${dashboardInfo.agentDistribution.windows.active}</active>
+            <total>${getDefaultValue(dashboardInfo.agentDistribution?.windows?.total, 0)}</total>
+            <active>${getDefaultValue(dashboardInfo.agentDistribution?.windows?.active, 0)}</active>
         </windows>
         <linux>
-            <total>${dashboardInfo.agentDistribution.linux.total}</total>
-            <active>${dashboardInfo.agentDistribution.linux.active}</active>
+            <total>${getDefaultValue(dashboardInfo.agentDistribution?.linux?.total, 0)}</total>
+            <active>${getDefaultValue(dashboardInfo.agentDistribution?.linux?.active, 0)}</active>
         </linux>
         <macos>
-            <total>${dashboardInfo.agentDistribution.macos.total}</total>
-            <active>${dashboardInfo.agentDistribution.macos.active}</active>
+            <total>${getDefaultValue(dashboardInfo.agentDistribution?.macos?.total, 0)}</total>
+            <active>${getDefaultValue(dashboardInfo.agentDistribution?.macos?.active, 0)}</active>
         </macos>
     </distribution>
     <recentEvents>
-        ${dashboardInfo.recentEvents
+        ${(dashboardInfo.recentEvents || [])
             .map(
                 (event) => `
         <event>
-            <time>${event.time}</time>
-            <agent>${event.agent_name}</agent>
-            <description>${event.rule_description}</description>
-            <mitreTactic>${event.rule_mitre_tactic}</mitreTactic>
-            <mitreId>${event.rule_mitre_id}</mitreId>
-            <level>${event.rule_level}</level>
+            <time>${getDefaultValue(event.time, 'N/A')}</time>
+            <agent>${getDefaultValue(event.agent_name, 'N/A')}</agent>
+            <description>${getDefaultValue(event.rule_description, 'N/A')}</description>
+            <mitreTactic>${getDefaultValue(event.rule_mitre_tactic, 'N/A')}</mitreTactic>
+            <mitreId>${getDefaultValue(event.rule_mitre_id, 'N/A')}</mitreId>
+            <level>${getDefaultValue(event.rule_level, 0)}</level>
         </event>`
             )
             .join("")}

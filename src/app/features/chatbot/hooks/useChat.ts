@@ -1,9 +1,8 @@
 import { useState, useCallback, useRef } from 'react';
-import { Message, DashboardInfo, ChatError } from '../types/chat';
+import { Message, ChatError } from '../types/chat';
 import { ChatService } from '../services/chatService';
 
 interface UseChatProps {
-    dashboardInfo: DashboardInfo;
     initialMessages?: Message[];
 }
 
@@ -16,7 +15,7 @@ interface UseChatReturn {
     clearMessages: () => void;
 }
 
-export const useChat = ({ dashboardInfo, initialMessages = [] }: UseChatProps): UseChatReturn => {
+export const useChat = ({ initialMessages = [] }: UseChatProps): UseChatReturn => {
     const [messages, setMessages] = useState<Message[]>(initialMessages);
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<ChatError | null>(null);
@@ -42,7 +41,6 @@ export const useChat = ({ dashboardInfo, initialMessages = [] }: UseChatProps): 
             let fullResponse = '';
             await chatService.current.sendStreamingMessage(
                 message,
-                dashboardInfo,
                 messages,
                 (chunk: string) => {
                     fullResponse += chunk;
@@ -70,7 +68,7 @@ export const useChat = ({ dashboardInfo, initialMessages = [] }: UseChatProps): 
             setIsLoading(false);
             setStreamingMessage('');
         }
-    }, [messages, isLoading, dashboardInfo]);
+    }, [messages, isLoading]);
 
     const clearMessages = useCallback(() => {
         setMessages([]);

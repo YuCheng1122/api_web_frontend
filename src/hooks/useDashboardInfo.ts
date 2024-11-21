@@ -1,9 +1,19 @@
 import { useState, useEffect } from 'react';
-import { fetchAgentData } from '@/utils/dashboard/fetchAgentData';
-import { fetchEventTrendData } from '@/utils/dashboard/fetchEventTrendData';
-import { fetchPieGraphData } from '@/utils/dashboard/fetchPieGaphData1';
-import { fetchEventTableData } from '@/utils/dashboard/fetchEventTableData';
-import { fetchNetworkConnection } from '@/utils/dashboard/fetchNetworkConnection';
+import { fetchAgentData } from '../utils/dashboard/fetchAgentData';
+import { fetchEventTrendData } from '../utils/dashboard/fetchEventTrendData';
+import { fetchPieGraphData } from '../utils/dashboard/fetchPieGaphData1';
+import { fetchEventTableData } from '../utils/dashboard/fetchEventTableData';
+import { fetchNetworkConnection } from '../utils/dashboard/fetchNetworkConnection';
+
+interface AgentDataType {
+    agent_name: string;
+    data: number | null;
+}
+
+interface EventTrendData {
+    name: string;
+    data: Array<[string, number]>;
+}
 
 interface DashboardInfo {
     totalAgents: number;
@@ -48,22 +58,57 @@ const useDashboardInfo = () => {
     useEffect(() => {
         const fetchDashboardInfo = async () => {
             const now = new Date();
-            const oneDayAgo = new Date(now.getTime() - 24 * 60 * 60 * 1000);
+            const twentyEightHoursAgo = new Date(now.getTime() - 28 * 60 * 60 * 1000);
+
+            console.log('Fetching dashboard info for time range:', {
+                start: twentyEightHoursAgo.toISOString(),
+                end: now.toISOString()
+            });
 
             try {
-                const [agentData, eventTrendData, pieGraphData, eventTableData, networkConnection] = await Promise.all([
-                    fetchAgentData({ start: oneDayAgo, end: now }),
-                    fetchEventTrendData({ start: oneDayAgo, end: now }),
-                    fetchPieGraphData({ start: oneDayAgo, end: now }),
-                    fetchEventTableData({ id: 0, start: oneDayAgo, end: now, limit: 10 }),
-                    fetchNetworkConnection({ start: oneDayAgo, end: now })
-                ]);
+                // 分開執行每個請求以便更好地追蹤錯誤
+                console.log('Fetching agent data...');
+                const agentData = await fetchAgentData({ start: twentyEightHoursAgo, end: now });
+                if (!agentData.success) {
+                    console.error('Agent data fetch failed:', agentData.error);
+                }
+
+                console.log('Fetching event trend data...');
+                const eventTrendData = await fetchEventTrendData({ start: twentyEightHoursAgo, end: now });
+                if (!eventTrendData.success) {
+                    console.error('Event trend data fetch failed');
+                }
+
+                console.log('Fetching pie graph data...');
+                const pieGraphData = await fetchPieGraphData({ start: twentyEightHoursAgo, end: now });
+                if (!pieGraphData.success) {
+                    console.error('Pie graph data fetch failed');
+                }
+
+                console.log('Fetching event table data...');
+                const eventTableData = await fetchEventTableData({ 
+                    id: 0, 
+                    start: twentyEightHoursAgo, 
+                    end: now, 
+                    limit: 10 
+                });
+                if (!eventTableData.success) {
+                    console.error('Event table data fetch failed');
+                }
+
+                console.log('Fetching network connection data...');
+                const networkConnection = await fetchNetworkConnection({ start: twentyEightHoursAgo, end: now });
+                if (!networkConnection.success) {
+                    console.error('Network connection data fetch failed');
+                }
+
+                console.log('All data fetched, processing results...');
 
                 const newInfo: DashboardInfo = {
-                    totalAgents: agentData.success ? agentData.content.find(a => a.agent_name === "Total agents")?.data || 0 : 0,
-                    activeAgents: agentData.success ? agentData.content.find(a => a.agent_name === "Active agents")?.data || 0 : 0,
+                    totalAgents: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Total agents")?.data || 0 : 0,
+                    activeAgents: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Active agents")?.data || 0 : 0,
                     latestEventTrends: eventTrendData.success
-                        ? eventTrendData.content.datas.map(d => ({
+                        ? eventTrendData.content.datas.map((d: EventTrendData) => ({
                             name: d.name,
                             value: d.data[d.data.length - 1][1]
                         }))
@@ -75,23 +120,30 @@ const useDashboardInfo = () => {
                     recentEvents: eventTableData.success ? eventTableData.content.datas : [],
                     agentDistribution: {
                         windows: {
-                            total: agentData.success ? agentData.content.find(a => a.agent_name === "Windows agents")?.data || 0 : 0,
-                            active: agentData.success ? agentData.content.find(a => a.agent_name === "Active Windows agents")?.data || 0 : 0,
+                            total: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Windows agents")?.data || 0 : 0,
+                            active: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Active Windows agents")?.data || 0 : 0,
                         },
                         linux: {
-                            total: agentData.success ? agentData.content.find(a => a.agent_name === "Linux agents")?.data || 0 : 0,
-                            active: agentData.success ? agentData.content.find(a => a.agent_name === "Active Linux agents")?.data || 0 : 0,
+                            total: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Linux agents")?.data || 0 : 0,
+                            active: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Active Linux agents")?.data || 0 : 0,
                         },
                         macos: {
-                            total: agentData.success ? agentData.content.find(a => a.agent_name === "MacOs agents")?.data || 0 : 0,
-                            active: agentData.success ? agentData.content.find(a => a.agent_name === "Active MacOS agents")?.data || 0 : 0,
+                            total: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "MacOs agents")?.data || 0 : 0,
+                            active: agentData.success ? agentData.content.find((a: AgentDataType) => a.agent_name === "Active MacOS agents")?.data || 0 : 0,
                         },
                     },
                 };
 
+                console.log('Setting new dashboard info:', newInfo);
                 setDashboardInfo(newInfo);
             } catch (error) {
-                console.error('Error fetching dashboard info:', error);
+                console.error('Error in fetchDashboardInfo:', error);
+                if (error instanceof Error) {
+                    console.error('Error details:', {
+                        message: error.message,
+                        stack: error.stack
+                    });
+                }
             }
         };
 

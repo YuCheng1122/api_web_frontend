@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { DashboardInfo, Message } from '../types/chat';
+import { Message } from '../types/chat';
 import { ChevronDown, ChevronRight, Sparkles, Clock } from 'lucide-react';
+import { ChatService } from '../services/chatService';
 
 interface Question {
     question: string;
@@ -16,7 +17,6 @@ interface QuestionSet {
 }
 
 interface DynamicQuestionsProps {
-    dashboardInfo: DashboardInfo;
     messages: Message[];
     onQuestionSelect: (question: string) => void;
     shouldGenerateNew: boolean;
@@ -24,7 +24,6 @@ interface DynamicQuestionsProps {
 }
 
 export const DynamicQuestions: React.FC<DynamicQuestionsProps> = ({
-    dashboardInfo,
     messages,
     onQuestionSelect,
     shouldGenerateNew,
@@ -35,6 +34,7 @@ export const DynamicQuestions: React.FC<DynamicQuestionsProps> = ({
     const [error, setError] = useState<string | null>(null);
     const [animatingSetId, setAnimatingSetId] = useState<number | null>(null);
     const generationInProgress = useRef(false);
+    const chatService = useRef(ChatService.getInstance());
 
     const generateNewQuestions = async () => {
         if (generationInProgress.current) {
@@ -50,6 +50,11 @@ export const DynamicQuestions: React.FC<DynamicQuestionsProps> = ({
                 ...set,
                 isCollapsed: true
             })));
+
+            const dashboardInfo = await chatService.current.getDashboardInfo();
+            if (!dashboardInfo) {
+                throw new Error('無法獲取系統狀態數據');
+            }
 
             const response = await fetch('/api/generate-questions', {
                 method: 'POST',
