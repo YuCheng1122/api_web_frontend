@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { Message } from '../types/chat';
-import { ChevronDown, ChevronRight, Sparkles, Clock } from 'lucide-react';
+import { ChevronDown, Sparkles, Clock } from 'lucide-react';
 import { ChatService } from '../services/chatService';
 
 interface Question {

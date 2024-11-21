@@ -33,11 +33,3 @@ export interface ChatError {
     code: string;
     details?: unknown;
 }
-
-export interface StreamResponse {
-    type: 'content_block_delta';
-    delta: {
-        type: 'text_delta';
-        text: string;
-    };
-}

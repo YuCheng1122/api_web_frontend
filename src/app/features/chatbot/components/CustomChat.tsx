@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
-import { Message } from '../types/chat';
 import { useChat } from '../hooks/useChat';
 import { MessageFormatter } from "./MessageFormatter";
 import { DynamicQuestions } from "./DynamicQuestions";
