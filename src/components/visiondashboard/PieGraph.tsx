@@ -5,7 +5,7 @@ import ReactECharts from "echarts-for-react";
 
 // utils
 import { fetchPieDataType } from '@/utils/dashboard/fetchPieGaphData1'
-import { format } from "path";
+
 
 
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {

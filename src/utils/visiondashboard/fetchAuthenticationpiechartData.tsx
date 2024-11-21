@@ -45,6 +45,8 @@ export const fetchPieGraphData = async (param: fetchPieGraphDataRequest): Promis
         });
 
         const apiData = response.data.content;
+        console.log('apiData:', apiData);
+
 
 
         //    change column name name and value

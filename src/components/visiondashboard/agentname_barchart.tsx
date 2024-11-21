@@ -56,7 +56,6 @@ export default function AgentnameBarChartComponent() {
                     }
                 }
             } catch (error) {
-                console.log(error)
                 setError('Failed to fetch pie graph data 😢. Please try again later.')
                 setTimeout(() => {
                     setError(null)

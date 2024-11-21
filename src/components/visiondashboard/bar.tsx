@@ -84,7 +84,7 @@ export default function BarChartComponent() {
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
                 chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><p className=' text-2xl font-bold'>惡意檔案分析</p> <p>目前未檢測到任何威脅</p></div> :
-                    <Card className="h-full md:min-w-[500px]">
+                    <Card className="h-full md:min-w-[600px]">
                         <CardHeader>
                             <CardTitle>惡意檔案分析</CardTitle>
                             <CardDescription>檔案 數量</CardDescription>

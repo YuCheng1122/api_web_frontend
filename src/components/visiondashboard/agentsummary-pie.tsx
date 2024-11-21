@@ -47,7 +47,7 @@ export default function AgentSummaryPie() {
         fetchData()
     }, [dateTimeRange])
 
-    console.log(chartData);
+
     //   字串處理 不要後面五個字
     const sliceword = (word: string, value: number) => {
 
@@ -60,8 +60,6 @@ export default function AgentSummaryPie() {
         return { name: sliceword(item.name, item.value), value: item.value }
     }
     )
-    console.log(agent_summary);
-
 
     return (
         <>
