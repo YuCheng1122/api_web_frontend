@@ -1,4 +1,5 @@
 import { Message, ChatError, StreamResponse, DashboardInfo } from '../types/chat';
+import { createSystemPrompt, createQuestionGenerationPrompt } from './prompts';
 
 export class ChatService {
     private static instance: ChatService;
@@ -20,7 +21,7 @@ export class ChatService {
         onChunk: (chunk: string) => void
     ): Promise<void> {
         try {
-            const context = this.createSystemPrompt(dashboardInfo);
+            const context = createSystemPrompt(dashboardInfo);
             const response = await this.makeStreamRequest(message, context, conversationHistory);
             await this.processStreamResponse(response, onChunk);
         } catch (error) {
@@ -29,10 +30,11 @@ export class ChatService {
     }
 
     public async generateQuestions(
-        dashboardInfo: DashboardInfo
+        dashboardInfo: DashboardInfo,
+        messages: Message[] = []
     ): Promise<string> {
         try {
-            const prompt = this.createQuestionGenerationPrompt(dashboardInfo);
+            const prompt = createQuestionGenerationPrompt(dashboardInfo, messages);
             const response = await fetch('/api/generate-questions', {
                 method: 'POST',
                 headers: {
@@ -50,30 +52,6 @@ export class ChatService {
         } catch (error) {
             throw this.handleError(error);
         }
-    }
-
-    private createSystemPrompt(dashboardInfo: DashboardInfo): string {
-        return `You are a security operations assistant. Here's the current dashboard information:
-- Total Agents: ${dashboardInfo.totalAgents}
-- Active Agents: ${dashboardInfo.activeAgents}
-- Top Agent: ${dashboardInfo.topAgent}
-- Top Event: ${dashboardInfo.topEvent}
-- Top MITRE Tactic: ${dashboardInfo.topMitre}
-- Total Events: ${dashboardInfo.totalEvents}
-
-Please help analyze security events and provide insights based on this information.`;
-    }
-
-    private createQuestionGenerationPrompt(dashboardInfo: DashboardInfo): string {
-        return `Based on the following dashboard information:
-- Total Agents: ${dashboardInfo.totalAgents}
-- Active Agents: ${dashboardInfo.activeAgents}
-- Top Agent: ${dashboardInfo.topAgent}
-- Top Event: ${dashboardInfo.topEvent}
-- Top MITRE Tactic: ${dashboardInfo.topMitre}
-- Total Events: ${dashboardInfo.totalEvents}
-
-Generate relevant questions that a security analyst might want to ask about the current system state.`;
     }
 
     private async makeStreamRequest(
@@ -116,16 +94,19 @@ Generate relevant questions that a security analyst might want to ask about the 
                 const lines = chunk.split('\n');
 
                 for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        try {
-                            const jsonData = JSON.parse(line.slice(6)) as StreamResponse;
-                            if (jsonData.type === 'content_block_delta' && 
-                                jsonData.delta.type === 'text_delta') {
-                                onChunk(jsonData.delta.text);
-                            }
-                        } catch (e) {
-                            console.error('Error parsing JSON:', e);
+                    if (!line.startsWith('data: ')) continue;
+                    
+                    const data = line.slice(6);
+                    if (data.includes('串流結束')) continue;
+
+                    try {
+                        const jsonData = JSON.parse(data) as StreamResponse;
+                        if (jsonData.type === 'content_block_delta' && 
+                            jsonData.delta.type === 'text_delta') {
+                            onChunk(jsonData.delta.text);
                         }
+                    } catch (e) {
+                        console.error('Error parsing JSON:', e);
                     }
                 }
             }
