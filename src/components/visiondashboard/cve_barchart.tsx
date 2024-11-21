@@ -80,7 +80,6 @@ export default function CVEBarChartComponent() {
             color: "hsl(var(--background))",
         },
     } satisfies ChartConfig
-    console.log(chartData);
 
 
     return (

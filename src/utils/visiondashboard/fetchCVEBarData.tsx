@@ -40,7 +40,6 @@ export const fetchCVEBarData = async (param: fetchBarDataRequest): Promise<fetch
         });
 
         const apiData = response.data.content.cve_barchart;
-        console.log('apiData:', apiData);
 
 
         return {
