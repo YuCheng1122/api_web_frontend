@@ -46,15 +46,13 @@ export const fetchPieGraphData = async (param: fetchPieGraphDataRequest): Promis
 
         const apiData = response.data.content;
 
-
         //    change column name name and value
         apiData.authentication_piechart = apiData.authentication_piechart.map((item: any) => {
             return {
-                value: item.event_count,
-                name: item.authentication_piechart,
+                value: item.count,
+                name: item.tactic,
             }
         })
-
 
         // Assuming the API returns data in a format similar to the mock data
         // You may need to adjust this based on the actual API response structure

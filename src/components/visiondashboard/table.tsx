@@ -57,9 +57,7 @@ export default function Table() {
 
     // 計算當前頁的資料
     const currentItems = eventTableData.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-    useEffect(() => {
-        console.log(currentPage);
-    }, [currentPage]);
+
 
 
 
@@ -118,7 +116,7 @@ export default function Table() {
 
         },
         {
-            name: '規則 MITRE 策略',
+            name: 'MITRE 策略',
             selector: (row) => row.rule_mitre_tactic,
             sortable: true,
             width: '200px',

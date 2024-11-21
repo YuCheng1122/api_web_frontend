@@ -62,12 +62,12 @@ const DateTimeFilter = () => {
   };
 
   return (
-    <div className="flex flex-wrap  w-full md:gap-12 gap-5 justify-center ">
+    <div className="flex flex-wrap  w-full md:gap-12 gap-5  ">
       <div className=''>
         <label htmlFor="start-date" className="block text-sm font-medium text-gray-700 px-1 mb-2">開始時間</label>
         <input
           name='start-date'
-          className='p-2 rounded-lg shadow-lg border border-gray-300 md:min-w-96 w-full'
+          className='p-2 rounded-lg shadow-lg border border-gray-300 md:min-w-48 w-full'
           type='datetime-local'
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
@@ -80,7 +80,7 @@ const DateTimeFilter = () => {
         <div className="flex items-center">
           <input
             name='end-date'
-            className='w-full p-2 rounded-lg shadow-lg border border-gray-300 sm:min-w-48 md:min-w-96 '
+            className='w-full p-2 rounded-lg shadow-lg border border-gray-300 sm:min-w-48 md:min-w-48 '
             type='datetime-local'
             value={endDate}
             onChange={(e) => setEndDate(e.target.value)}

@@ -71,7 +71,7 @@ const EventTrendGraph = () => {
       name: '數量',
       splitNumber: 5,
       axisLabel: {
-        margin: 16,
+        margin: 15,
         fontSize: 12
       },
       min: 0,
@@ -110,7 +110,7 @@ const EventTrendGraph = () => {
 
 
   return (
-    <div className='h-full w-full min-h-[350px]  bg-white rounded-md pt-10'>
+    <div className='h-full w-full min-h-[400px]  bg-white rounded-md pt-10'>
       {isLoading ? <Loading /> : <div className=''><ReactECharts option={option} /></div>}
       {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
     </div>
