@@ -70,11 +70,11 @@ export class ChatService {
                 messagesResponse,
                 totalEventResponse
             ] = await Promise.all([
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/agents/summary`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/line-chart`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/pie-chart`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/messages`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/total-event`, { params, headers })
+                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/agents/summary`, { params, headers }),
+                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/line-chart`, { params, headers }),
+                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/pie-chart`, { params, headers }),
+                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/messages`, { params, headers }),
+                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/total-event`, { params, headers })
             ]);
 
             // 整理數據為 DashboardInfo 格式
