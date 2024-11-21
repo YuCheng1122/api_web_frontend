@@ -49,7 +49,10 @@ export default function CVEBarChartComponent() {
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchCVEBarData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        setChartData(response.content)
+                        // slice only 5 data
+                        setChartData(response.content.slice(0, 5))
+
+
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -90,7 +93,7 @@ export default function CVEBarChartComponent() {
             }
             {
                 chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><p className=' text-2xl font-bold'>CVE分析</p> <p>目前沒有發現CVE漏洞</p></div> :
-                    <Card className="h-full md:min-w-[500px]">
+                    <Card className="h-full md:min-w-[600px]">
                         <CardHeader>
                             <CardTitle>CVE分析</CardTitle>
                             <CardDescription>攻擊次數</CardDescription>
