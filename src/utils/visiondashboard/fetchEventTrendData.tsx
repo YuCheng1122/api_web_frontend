@@ -45,7 +45,7 @@ export const initData: fetchEventTrendDataType = {
 }
 
 export const fetchEventTrendData = async (param: fetchEventTrendDataRequest): Promise<fetchEventTrendDataResponse> => {
-  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dashboard/ttp_linechart`;
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/dashboard/tactic_linechart`;
 
   try {
     const header = {
@@ -60,7 +60,7 @@ export const fetchEventTrendData = async (param: fetchEventTrendDataRequest): Pr
       headers: header
     });
 
-    const apiData = response.data.content.ttp_linechart[0]
+    const apiData = response.data.content.tactic_linechart[0]
     type DataPoint = { time: string; value: number };
     const result: fetchEventTrendDataType = {
       label: apiData.label.map((item: { label: string }) => item.label),

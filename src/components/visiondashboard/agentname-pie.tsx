@@ -49,6 +49,9 @@ export default function AgentNamePie() {
         fetchData()
     }, [dateTimeRange])
 
+    console.log(chartData);
+
+
 
 
     return (
