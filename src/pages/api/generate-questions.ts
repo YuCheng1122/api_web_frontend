@@ -1,6 +1,6 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import Anthropic from '@anthropic-ai/sdk';
-import { createQuestionGenerationPrompt } from '@/services/chat/prompts';
+import {createQuestionGenerationPrompt} from "@/features/chatbot/services/prompts";
 
 const anthropic = new Anthropic({
     apiKey: process.env.ANTHROPIC_API_KEY,

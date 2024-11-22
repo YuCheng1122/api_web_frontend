@@ -1,13 +1,9 @@
 import React from 'react';
 import { FaUsers, FaUserCheck, FaChartLine, FaExclamationTriangle } from 'react-icons/fa';
+import {DashboardInfo} from "@/features/chatbot/types/chat";
 
 interface DashboardSummaryProps {
-    dashboardInfo: {
-        totalAgents: number;
-        activeAgents: number;
-        topAgent: string;
-        topEvent: string;
-    };
+    dashboardInfo: DashboardInfo;
 }
 
 const DashboardSummary: React.FC<DashboardSummaryProps> = ({ dashboardInfo }) => {
