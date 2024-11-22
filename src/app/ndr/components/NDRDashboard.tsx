@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
 import { ndrService } from '@/features/ndr/services/ndrService';
-import { NDRDeviceListItem, NDRDeviceInfo, NDREventsResponse, NDREvent } from '@/features/ndr/types/ndr';
+import { NDRDeviceListItem, NDRDeviceInfo, NDREventsResponse, NDREvent, NDRTopBlocking } from '@/features/ndr/types/ndr';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import QueryControls from './QueryControls';
@@ -11,19 +11,22 @@ import Pagination from './Pagination';
 import DeviceCard from './DeviceCard';
 import DeviceInfoCard from './DeviceInfoCard';
 import EventList from './EventList';
+import TopBlockingList from './TopBlockingList';
 
 // User preferences type
 interface UserPreferences {
     pageSize: number;
     sortField: keyof NDREvent;
     sortDirection: 'asc' | 'desc';
+    severity: number;
 }
 
 // Default preferences
 const DEFAULT_PREFERENCES: UserPreferences = {
     pageSize: 20,
     sortField: '@timestamp',
-    sortDirection: 'desc'
+    sortDirection: 'desc',
+    severity: 1
 };
 
 // Load preferences from localStorage
@@ -34,7 +37,12 @@ const loadPreferences = (): UserPreferences => {
     if (!saved) return DEFAULT_PREFERENCES;
     
     try {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        return {
+            ...DEFAULT_PREFERENCES,
+            ...parsed,
+            severity: parsed.severity || DEFAULT_PREFERENCES.severity // Ensure severity is never undefined
+        };
     } catch {
         return DEFAULT_PREFERENCES;
     }
@@ -51,6 +59,7 @@ const NDRDashboard = () => {
     const [devices, setDevices] = useState<NDRDeviceListItem[]>([]);
     const [deviceInfo, setDeviceInfo] = useState<NDRDeviceInfo | null>(null);
     const [events, setEvents] = useState<NDREventsResponse | null>(null);
+    const [topBlocking, setTopBlocking] = useState<NDRTopBlocking[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -67,7 +76,6 @@ const NDRDashboard = () => {
     const [toDate, setToDate] = useState(() => {
         return new Date().toISOString().slice(0, 16);
     });
-    const [severity, setSeverity] = useState(1);
     const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
 
     // Update preferences
@@ -87,6 +95,11 @@ const NDRDashboard = () => {
             sortField: field,
             sortDirection: newDirection
         });
+    };
+
+    const handleSeverityChange = (severity: number) => {
+        updatePreferences({ severity });
+        setCurrentPage(0); // Reset to first page when changing severity
     };
 
     const fetchData = async () => {
@@ -117,14 +130,15 @@ const NDRDashboard = () => {
                             fromTimestamp,
                             toTimestamp,
                             currentPage,
-                            preferences.pageSize
+                            preferences.pageSize,
+                            preferences.severity
                         ),
                         ndrService.getTopBlocking(
                             token,
                             deviceToUse,
                             fromTimestamp,
                             toTimestamp,
-                            severity
+                            preferences.severity
                         )
                     ]);
 
@@ -147,6 +161,7 @@ const NDRDashboard = () => {
                     };
 
                     setEvents(sortedEvents);
+                    setTopBlocking(topBlockingResponse);
                 }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to fetch NDR data');
@@ -159,7 +174,7 @@ const NDRDashboard = () => {
 
     useEffect(() => {
         fetchData();
-    }, [token, currentPage, preferences.pageSize, selectedDevice, preferences.sortField, preferences.sortDirection]);
+    }, [token, currentPage, preferences.pageSize, selectedDevice, preferences.sortField, preferences.sortDirection, preferences.severity]);
 
     const handleDeviceSelect = (deviceName: string) => {
         setSelectedDevice(deviceName);
@@ -198,11 +213,11 @@ const NDRDashboard = () => {
                     fromDate={fromDate}
                     toDate={toDate}
                     pageSize={preferences.pageSize}
-                    severity={severity}
+                    severity={preferences.severity}
                     onFromDateChange={setFromDate}
                     onToDateChange={setToDate}
                     onPageSizeChange={handlePageSizeChange}
-                    onSeverityChange={setSeverity}
+                    onSeverityChange={handleSeverityChange}
                     onRefresh={fetchData}
                 />
 
@@ -242,6 +257,23 @@ const NDRDashboard = () => {
                             <DeviceInfoCard info={deviceInfo} />
                         </section>
                     )}
+
+                    {/* Top Blocking Section */}
+                    <section>
+                        <h2 className="text-xl font-semibold text-gray-900 flex items-center mb-4">
+                            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                            </svg>
+                            Top Blocking
+                        </h2>
+                        {topBlocking.length > 0 ? (
+                            <TopBlockingList data={topBlocking} />
+                        ) : (
+                            <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
+                                No blocking data found for the selected criteria
+                            </div>
+                        )}
+                    </section>
 
                     {/* Events Section */}
                     <section>

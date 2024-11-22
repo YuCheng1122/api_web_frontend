@@ -1,4 +1,4 @@
-import { NDRAuthResponse, NDRLoginCredentials, NDRDeviceInfo, NDREventsResponse, NDRDeviceListResponse } from '../types/ndr';
+import { NDRAuthResponse, NDRLoginCredentials, NDRDeviceInfo, NDREventsResponse, NDRDeviceListResponse, NDREvent } from '../types/ndr';
 
 const NDR_API_BASE = 'https://iacast.wnc.com.tw/api';
 
@@ -46,20 +46,35 @@ export const ndrService = {
         from: number, 
         to: number, 
         page: number = 0, 
-        size: number = 20
+        size: number = 20,
+        severity?: number
     ): Promise<NDREventsResponse> => {
-        const response = await fetch(
-            `${NDR_API_BASE}/security/events/nids?deviceUuid=${deviceUuid}&from=${from}&to=${to}&page=${page}&size=${size}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-            }
-        );
+        let url = `${NDR_API_BASE}/security/events/nids?deviceUuid=${deviceUuid}&from=${from}&to=${to}&page=${page}&size=${size}`;
+        if (severity) {
+            url += `&severity=${severity}`;
+        }
 
-        return handleResponse(response);
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+        });
+
+        const data = await handleResponse(response);
+        
+        // If severity is specified, filter the results client-side as well
+        if (severity && data.hits) {
+            const filteredHits = data.hits.filter((event: NDREvent) => event.severity === severity);
+            return {
+                ...data,
+                hits: filteredHits,
+                total: filteredHits.length
+            };
+        }
+
+        return data;
     },
 
     getTopBlocking: async (
