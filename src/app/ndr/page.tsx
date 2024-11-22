@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect } from 'react';
+import React from 'react';
 import NDRDashboard from '@/app/ndr/components/NDRDashboard';
 import NDRLoginForm from '@/app/ndr/components/NDRLoginForm';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
@@ -8,24 +8,20 @@ import { useNDR } from '@/features/ndr/hooks/useNDR';
 const NDRPage = () => {
     const { isAuthenticated, isLoading } = useNDR();
 
-    // Force a re-render when authentication state changes
-    useEffect(() => {
-        console.log('Auth state changed:', { isAuthenticated, isLoading });
-    }, [isAuthenticated, isLoading]);
+    if (isLoading) {
+        return (
+            <div className="flex justify-center items-center min-h-[calc(100vh-64px)] bg-gray-100">
+                <div className="relative">
+                    <div className="w-12 h-12 border-4 border-blue-200 rounded-full animate-spin border-t-blue-500"></div>
+                    <div className="mt-4 text-gray-600">Loading...</div>
+                </div>
+            </div>
+        );
+    }
 
     return (
-        <div className="flex h-[calc(100vh-64px)] bg-gray-100">
-            <div className="flex-1 p-4 bg-gray-50">
-                {isLoading ? (
-                    <div className="flex justify-center items-center h-full">
-                        <div className="text-xl">Loading...</div>
-                    </div>
-                ) : isAuthenticated ? (
-                    <NDRDashboard />
-                ) : (
-                    <NDRLoginForm />
-                )}
-            </div>
+        <div className="min-h-[calc(100vh-64px)] bg-gray-100">
+            {isAuthenticated ? <NDRDashboard /> : <NDRLoginForm />}
         </div>
     );
 };

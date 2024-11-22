@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
 
 const NDRLoginForm = () => {
@@ -24,15 +24,15 @@ const NDRLoginForm = () => {
     };
 
     return (
-        <div className="flex justify-center items-center min-h-full">
-            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-md">
-                <h2 className="text-2xl font-bold mb-6 text-center">NDR Login</h2>
+        <div className="flex justify-center items-center min-h-[calc(100vh-64px)]">
+            <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+                <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">NDR Login</h2>
                 {error && (
                     <div className="mb-4 p-3 bg-red-100 text-red-700 rounded animate-shake">
                         {error}
                     </div>
                 )}
-                <form onSubmit={handleSubmit} className="space-y-4">
+                <form onSubmit={handleSubmit} className="space-y-6">
                     <div>
                         <label htmlFor="username" className="block text-sm font-medium text-gray-700 mb-1">
                             Username
@@ -43,7 +43,8 @@ const NDRLoginForm = () => {
                             name="username"
                             value={credentials.username}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            placeholder="Enter your username"
                             required
                             disabled={isLoading}
                         />
@@ -58,7 +59,8 @@ const NDRLoginForm = () => {
                             name="password"
                             value={credentials.password}
                             onChange={handleChange}
-                            className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all"
+                            className="w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            placeholder="Enter your password"
                             required
                             disabled={isLoading}
                         />
@@ -66,10 +68,10 @@ const NDRLoginForm = () => {
                     <button
                         type="submit"
                         disabled={isLoading}
-                        className={`w-full py-2 px-4 rounded font-semibold text-white transition-all
+                        className={`w-full py-3 px-4 rounded-md font-semibold text-white transition-all
                             ${isLoading 
-                                ? 'bg-blue-300 cursor-not-allowed' 
-                                : 'bg-blue-500 hover:bg-blue-600 active:bg-blue-700'}`}
+                                ? 'bg-blue-400 cursor-not-allowed' 
+                                : 'bg-blue-600 hover:bg-blue-700 active:bg-blue-800'}`}
                     >
                         {isLoading ? (
                             <div className="flex items-center justify-center">
@@ -77,7 +79,7 @@ const NDRLoginForm = () => {
                                 Logging in...
                             </div>
                         ) : (
-                            'Login'
+                            'Login to NDR'
                         )}
                     </button>
                 </form>

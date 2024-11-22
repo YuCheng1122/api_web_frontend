@@ -1,3 +1,5 @@
+'use client'
+
 import { useState, useEffect } from 'react';
 import { NDRAuthState, NDRLoginCredentials } from '../types/ndr';
 import { ndrService } from '../services/ndrService';
@@ -27,6 +29,17 @@ export const useNDR = () => {
         };
         subscribers.add(subscriber);
 
+        // Check for existing token in localStorage
+        const storedToken = localStorage.getItem('ndrToken');
+        if (storedToken && !globalAuthState.isAuthenticated) {
+            updateGlobalAndLocalState({
+                token: storedToken,
+                isAuthenticated: true,
+                isLoading: false,
+                error: null
+            });
+        }
+
         // Cleanup subscription
         return () => {
             subscribers.delete(subscriber);
@@ -35,6 +48,11 @@ export const useNDR = () => {
 
     const updateGlobalAndLocalState = (newState: NDRAuthState) => {
         globalAuthState = newState;
+        if (newState.token) {
+            localStorage.setItem('ndrToken', newState.token);
+        } else {
+            localStorage.removeItem('ndrToken');
+        }
         notifySubscribers(newState);
     };
 
