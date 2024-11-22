@@ -5,7 +5,7 @@ import CustomChat from './components/CustomChat';
 
 const ChatbotPage = () => {
     return (
-        <div className="fixed inset-x-0 top-[64px] bottom-0 bg-gray-100">
+        <div className="h-[calc(100vh-64px)] overflow-hidden bg-gray-100">
             <CustomChat />
         </div>
     );
