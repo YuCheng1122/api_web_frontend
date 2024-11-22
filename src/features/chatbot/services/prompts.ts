@@ -1,4 +1,4 @@
-import { DashboardInfo, Message } from '../types/chat';
+import {DashboardInfo, Message} from "@/features/chatbot/types/chat";
 
 const getDefaultValue = (value: any, defaultValue: any) => {
     if (value === undefined || value === null || value === '') {

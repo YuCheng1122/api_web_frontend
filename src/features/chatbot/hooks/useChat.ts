@@ -1,6 +1,6 @@
 import { useState, useCallback, useRef } from 'react';
-import { Message, ChatError } from '../types/chat';
-import { ChatService } from '../services/chatService';
+import {ChatError, Message} from "@/features/chatbot/types/chat";
+import {ChatService} from "@/features/chatbot/services/chatService";
 
 interface UseChatProps {
     initialMessages?: Message[];

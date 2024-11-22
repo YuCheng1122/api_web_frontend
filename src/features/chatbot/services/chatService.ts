@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { DashboardInfo, Message } from '../types/chat';
-import {createSystemPrompt} from "@/app/features/chatbot/services/prompts";
+import {createSystemPrompt} from "@/features/chatbot/services/prompts";
+import {DashboardInfo, Message} from "@/features/chatbot/types/chat";
 
 interface ChatServiceResponse {
     success: boolean;

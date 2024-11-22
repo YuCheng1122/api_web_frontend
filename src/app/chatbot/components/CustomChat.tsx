@@ -1,8 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import { FaPaperPlane } from "react-icons/fa";
-import { useChat } from '../hooks/useChat';
-import { MessageFormatter } from "./MessageFormatter";
-import { DynamicQuestions } from "./DynamicQuestions";
+import {useChat} from "@/features/chatbot/hooks/useChat";
+import {MessageFormatter} from "@/app/chatbot/components/MessageFormatter";
+import {DynamicQuestions} from "@/app/chatbot/components/DynamicQuestions";
 
 const INITIAL_MESSAGE = {
     text: "您好！👋 我是 SenseX 助手。今天我能為您提供什麼幫助？",

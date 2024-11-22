@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react';
-import CustomChat from '../features/chatbot/components/CustomChat';
+import CustomChat from '@/app/chatbot/components/CustomChat';
 
 const ChatbotPage = () => {
     return (

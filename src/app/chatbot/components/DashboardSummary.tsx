@@ -1,6 +1,6 @@
 import React from 'react';
 import { FaUsers, FaUserCheck, FaChartLine, FaExclamationTriangle } from 'react-icons/fa';
-import { DashboardInfo } from '../types/chat';
+import {DashboardInfo} from "@/features/chatbot/types/chat";
 
 interface DashboardSummaryProps {
     dashboardInfo: DashboardInfo;
