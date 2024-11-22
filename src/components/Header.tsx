@@ -34,7 +34,7 @@ const navItems: NavItem[] = [
   { href: '/admin/script', label: '軟體下載' }
 ]
 
-// 導航項目組件
+// 導航項目組件 - 行動版
 const NavMenuItem = ({ href, label, onClick }: { href: string; label: string; onClick?: () => void }) => (
   <DropdownMenuItem>
     <Link 
@@ -45,6 +45,16 @@ const NavMenuItem = ({ href, label, onClick }: { href: string; label: string; on
       {label}
     </Link>
   </DropdownMenuItem>
+)
+
+// 導航項目組件 - 桌面版
+const DesktopNavItem = ({ href, label }: { href: string; label: string }) => (
+  <Link 
+    href={href} 
+    className='nav-item text-lg font-bold px-4 py-2 text-[#423838] whitespace-nowrap'
+  >
+    {label}
+  </Link>
 )
 
 const Header = () => {
@@ -64,48 +74,27 @@ const Header = () => {
   const filteredNavItems = navItems.filter(item => !item.adminOnly || isadmin)
 
   return (
-    <div className='flex items-center justify-between py-4'>
+    <div className='flex items-center justify-between py-4 header-animation'>
       {/* 左側：標題 */}
       <div className="text-3xl font-bold text-black whitespace-nowrap">
-        <Link href={'/'} className='hover-underline-animation'>
+        <Link href={'/'} className='nav-item'>
           AVOCADO
         </Link>
       </div>
 
-      {/* 中間：導航選單（僅在大螢幕且登入時顯示） */}
-      <div className='hidden lg:block'>
-        <DropdownMenu>
-          <DropdownMenuTrigger className="flex items-center space-x-2">
-            <span className="text-xl font-bold">選單</span>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="h-6 w-6"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M19 9l-7 7-7-7"
-              />
-            </svg>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent>
-            <DropdownMenuLabel>導航選單</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            {isLogin && username && filteredNavItems.map((item) => (
-              <NavMenuItem key={item.href} href={item.href} label={item.label} />
-            ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
+      {/* 中間：導航選單（桌面版） */}
+      {isLogin && username && (
+        <div className='hidden lg:flex items-center space-x-2 overflow-x-auto scrollbar-hide'>
+          {filteredNavItems.map((item) => (
+            <DesktopNavItem key={item.href} href={item.href} label={item.label} />
+          ))}
+        </div>
+      )}
 
       {/* 手機版選單 */}
       <div className='lg:hidden'>
         <DropdownMenu>
-          <DropdownMenuTrigger>
+          <DropdownMenuTrigger className="flex items-center p-2 hover:bg-gray-100 rounded-md transition-colors duration-200">
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="h-6 w-6"
@@ -155,60 +144,68 @@ const Header = () => {
       <div className='hidden lg:block'>
         <div className='flex items-center space-x-4 whitespace-nowrap'>
           {!isLogin && (
-            <Link href={'/admin/signup'} className='text-xl font-bold p-2 hover-underline-animation'>
+            <Link 
+              href={'/admin/signup'} 
+              className='nav-item text-lg font-bold px-4 py-2 text-[#423838]'
+            >
               註冊
             </Link>
           )}
 
-          <Image
-            src={'/user.png'}
-            height={30}
-            width={30}
-            alt='使用者圖片'
-            className='p-[1px]'
-          />
-          
-          {isLogin && username ? (
-            <DropdownMenu>
-              <DropdownMenuTrigger>
-                <div className='flex items-center space-x-2'>
-                  <div className='text-xl font-semibold cursor-pointer hover-underline-animation' title='點擊登出'>
-                    {username}
+          <div className='flex items-center space-x-2 px-4 py-2 rounded-md hover:bg-gray-100 transition-colors duration-200'>
+            <Image
+              src={'/user.png'}
+              height={30}
+              width={30}
+              alt='使用者圖片'
+              className='p-[1px]'
+            />
+            
+            {isLogin && username ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger>
+                  <div className='flex items-center space-x-2'>
+                    <div className='text-xl font-semibold cursor-pointer text-[#423838]' title='點擊登出'>
+                      {username}
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-6 w-6"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 9l-7 7-7-7"
+                      />
+                    </svg>
                   </div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-6 w-6"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 9l-7 7-7-7"
-                    />
-                  </svg>
-                </div>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent>
-                <DropdownMenuLabel>帳戶選單</DropdownMenuLabel>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem>
-                  <div 
-                    className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838] cursor-pointer' 
-                    onClick={logout}
-                  >
-                    登出
-                  </div>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          ) : (
-            <Link href={'/admin/login'} className='text-xl font-semibold text-black hover:text-blue-800'>
-              登入
-            </Link>
-          )}
+                </DropdownMenuTrigger>
+                <DropdownMenuContent>
+                  <DropdownMenuLabel>帳戶選單</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem>
+                    <div 
+                      className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838] cursor-pointer' 
+                      onClick={logout}
+                    >
+                      登出
+                    </div>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Link 
+                href={'/admin/login'} 
+                className='nav-item text-xl font-semibold text-[#423838]'
+              >
+                登入
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
