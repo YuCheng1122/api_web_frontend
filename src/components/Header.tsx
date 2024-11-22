@@ -18,13 +18,10 @@ import { useRouter } from 'next/navigation'
 const Header = () => {
   const { isLogin, username, updateLoginState, isadmin } = useAuthContext()
 
-
-
   const router = useRouter()
   const logout = () => {
     updateLoginState(false, '', null)
     router.push('/')
-
   }
 
   useEffect(() => {
@@ -59,7 +56,6 @@ const Header = () => {
                       代理資訊
                     </Link>
                     <Link href={'/chatbot'} className='text-xl font-bold p-2 hover-underline-animation'>
-
                       SenseX 聊天機器人
                     </Link>
                     <Link href={'/visionboard'} className='text-xl font-bold p-2 hover-underline-animation'>
@@ -72,6 +68,9 @@ const Header = () => {
                     )}
                     <Link href={'/ics'} className='text-xl font-bold p-2 hover-underline-animation'>
                       ICS
+                    </Link>
+                    <Link href={'/ndr'} className='text-xl font-bold p-2 hover-underline-animation'>
+                      NDR
                     </Link>
                   </div>
                 </div>
@@ -104,8 +103,6 @@ const Header = () => {
                   <Link href={'/'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>首頁</Link>
                 </DropdownMenuItem>
                 {isLogin && username && (<div>
-
-
                   <DropdownMenuItem>
                     <Link href={'/graph'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>威脅獵捕圖</Link>
                   </DropdownMenuItem>
@@ -123,6 +120,9 @@ const Header = () => {
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href={'/visionboard'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>視覺化儀表板</Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem>
+                    <Link href={'/ndr'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>NDR</Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem>
                     <Link href={'/admin/script'} className='text-lg font-bold mx-4 hover:text-[#97932D] text-[#423838]'>軟體下載</Link>
@@ -201,8 +201,6 @@ const Header = () => {
                 </Link>
               )}
             </div>
-
-
           </div>
         </div >
       </div >
