@@ -57,9 +57,9 @@ const CustomChat: React.FC = () => {
         <div className="h-full p-4">
             <div className="flex h-full gap-4">
                 {/* 主聊天區域 */}
-                <div className="flex-1 relative bg-white rounded-lg shadow-md">
+                <div className="flex-1 flex flex-col bg-white rounded-lg shadow-md overflow-hidden">
                     {/* 聊天記錄 */}
-                    <div className="absolute inset-0 bottom-[76px] overflow-y-auto">
+                    <div className="flex-1 overflow-y-auto">
                         <div className="p-4 space-y-4">
                             {messages.map((message, index) => (
                                 <div
@@ -97,7 +97,7 @@ const CustomChat: React.FC = () => {
                     </div>
 
                     {/* 輸入區域 */}
-                    <div className="absolute bottom-0 left-0 right-0 border-t bg-white rounded-b-lg">
+                    <div className="flex-shrink-0 border-t bg-white">
                         <div className="px-4 py-3">
                             <div className="flex items-center gap-2">
                                 {/* 行動版建議問題切換按鈕 */}
