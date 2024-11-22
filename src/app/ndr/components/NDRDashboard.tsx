@@ -3,17 +3,16 @@
 import React, { useEffect, useState } from 'react';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
 import { ndrService } from '@/features/ndr/services/ndrService';
-import { NDRDeviceListItem, NDRDeviceInfo, NDREventsResponse, NDREvent, NDRTopBlocking } from '@/features/ndr/types/ndr';
+import { NDRDeviceListItem, NDRDeviceInfo, NDREvent, NDRTopBlocking } from '@/features/ndr/types/ndr';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import QueryControls from './QueryControls';
 import Pagination from './Pagination';
 import DeviceCard from './DeviceCard';
-import DeviceInfoCard from './DeviceInfoCard';
+import { default as DeviceInfoCard } from './DeviceInfoCard';
 import EventList from './EventList';
 import TopBlockingList from './TopBlockingList';
 
-// User preferences type
 interface UserPreferences {
     pageSize: number;
     sortField: keyof NDREvent;
@@ -21,32 +20,23 @@ interface UserPreferences {
     severity?: number;
 }
 
-// Default preferences
 const DEFAULT_PREFERENCES: UserPreferences = {
     pageSize: 20,
     sortField: '@timestamp',
     sortDirection: 'desc'
 };
 
-// Load preferences from localStorage
 const loadPreferences = (): UserPreferences => {
     if (typeof window === 'undefined') return DEFAULT_PREFERENCES;
-    
     const saved = localStorage.getItem('ndrPreferences');
     if (!saved) return DEFAULT_PREFERENCES;
-    
     try {
-        const parsed = JSON.parse(saved);
-        return {
-            ...DEFAULT_PREFERENCES,
-            ...parsed
-        };
+        return { ...DEFAULT_PREFERENCES, ...JSON.parse(saved) };
     } catch {
         return DEFAULT_PREFERENCES;
     }
 };
 
-// Save preferences to localStorage
 const savePreferences = (preferences: UserPreferences) => {
     if (typeof window === 'undefined') return;
     localStorage.setItem('ndrPreferences', JSON.stringify(preferences));
@@ -61,11 +51,7 @@ const NDRDashboard = () => {
     const [topBlocking, setTopBlocking] = useState<NDRTopBlocking[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-
-    // Load saved preferences
     const [preferences, setPreferences] = useState<UserPreferences>(loadPreferences);
-
-    // Query parameters state
     const [currentPage, setCurrentPage] = useState(0);
     const [fromDate, setFromDate] = useState(() => {
         const date = new Date();
@@ -76,15 +62,14 @@ const NDRDashboard = () => {
         return new Date().toISOString().slice(0, 16);
     });
     const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
+    const [isFilterVisible, setIsFilterVisible] = useState(false);
 
-    // Get paginated events
     const getPaginatedEvents = () => {
         const start = currentPage * preferences.pageSize;
         const end = start + preferences.pageSize;
         return allEvents.slice(start, end);
     };
 
-    // Update preferences
     const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
         const updated = { ...preferences, ...newPreferences };
         setPreferences(updated);
@@ -102,7 +87,6 @@ const NDRDashboard = () => {
             sortDirection: newDirection
         });
 
-        // Sort all events
         const sortedEvents = [...allEvents].sort((a, b) => {
             const aValue = a[field];
             const bValue = b[field];
@@ -161,11 +145,10 @@ const NDRDashboard = () => {
                             deviceToUse,
                             fromTimestamp,
                             toTimestamp,
-                            preferences.severity || 1 // Default to High severity for top blocking if none selected
+                            preferences.severity || 1
                         )
                     ]);
 
-                    // Sort all events
                     const sortedEvents = [...eventsResponse.hits].sort((a, b) => {
                         const aValue = a[preferences.sortField];
                         const bValue = b[preferences.sortField];
@@ -216,10 +199,11 @@ const NDRDashboard = () => {
     }
 
     return (
-        <div className="min-h-[calc(100vh-64px)] bg-gray-100 overflow-auto">
-            <div className="max-w-[1600px] mx-auto px-4 py-6">
+        <div className="min-h-screen bg-gray-100">
+            <div className="p-4">
+                {/* 標題和更新時間 */}
                 <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
-                    <div className="flex justify-between items-center">
+                    <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <h1 className="text-2xl font-bold text-gray-900">NDR Dashboard</h1>
                         <div className="text-sm text-gray-500 flex items-center">
                             <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -230,20 +214,46 @@ const NDRDashboard = () => {
                     </div>
                 </div>
 
-                <QueryControls
-                    fromDate={fromDate}
-                    toDate={toDate}
-                    pageSize={preferences.pageSize}
-                    severity={preferences.severity}
-                    onFromDateChange={setFromDate}
-                    onToDateChange={setToDate}
-                    onPageSizeChange={handlePageSizeChange}
-                    onSeverityChange={handleSeverityChange}
-                    onRefresh={fetchData}
-                />
+                {/* 篩選器切換按鈕（行動裝置） */}
+                <div className="md:hidden mb-4">
+                    <button
+                        onClick={() => setIsFilterVisible(!isFilterVisible)}
+                        className="w-full bg-white p-3 rounded-lg shadow-sm text-gray-700 font-medium flex items-center justify-center"
+                    >
+                        <svg 
+                            className="w-5 h-5 mr-2" 
+                            fill="none" 
+                            stroke="currentColor" 
+                            viewBox="0 0 24 24"
+                        >
+                            <path 
+                                strokeLinecap="round" 
+                                strokeLinejoin="round" 
+                                strokeWidth="2" 
+                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" 
+                            />
+                        </svg>
+                        {isFilterVisible ? '隱藏篩選器' : '顯示篩選器'}
+                    </button>
+                </div>
+
+                {/* 查詢控制項 */}
+                <div className={`md:block ${isFilterVisible ? 'block' : 'hidden'}`}>
+                    <QueryControls
+                        fromDate={fromDate}
+                        toDate={toDate}
+                        pageSize={preferences.pageSize}
+                        severity={preferences.severity}
+                        onFromDateChange={setFromDate}
+                        onToDateChange={setToDate}
+                        onPageSizeChange={handlePageSizeChange}
+                        onSeverityChange={handleSeverityChange}
+                        onRefresh={fetchData}
+                    />
+                </div>
 
                 <div className="space-y-6">
-                    {/* Devices Section */}
+                    {/* 設備選擇 */}
                     <section>
                         <h2 className="text-xl font-semibold text-gray-900 flex items-center mb-4">
                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -254,7 +264,7 @@ const NDRDashboard = () => {
                                 ({selectedDevice ? 'Selected: ' + (devices.find(d => d.name === selectedDevice)?.label || selectedDevice) : 'None selected'})
                             </span>
                         </h2>
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-fr">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                             {devices.map((device) => (
                                 <DeviceCard
                                     key={device.id.id}
@@ -266,7 +276,7 @@ const NDRDashboard = () => {
                         </div>
                     </section>
 
-                    {/* Device Info Section */}
+                    {/* 設備資訊 */}
                     {deviceInfo && (
                         <section>
                             <h2 className="text-xl font-semibold text-gray-900 flex items-center mb-4">
@@ -279,7 +289,7 @@ const NDRDashboard = () => {
                         </section>
                     )}
 
-                    {/* Top Blocking Section */}
+                    {/* Top Blocking */}
                     <section>
                         <h2 className="text-xl font-semibold text-gray-900 flex items-center mb-4">
                             <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -296,9 +306,9 @@ const NDRDashboard = () => {
                         )}
                     </section>
 
-                    {/* Events Section */}
+                    {/* Events */}
                     <section>
-                        <div className="flex justify-between items-center mb-4">
+                        <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-2">
                             <h2 className="text-xl font-semibold text-gray-900 flex items-center">
                                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
@@ -317,11 +327,13 @@ const NDRDashboard = () => {
                                     sortDirection={preferences.sortDirection}
                                     onSort={handleSort}
                                 />
-                                <Pagination
-                                    currentPage={currentPage}
-                                    totalPages={Math.ceil(allEvents.length / preferences.pageSize)}
-                                    onPageChange={setCurrentPage}
-                                />
+                                <div className="mt-4">
+                                    <Pagination
+                                        currentPage={currentPage}
+                                        totalPages={Math.ceil(allEvents.length / preferences.pageSize)}
+                                        onPageChange={setCurrentPage}
+                                    />
+                                </div>
                             </>
                         ) : (
                             <div className="bg-white rounded-lg shadow-md p-8 text-center text-gray-500">
