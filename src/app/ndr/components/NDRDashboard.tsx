@@ -41,7 +41,7 @@ const loadPreferences = (): UserPreferences => {
         return {
             ...DEFAULT_PREFERENCES,
             ...parsed,
-            severity: parsed.severity || DEFAULT_PREFERENCES.severity // Ensure severity is never undefined
+            severity: parsed.severity || DEFAULT_PREFERENCES.severity
         };
     } catch {
         return DEFAULT_PREFERENCES;
@@ -58,7 +58,8 @@ const NDRDashboard = () => {
     const { token } = useNDR();
     const [devices, setDevices] = useState<NDRDeviceListItem[]>([]);
     const [deviceInfo, setDeviceInfo] = useState<NDRDeviceInfo | null>(null);
-    const [events, setEvents] = useState<NDREventsResponse | null>(null);
+    const [allEvents, setAllEvents] = useState<NDREvent[]>([]);
+    const [totalEvents, setTotalEvents] = useState(0);
     const [topBlocking, setTopBlocking] = useState<NDRTopBlocking[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -78,6 +79,13 @@ const NDRDashboard = () => {
     });
     const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
 
+    // Get paginated events
+    const getPaginatedEvents = () => {
+        const start = currentPage * preferences.pageSize;
+        const end = start + preferences.pageSize;
+        return allEvents.slice(start, end);
+    };
+
     // Update preferences
     const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
         const updated = { ...preferences, ...newPreferences };
@@ -95,11 +103,28 @@ const NDRDashboard = () => {
             sortField: field,
             sortDirection: newDirection
         });
+
+        // Sort all events
+        const sortedEvents = [...allEvents].sort((a, b) => {
+            const aValue = a[field];
+            const bValue = b[field];
+            const direction = newDirection === 'asc' ? 1 : -1;
+            
+            if (typeof aValue === 'string' && typeof bValue === 'string') {
+                return aValue.localeCompare(bValue) * direction;
+            }
+            if (typeof aValue === 'number' && typeof bValue === 'number') {
+                return (aValue - bValue) * direction;
+            }
+            return 0;
+        });
+
+        setAllEvents(sortedEvents);
     };
 
     const handleSeverityChange = (severity: number) => {
         updatePreferences({ severity });
-        setCurrentPage(0); // Reset to first page when changing severity
+        setCurrentPage(0);
     };
 
     const fetchData = async () => {
@@ -129,8 +154,8 @@ const NDRDashboard = () => {
                             deviceToUse,
                             fromTimestamp,
                             toTimestamp,
-                            currentPage,
-                            preferences.pageSize,
+                            0, // Get all events
+                            1000, // Large size to get all events
                             preferences.severity
                         ),
                         ndrService.getTopBlocking(
@@ -142,25 +167,23 @@ const NDRDashboard = () => {
                         )
                     ]);
 
-                    // Sort events if needed
-                    const sortedEvents = {
-                        ...eventsResponse,
-                        hits: [...eventsResponse.hits].sort((a, b) => {
-                            const aValue = a[preferences.sortField];
-                            const bValue = b[preferences.sortField];
-                            const direction = preferences.sortDirection === 'asc' ? 1 : -1;
-                            
-                            if (typeof aValue === 'string' && typeof bValue === 'string') {
-                                return aValue.localeCompare(bValue) * direction;
-                            }
-                            if (typeof aValue === 'number' && typeof bValue === 'number') {
-                                return (aValue - bValue) * direction;
-                            }
-                            return 0;
-                        })
-                    };
+                    // Sort all events
+                    const sortedEvents = [...eventsResponse.hits].sort((a, b) => {
+                        const aValue = a[preferences.sortField];
+                        const bValue = b[preferences.sortField];
+                        const direction = preferences.sortDirection === 'asc' ? 1 : -1;
+                        
+                        if (typeof aValue === 'string' && typeof bValue === 'string') {
+                            return aValue.localeCompare(bValue) * direction;
+                        }
+                        if (typeof aValue === 'number' && typeof bValue === 'number') {
+                            return (aValue - bValue) * direction;
+                        }
+                        return 0;
+                    });
 
-                    setEvents(sortedEvents);
+                    setAllEvents(sortedEvents);
+                    setTotalEvents(eventsResponse.total);
                     setTopBlocking(topBlockingResponse);
                 }
             } catch (err) {
@@ -174,15 +197,15 @@ const NDRDashboard = () => {
 
     useEffect(() => {
         fetchData();
-    }, [token, currentPage, preferences.pageSize, selectedDevice, preferences.sortField, preferences.sortDirection, preferences.severity]);
+    }, [token, selectedDevice, preferences.severity, fromDate, toDate]);
 
     const handleDeviceSelect = (deviceName: string) => {
         setSelectedDevice(deviceName);
-        setCurrentPage(0); // Reset to first page when changing devices
+        setCurrentPage(0);
     };
 
     const handlePageSizeChange = (newSize: number) => {
-        setCurrentPage(0); // Reset to first page when changing page size
+        setCurrentPage(0);
         updatePreferences({ pageSize: newSize });
     };
 
@@ -285,20 +308,20 @@ const NDRDashboard = () => {
                                 Recent Events
                             </h2>
                             <span className="text-sm bg-gray-100 px-3 py-1 rounded-full">
-                                Total: {events?.total || 0} events
+                                Total: {totalEvents} events
                             </span>
                         </div>
-                        {events && events.hits.length > 0 ? (
+                        {allEvents.length > 0 ? (
                             <>
                                 <EventList 
-                                    events={events.hits}
+                                    events={getPaginatedEvents()}
                                     sortField={preferences.sortField}
                                     sortDirection={preferences.sortDirection}
                                     onSort={handleSort}
                                 />
                                 <Pagination
                                     currentPage={currentPage}
-                                    totalPages={Math.ceil((events.total || 0) / preferences.pageSize)}
+                                    totalPages={Math.ceil(allEvents.length / preferences.pageSize)}
                                     onPageChange={setCurrentPage}
                                 />
                             </>
