@@ -40,7 +40,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         const fetchAgentName = async () => {
             const { success, next_agent_name } = await fetchNextAgentName();
             if (success) {  // 確保成功獲取資料
-                setAgentNames((prev) => [...prev, next_agent_name]); // 將 next_agent_name 添加到 agentNames 陣列中
+                setAgentNames([next_agent_name]); // 將 next_agent_name 設置為 agentNames 陣列的唯一元素
                 setNextAgentName(next_agent_name); // 將 next_agent_name 存儲到狀態中
             }
         };
@@ -63,9 +63,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
             const agents = Array.from({ length: totalAgents }, (_, index) =>
-                `${username}-${String(index + 1).padStart(3, '0')}`
+                `${username}_${String(index + 1).padStart(3, '0')}` // 使用 username 和編號格式
             );
-            setAgentNames(agents);
+            setAgentNames((prev) => [prev[0], ...agents]); // 保留第一個代理名稱並添加後續名稱
         } else {
             setAgentNames([]);  // 預設為空陣列
         }
@@ -78,16 +78,22 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         // 如果取消勾選，將數量加回 remainingAgents
         if (!isChecked) {
             setRemainingAgents(remainingAgents + newQuantities[arch]);
-            newQuantities[arch] = 1; // 將數量設為 0
-        } else {
-            // 勾選時，remainingAgents 減少 1
-            setRemainingAgents(remainingAgents - 1);
+            newQuantities[arch] = 0; // 將數量設為 0
         }
 
         // 只有在 remainingAgents 大於 0 時才允許勾選
         if (isChecked && remainingAgents === 0) {
             alert('無法勾選，剩餘代理數量為 0');
             return; // 直接返回，不更新
+        }
+
+        // 勾選時，remainingAgents 減少 1
+        if (isChecked) {
+            setRemainingAgents(remainingAgents - 1);
+        } else {
+            // 如果取消勾選，將數量加回 remainingAgents
+            setRemainingAgents(remainingAgents + newQuantities[arch]);
+            newQuantities[arch] = 1; // 將數量設為 0
         }
 
         setFormData((prevFormData) => ({
@@ -161,10 +167,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         <div className="bg-white rounded-lg flex flex-col items-center min-h-screen bg-gray-100 p-6 w-[54vw] ">
             {/* 主介面部分 */}
             <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300"> {/*shadow-md 可添加陰影*/}
-                <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
-                    <h2 className="text-xl font-bold mb-4">軟體下載</h2>
-                    <a href="/Wazuh_agent安裝說明.pdf" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-lg">安裝說明</a> {/* 將字體大小改為 text-lg */}
-                </div>
+                <h2 className="text-lg font-bold mb-4">軟體下載</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
                     {/* 顯示剩下代理數量 */}
                     <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
@@ -313,7 +316,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 <span className="ml-2">Intel</span>
                                 <input
                                     type="number"
-                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊���選中時顯示數字
                                     onChange={(e) => handleQuantityChange('intel', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -348,7 +351,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
                     >
-                        下載
+                        下載<br />
+                        windows 11 請執行&quot;Set-ExecutionPolicy Bypass -Scope Process&quot;<br />
+                        詳情請檢視安裝說明
                     </button>
                 </form>
             </div>
@@ -357,9 +362,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             <div className="bg-white p-4 rounded-lg w-full w-[54vw] max-w-7xl border border-gray-300">
                 <h3 className="text-lg font-bold mb-4">代理名稱：</h3>
                 <ul className="text-sm grid grid-cols-4 gap-4">
-                    {agentNamesList.map((agentName) => ( // 使用 agentNamesList 來顯示代理名稱
-                        <li className="mb-2" key={agentName}>
-                            {agentName}
+                    {agentNames.map((name, index) => (
+                        <li key={index} className="mb-2">
+                            {name}
                         </li>
                     ))}
                 </ul>
