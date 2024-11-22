@@ -22,19 +22,28 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en">
       <body className={`${inter.className} min-h-screen bg-gray-200`}>
         <AuthProvider>
-          <div className="flex flex-col min-h-screen ">
-            <Header />
-            <hr className="border-gray-900" />
-            <main className="flex-grow relative">
-              {children}
-              <div className="relative">
-                {/* Some content */}
-                <ScrollToTop minHeight={20} scrollTo={10} className="absolute right-4 bottom-4">
-                  <ArrowUpToLine />
-                </ScrollToTop>
+          <div className="flex flex-col min-h-screen">
+            {/* Header 區域 */}
+            <div className="w-full bg-white sticky top-0 z-50">
+              <div className="max-w-[2000px] mx-auto px-4">
+                <Header />
               </div>
-            </main>
+            </div>
+            <hr className="border-gray-900" />
 
+            {/* 主要內容區域 */}
+            <div className="flex-grow w-full">
+              <div className="max-w-[2000px] mx-auto px-4">
+                {children}
+              </div>
+            </div>
+
+            {/* 回到頂部按鈕 */}
+            <div className="fixed right-4 bottom-4 z-50">
+              <ScrollToTop minHeight={20} scrollTo={10}>
+                <ArrowUpToLine />
+              </ScrollToTop>
+            </div>
           </div>
         </AuthProvider>
       </body>
