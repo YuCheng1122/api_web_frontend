@@ -1,4 +1,4 @@
-import { NDRAuthResponse, NDRLoginCredentials, NDRDeviceInfo, NDREventsResponse, NDRDeviceListResponse, NDREvent } from '../types/ndr';
+import { NDRAuthResponse, NDRLoginCredentials, NDRDeviceInfo, NDREventsResponse, NDRDeviceListResponse } from '../types/ndr';
 
 const NDR_API_BASE = 'https://iacast.wnc.com.tw/api';
 
@@ -50,7 +50,7 @@ export const ndrService = {
         severity?: number
     ): Promise<NDREventsResponse> => {
         let url = `${NDR_API_BASE}/security/events/nids?deviceUuid=${deviceUuid}&from=${from}&to=${to}&page=${page}&size=${size}`;
-        if (severity) {
+        if (severity !== undefined) {
             url += `&severity=${severity}`;
         }
 
@@ -62,19 +62,7 @@ export const ndrService = {
             },
         });
 
-        const data = await handleResponse(response);
-        
-        // If severity is specified, filter the results client-side as well
-        if (severity && data.hits) {
-            const filteredHits = data.hits.filter((event: NDREvent) => event.severity === severity);
-            return {
-                ...data,
-                hits: filteredHits,
-                total: filteredHits.length
-            };
-        }
-
-        return data;
+        return handleResponse(response);
     },
 
     getTopBlocking: async (
@@ -82,18 +70,20 @@ export const ndrService = {
         deviceUuid: string, 
         from: number, 
         to: number, 
-        severity: number
+        severity?: number
     ): Promise<any[]> => {
-        const response = await fetch(
-            `${NDR_API_BASE}/security/topblocking?deviceUuid=${deviceUuid}&from=${from}&to=${to}&severity=${severity}`,
-            {
-                headers: {
-                    'Authorization': `Bearer ${token}`,
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json'
-                },
-            }
-        );
+        let url = `${NDR_API_BASE}/security/topblocking?deviceUuid=${deviceUuid}&from=${from}&to=${to}`;
+        if (severity !== undefined) {
+            url += `&severity=${severity}`;
+        }
+
+        const response = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+        });
 
         return handleResponse(response);
     },

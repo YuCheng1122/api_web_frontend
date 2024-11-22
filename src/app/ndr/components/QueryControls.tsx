@@ -4,11 +4,11 @@ interface QueryControlsProps {
     fromDate: string;
     toDate: string;
     pageSize: number;
-    severity: number;
+    severity: number | undefined;
     onFromDateChange: (date: string) => void;
     onToDateChange: (date: string) => void;
     onPageSizeChange: (size: number) => void;
-    onSeverityChange: (severity: number) => void;
+    onSeverityChange: (severity: number | undefined) => void;
     onRefresh: () => void;
 }
 
@@ -59,10 +59,11 @@ const QueryControls = ({
             <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Severity</label>
                 <select
-                    value={severity}
-                    onChange={(e) => onSeverityChange(Number(e.target.value))}
+                    value={severity === undefined ? 'all' : severity}
+                    onChange={(e) => onSeverityChange(e.target.value === 'all' ? undefined : Number(e.target.value))}
                     className="w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
                 >
+                    <option value="all">All</option>
                     <option value={1}>High</option>
                     <option value={2}>Medium</option>
                     <option value={3}>Low</option>

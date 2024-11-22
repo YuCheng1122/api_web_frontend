@@ -18,15 +18,14 @@ interface UserPreferences {
     pageSize: number;
     sortField: keyof NDREvent;
     sortDirection: 'asc' | 'desc';
-    severity: number;
+    severity?: number;
 }
 
 // Default preferences
 const DEFAULT_PREFERENCES: UserPreferences = {
     pageSize: 20,
     sortField: '@timestamp',
-    sortDirection: 'desc',
-    severity: 1
+    sortDirection: 'desc'
 };
 
 // Load preferences from localStorage
@@ -40,8 +39,7 @@ const loadPreferences = (): UserPreferences => {
         const parsed = JSON.parse(saved);
         return {
             ...DEFAULT_PREFERENCES,
-            ...parsed,
-            severity: parsed.severity || DEFAULT_PREFERENCES.severity
+            ...parsed
         };
     } catch {
         return DEFAULT_PREFERENCES;
@@ -122,7 +120,7 @@ const NDRDashboard = () => {
         setAllEvents(sortedEvents);
     };
 
-    const handleSeverityChange = (severity: number) => {
+    const handleSeverityChange = (severity: number | undefined) => {
         updatePreferences({ severity });
         setCurrentPage(0);
     };
@@ -154,8 +152,8 @@ const NDRDashboard = () => {
                             deviceToUse,
                             fromTimestamp,
                             toTimestamp,
-                            0, // Get all events
-                            1000, // Large size to get all events
+                            0,
+                            1000,
                             preferences.severity
                         ),
                         ndrService.getTopBlocking(
@@ -163,7 +161,7 @@ const NDRDashboard = () => {
                             deviceToUse,
                             fromTimestamp,
                             toTimestamp,
-                            preferences.severity
+                            preferences.severity || 1 // Default to High severity for top blocking if none selected
                         )
                     ]);
 
