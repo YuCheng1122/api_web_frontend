@@ -48,7 +48,6 @@ export const fetchEventTableData = async (param: fetchEventTableDataRequest): Pr
     });
 
     const apiData = response.data.content
-    console.log('apiData:', apiData);
 
     const adjustedData = apiData.event_table.map((item: EventTableDataType) => {
       const adjustedDate = new Date(item.timestamp);

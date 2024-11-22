@@ -7,6 +7,7 @@ import ReactECharts from "echarts-for-react";
 import { fetchPieDataType } from '@/utils/dashboard/fetchPieGaphData1'
 
 
+
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {
 
 
@@ -32,7 +33,8 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
       height: 60, // Adjust height if necessary
       textStyle: {
         fontSize: 10,
-        overflow: 'truncate' // Truncate overflowing text
+        overflow: 'truncate',// Truncate overflowing text
+
       },
       tooltip: {
         show: true // Enable tooltip on legend items to show full text on hover
@@ -44,8 +46,10 @@ const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) 
         radius: ['40%', '60%'], // Adjusted inner and outer radius for better appearance
         avoidLabelOverlap: true,
         label: {
-          show: false, // Hide labels on the pie slices for a cleaner look
-          position: 'center'
+          show: true, // Show labels on the pie slices
+          position: 'outside', // Display labels outside the slices
+          formatter: '{b}: {c} ', // Display name, value, and percentage
+          fontSize: 12
         },
         emphasis: {
           label: {

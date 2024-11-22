@@ -38,8 +38,8 @@ export const fetchMaliciousBarData = async (param: fetchBarDataRequest): Promise
             },
             headers: header
         });
-
         const apiData = response.data.content.malicious_file_barchart;
+
 
         return {
             success: true,
