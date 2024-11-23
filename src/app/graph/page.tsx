@@ -8,9 +8,9 @@ import { ToastContainer, toast } from 'react-toastify';
 // component
 import Loading from '@/components/Loading'
 import Error from '@/components/Error'
-import DateTimeFilter from '@/components/graph/DateTimeFilter'
+import DateTimeFilter from '@/app/graph/components/DateTimeFilter'
 // utils
-import { initData,fetchGraphData } from '@/utils/graph/fetchGraphData'
+import { initData,fetchGraphData } from '@/features/graph/fetchGraphData'
 
 
 interface GraphDataProps {
