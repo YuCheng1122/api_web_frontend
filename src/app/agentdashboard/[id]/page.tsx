@@ -1,11 +1,11 @@
 'use client'
-import PieGraph from "@/components/agentdashboard/PieGraph"
-import AgentInfo from "@/components/agentdashboard/AgentInfo";
-import MitreList from "@/components/agentdashboard/MitreList";
+import PieGraph from "@/app/agentdashboard/components/PieGraph"
+import AgentInfo from "@/app/agentdashboard/components/AgentInfo";
+import MitreList from "@/app/agentdashboard/components/MitreList";
 import { usePathname } from 'next/navigation';
-import { fetchAgentDetails } from "@/utils/agentdashboard/fetchAgentInfoData";
-import { fetchMitreData } from "@/utils/agentdashboard/fetchMitreData";
-import { fetchRansomwareData } from "@/utils/agentdashboard/fetchRansomwareData";
+import { fetchAgentDetails } from "@/app/agentdashboard/utils/agentdashboard/fetchAgentInfoData";
+import { fetchMitreData } from "@/app/agentdashboard/utils/agentdashboard/fetchMitreData";
+import { fetchRansomwareData } from "@/app/agentdashboard/utils/agentdashboard/fetchRansomwareData";
 import { useEffect, useState } from "react";
 
 type fetchPieDataType = {

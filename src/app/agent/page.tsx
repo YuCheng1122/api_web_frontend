@@ -4,38 +4,9 @@
 import {useState, useEffect} from 'react'
 import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
-import AgentsDetailsTable from '@/components/agent/AgentsDetailsTable' // 導入 AgentsTable 組件
+import {fetchAgentDetails} from "@/app/agent/utils/fetchAgentDetails";
+import AgentsDetailsTable from "@/app/agent/components/AgentsDetailsTable"; // 導入 AgentsTable 組件
 
-// utils
-import {fetchAgentDetails} from '@/utils/agent/fetchAgentDetails' // 導入 fetchAgentDetails 函數
-
-// 模擬的代理資料
-const mockAgentsData = [
-  {
-    agent_name: "Agent 1",
-    ip: "192.168.0.1",
-    os: "Linux",
-    status_code: 2,
-    last_keep_alive: "2024-09-01 12:30:45",
-    registration_time: "2024-09-01 12:00:00"
-  },
-  {
-    agent_name: "Agent 2",
-    ip: "192.168.0.2",
-    os: "Windows",
-    status_code: 0,
-    last_keep_alive: "2024-09-01 12:25:30",
-    registration_time: "2024-09-01 12:00:00"
-  },
-  {
-    agent_name: "Agent 3",
-    ip: "192.168.0.3",
-    os: "macOS",
-    status_code: 1,
-    last_keep_alive: "2024-09-01 12:20:15",
-    registration_time: "2024-09-01 12:00:00"
-  }
-];
 
 const AgentsInfo = () => {
   const [agentsData, setAgentsData] = useState<any[]>([])
@@ -55,8 +26,6 @@ const AgentsInfo = () => {
         }
       } catch (error) {
         console.log(error)
-        // 使用範例資料作為後備
-        setAgentsData(mockAgentsData); // 設置範例資料
         setError("Failed to fetch agents info 😢. Using mock data instead.")
         setTimeout(() => {
           setError(null)
