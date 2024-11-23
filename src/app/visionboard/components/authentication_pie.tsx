@@ -6,10 +6,10 @@ import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 import ErrorDisplayer from '@/components/Error'
 
 // utils
-import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentOSPiegraphData'
-import PieGraph from '@/features/vision_dashboard/components/PieGraph'
+import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAuthenticationpiechartData'
+import PieGraph from '@/app/visionboard/components/PieGraph'
 
-export default function AgentOSPie() {
+export default function AgentAuthenticationPie() {
     // pie graph data
     const { dateTimeRange } = useVisionBoardContext()
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -17,17 +17,20 @@ export default function AgentOSPie() {
     const [error, setError] = useState<string | null>(null)
 
 
+
     useEffect(() => {
+
+
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        // select data top 5
-                        const data = response.content.agent_os
+                        //  select data top 5
+                        const data = response.content.authentication_piechart
                         const top5Data = data.slice(0, 5)
-                        setChartData({ agent_os: top5Data })
+                        setChartData({ authentication_piechart: top5Data })
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -47,15 +50,11 @@ export default function AgentOSPie() {
     }, [dateTimeRange])
 
 
-
     return (
         <>
-            {
-                isLoading && <div>Loading...</div>
-            }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
-                chartData.agent_os.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col min-h-96"><p className=' text-2xl font-bold'>場域設備作業系統</p> <p>目前沒有安裝設備</p></div> : <PieGraph title="場域設備作業系統" data={chartData.agent_os} />
+                chartData.authentication_piechart.length <= 0 ? <div className="min-h-48 w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>身份驗證分析</p> <p>目前尚未有不合法驗證</p></div> : <PieGraph title="身份驗證分析" data={chartData.authentication_piechart} />
             }
         </>
     )

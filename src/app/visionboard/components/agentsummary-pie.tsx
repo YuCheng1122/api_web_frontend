@@ -6,10 +6,12 @@ import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 import ErrorDisplayer from '@/components/Error'
 
 // utils
-import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAuthenticationpiechartData'
-import PieGraph from '@/features/vision_dashboard/components/PieGraph'
+import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentsummaryPiegraphData'
+import PieGraph from '@/app/visionboard/components/PieGraph'
+import { slice } from 'lodash'
 
-export default function AgentAuthenticationPie() {
+
+export default function AgentSummaryPie() {
     // pie graph data
     const { dateTimeRange } = useVisionBoardContext()
     const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -20,17 +22,13 @@ export default function AgentAuthenticationPie() {
 
     useEffect(() => {
 
-
         const fetchData = async () => {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
                     const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        //  select data top 5
-                        const data = response.content.authentication_piechart
-                        const top5Data = data.slice(0, 5)
-                        setChartData({ authentication_piechart: top5Data })
+                        setChartData(response.content)
                     } else {
                         throw new Error('Failed to fetch data')
                     }
@@ -50,12 +48,30 @@ export default function AgentAuthenticationPie() {
     }, [dateTimeRange])
 
 
+    //   字串處理 不要後面五個字
+    const sliceword = (word: string, value: number) => {
+
+        // slice 的結果轉回字串
+        const newword = word.slice(0, -7)
+        return newword + " " + value
+    }
+    // change agent_summary name to splice the data agent
+    const agent_summary = chartData.agent_summary.map((item) => {
+        return { name: sliceword(item.name, item.value), value: item.value }
+    }
+    )
+
     return (
         <>
+            {
+                isLoading && <div>Loading...</div>
+            }
             {error && <ErrorDisplayer errorMessage={error} setError={setError} />}
             {
-                chartData.authentication_piechart.length <= 0 ? <div className="min-h-48 w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>身份驗證分析</p> <p>目前尚未有不合法驗證</p></div> : <PieGraph title="身份驗證分析" data={chartData.authentication_piechart} />
+                chartData.agent_summary.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col"><p className=' text-2xl font-bold'>場域設備連線數</p> <p>尚未有設備連線</p></div> : <PieGraph title="場域設備連線情形" data={agent_summary} />
+
             }
+
         </>
     )
 }
