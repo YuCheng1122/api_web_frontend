@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect, use } from "react"
 import Cookies from "js-cookie"
-import { fetchUser } from '@/utils/managecenter/fetchUser'
+import { fetchUser } from '@/features/manage_center/managecenter/fetchUser'
 import Router from 'next/router'
 
 

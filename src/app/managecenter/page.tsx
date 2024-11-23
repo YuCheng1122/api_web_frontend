@@ -1,8 +1,8 @@
 'use client'
-import Card from '@/components/managecenter/Card'
 import { useEffect, useState } from 'react'
-import { fetchUser } from '@/utils/managecenter/fetchUser'
+import { fetchUser } from '@/features/manage_center/managecenter/fetchUser'
 import Loading from '@/components/Loading'
+import Card from "@/app/managecenter/components/Card";
 type UserDataType = {
     username: string
     email: string

@@ -1,8 +1,8 @@
 import Image from 'next/image'
 //  props.user type is User
-import {updateLicense }from '@/utils/managecenter/updateLicense'
+import {updateLicense }from '@/features/manage_center/managecenter/updateLicense'
 import { ToastContainer, toast } from "react-toastify";
-import { updateApprove } from '@/utils/managecenter/updateApprove'
+import { updateApprove } from '@/features/manage_center/managecenter/updateApprove'
 type User = {
   user: {
     username: string
