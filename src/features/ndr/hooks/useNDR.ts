@@ -3,7 +3,8 @@
 import { useState, useEffect } from 'react';
 import { NDRAuthState, NDRLoginCredentials } from '../types/ndr';
 import { ndrService } from '../services/ndrService';
-import { encryptData, decryptData } from '../utils/encryption';
+import { encrypt } from '../utils/encrypt';
+import { decrypt } from '../utils/decrypt';
 
 // Create a global state to persist auth state across components
 let globalAuthState: NDRAuthState = {
@@ -21,6 +22,41 @@ const notifySubscribers = (newState: NDRAuthState) => {
 };
 
 const CREDENTIALS_KEY = 'ndr-encrypted-credentials';
+const CRYPTO_KEY = 'ndr-crypto-key';
+
+async function storeCredentials(credentials: NDRLoginCredentials): Promise<void> {
+    try {
+        const { encryptedData, key } = await encrypt(JSON.stringify(credentials));
+        localStorage.setItem(CREDENTIALS_KEY, encryptedData);
+        localStorage.setItem(CRYPTO_KEY, key);
+    } catch (error) {
+        console.error('Failed to store credentials:', error);
+        throw new Error('Failed to store credentials');
+    }
+}
+
+async function retrieveCredentials(): Promise<NDRLoginCredentials | null> {
+    try {
+        const encryptedData = localStorage.getItem(CREDENTIALS_KEY);
+        const key = localStorage.getItem(CRYPTO_KEY);
+
+        if (!encryptedData || !key) {
+            return null;
+        }
+
+        const decryptedData = await decrypt(encryptedData, key);
+        return JSON.parse(decryptedData) as NDRLoginCredentials;
+    } catch (error) {
+        console.error('Failed to retrieve credentials:', error);
+        clearStoredCredentials();
+        return null;
+    }
+}
+
+function clearStoredCredentials(): void {
+    localStorage.removeItem(CREDENTIALS_KEY);
+    localStorage.removeItem(CRYPTO_KEY);
+}
 
 export const useNDR = () => {
     const [authState, setAuthState] = useState<NDRAuthState>(globalAuthState);
@@ -35,8 +71,7 @@ export const useNDR = () => {
         const attemptAutoLogin = async () => {
             // Check for existing token and credentials in localStorage
             const storedToken = localStorage.getItem('ndrToken');
-            const encryptedCredentials = localStorage.getItem(CREDENTIALS_KEY);
-
+            
             if (storedToken && !globalAuthState.isAuthenticated) {
                 updateGlobalAndLocalState({
                     token: storedToken,
@@ -44,17 +79,16 @@ export const useNDR = () => {
                     isLoading: false,
                     error: null
                 });
-            } else if (encryptedCredentials && !globalAuthState.isAuthenticated) {
-                // Auto-login with stored credentials
+            } else if (!globalAuthState.isAuthenticated) {
+                // Try to retrieve and use stored credentials
                 try {
-                    const decryptedCredentials = await decryptData(encryptedCredentials);
-                    const credentials: NDRLoginCredentials = JSON.parse(decryptedCredentials);
-                    await login(credentials, false); // Pass false to prevent re-storing credentials
+                    const credentials = await retrieveCredentials();
+                    if (credentials) {
+                        await login(credentials, false); // Pass false to prevent re-storing credentials
+                    }
                 } catch (error) {
                     console.error('Failed to auto-login:', error);
-                    // Clear invalid stored credentials
-                    localStorage.removeItem(CREDENTIALS_KEY);
-                    localStorage.removeItem('ndr-crypto-key');
+                    clearStoredCredentials();
                 }
             }
         };
@@ -73,22 +107,19 @@ export const useNDR = () => {
             localStorage.setItem('ndrToken', newState.token);
         } else {
             localStorage.removeItem('ndrToken');
-            localStorage.removeItem(CREDENTIALS_KEY);
-            localStorage.removeItem('ndr-crypto-key');
+            clearStoredCredentials();
         }
         notifySubscribers(newState);
     };
 
-    const login = async (credentials: NDRLoginCredentials, storeCredentials: boolean = true) => {
+    const login = async (credentials: NDRLoginCredentials, shouldStoreCredentials: boolean = true) => {
         try {
             updateGlobalAndLocalState({ ...globalAuthState, isLoading: true, error: null });
             const response = await ndrService.login(credentials);
             
-            if (storeCredentials) {
+            if (shouldStoreCredentials) {
                 try {
-                    // Encrypt and store credentials
-                    const encryptedCredentials = await encryptData(JSON.stringify(credentials));
-                    localStorage.setItem(CREDENTIALS_KEY, encryptedCredentials);
+                    await storeCredentials(credentials);
                 } catch (error) {
                     console.error('Failed to store credentials:', error);
                     // Continue with login even if storing credentials fails
