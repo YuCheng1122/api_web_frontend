@@ -5,8 +5,6 @@ import { initData, EntireDataType, fetchAlertData } from '@/features/vision_dash
 import { useVisionBoardContext } from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
 import ErrorDisplayer from "@/features/shared/ui/Error";
 
-
-
 type AlertProps = {
     critical_severity: number;
     high_severity: number;

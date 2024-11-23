@@ -301,14 +301,3 @@ export const fetchGraphData = async (params: FetchGraphDataRequestProps): Promis
   })
 }
 
-
-// export const fetchGraphData = async (params: FetchGraphDataRequestProps): Promise<FetchGraphDataResponseProps> => {
-
-//   const { startTime, endTime, token } = params;  
-//   const url = `${process.env.REACT_APP_API_URL}/api/view/graph_data?start_time=${encodeURIComponent(startTime.toISOString())}&end_time=${encodeURIComponent(endTime.toISOString())}`;
-//   const headers = {
-//     Authorization: token
-//   }
-//   const response = await axios.get(url, { headers });
-//   return response.data;
-// }

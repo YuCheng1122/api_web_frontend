@@ -1,8 +1,5 @@
-// third-party
 import { useState, useEffect } from 'react'
 
-
-// utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'
 import PieGraph from '@/app/visionboard/components/PieGraph'
 import {useVisionBoardContext} from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";

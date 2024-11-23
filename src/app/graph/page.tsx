@@ -59,91 +59,38 @@ const GraphPage = () => {
   const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setEndDate(new Date(e.target.value))
   }
-
-  const formatTooltip = (params: any) => {
-    if (params.dataType === 'node') {
-      return `<strong>${params.data.id}</strong><br/>IP: ${params.data.name || 'No info'}`;
-    } else {
-      return `<strong>Edge</strong><br/>Source: ${params.data.source || 'No info'}<br/>Target: ${params.data.target || 'No info'}`;
+  graphData.nodes.map(node => ({
+    ...node,
+    symbol: node.attributes?.tags?.includes('gateway')
+        ? 'image://gateway-icon.png'
+        : node.attributes?.tags?.includes('internal')
+            ? 'image://internal-icon.png'
+            : 'circle',  // 默認圖示
+    symbolSize: 38, // 圖示大小
+    label: {
+      show: true, // 顯示標籤
+      position: 'bottom', // 標籤顯示在圖示下方
+      formatter: node.id, // 標籤的內容可以是節點的ID或其他屬性
+      fontSize: 12, // 標籤字體大小
+      color: '#000000' // 標籤字體顏色
     }
-  };
-
-  const option = {
-    backgroundColor: '#FFFFFF',
-    title: {
-      text: 'Threat Graph',
-      subtext: 'AIXIOR',
-      top: '10',
-      left: 'center',
-      textStyle: {
-        fontSize: 32,
-        fontWeight: 'bold',
-        color: '#000000'
-      },
-      subtextStyle: {
-        fontSize: 12,
-        color: '#000000'
+  }));
+  graphData.edges.map(edge => ({
+    ...edge,
+    lineStyle: {
+      normal: {
+        color: '#000000',
+        width: 2, // 線的寬度
+        curveness: 0, // 線的曲率，0為直線
       }
     },
-    tooltip: {
-      trigger: 'item',
-      formatter: formatTooltip
-    },
-    animationDuration: 1500,
-    animationEasingUpdate: 'quinticInOut',
-    series: [{
-      name: 'Graph',
-      type: 'graph',
-      layout: 'force',
-        data: graphData.nodes.map(node => ({
-          ...node,
-          symbol: node.attributes?.tags?.includes('gateway') 
-                  ? 'image://gateway-icon.png' 
-                  : node.attributes?.tags?.includes('internal') 
-                    ? 'image://internal-icon.png' 
-                    : 'circle',  // 默認圖示
-          symbolSize: 38, // 圖示大小
-          label: {
-            show: true, // 顯示標籤
-            position: 'bottom', // 標籤顯示在圖示下方
-            formatter: node.id, // 標籤的內容可以是節點的ID或其他屬性
-            fontSize: 12, // 標籤字體大小
-            color: '#000000' // 標籤字體顏色
-          }
-        })),
-      links: graphData.edges.map(edge => ({
-        ...edge,
-        lineStyle: {
-          normal: {
-            color: '#000000',
-            width: 2, // 線的寬度
-            curveness: 0, // 線的曲率，0為直線
-          }
-        },
-        symbol: ['none', 'arrow'], // 設置起點無箭頭，終點為箭頭
-        symbolSize: 10, // 設置箭頭大小
-      })),
-      roam: true,
-      force: {
-        repulsion: 10000,
-        edgeLength: [100, 200],
-        gravity: 0.1,
-        layoutAnimation: true,
-        friction: 0.6
-      }
-    }],
-    dataZoom: [{
-      type: 'inside',
-      zoomOnMouseWheel: true,
-      zoomLock: false,
-      throttle: 100
-    }]
-  };
-  
+    symbol: ['none', 'arrow'], // 設置起點無箭頭，終點為箭頭
+    symbolSize: 10, // 設置箭頭大小
+  }));
 
 
   return (
-    <>
+      <>
       <div className='h-full w-full grid grid-rows-[auto,1fr] gap-2 p-2'>
 
         {/* datetime filter */}

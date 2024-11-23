@@ -4,14 +4,11 @@ import BarChartComponent from '@/app/visionboard/components/bar'
 import EventTrendGraph from '@/app/visionboard/components/EventTrendGraph'
 import AlertComponent from '@/app/visionboard/components/alert'
 import DateTimeFilter from '@/app/visionboard/components/DateTimeFilter'
-import AgentNamePie from '@/app/visionboard/components/agentname-pie'
 import AgentOSPie from '@/app/visionboard/components/agentos-pie'
 import AgentSummaryPie from '@/app/visionboard/components/agentsummary-pie'
 import AgentAuthenticationPie from '@/app/visionboard/components/authentication_pie'
 import CVEBarChartComponent from '@/app/visionboard/components/cve_barchart'
 import AgentnameBarChartComponent from '@/app/visionboard/components/agentname_barchart'
-
-
 
 export default function Visionboardpage() {
 

@@ -2,12 +2,6 @@
 
 import * as React from "react"
 import * as RechartsPrimitive from "recharts"
-import {
-    NameType,
-    Payload,
-    ValueType,
-} from "recharts/types/component/DefaultTooltipContent"
-
 import { cn } from "@/features/shared/utils/utils"
 
 // Format: { THEME_NAME: CSS_SELECTOR }

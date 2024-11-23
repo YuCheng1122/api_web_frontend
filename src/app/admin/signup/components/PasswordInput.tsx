@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-// import eye icon from lacide-react
 import { Eye } from 'lucide-react';
 
 interface PasswordInputProps {

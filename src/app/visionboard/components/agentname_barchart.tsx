@@ -2,10 +2,7 @@
 
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React from "react";
-
 import { useState, useEffect } from 'react'
-
-// utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'
 import {useVisionBoardContext} from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/features/shared/ui/card";
