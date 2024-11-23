@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { ChevronDown, Sparkles, Clock } from 'lucide-react';
-import {Message} from "@/features/chatbot/types/chat";
-import {ChatService} from "@/features/chatbot/services/chatService";
+import { Message } from "@/features/chatbot/types/chat";
+import { ChatService } from "@/features/chatbot/services/chatService";
 
 interface Question {
     question: string;
