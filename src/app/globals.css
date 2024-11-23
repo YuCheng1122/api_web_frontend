@@ -4,6 +4,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
     :root {
         --background: 0 0% 100%;
@@ -59,15 +60,52 @@
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%
     }
+}
 
-    @keyframes slideIn {
-        0% {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* 隱藏滾動條但保持功能 */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 動畫效果 */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
     }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 導航項目hover效果 */
+.nav-item {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    background-color: #97932D;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-item:hover::after {
+    width: 100%;
+}
+
+/* Header動畫 */
+.header-animation {
+    animation: slideIn 0.3s ease-out;
 }

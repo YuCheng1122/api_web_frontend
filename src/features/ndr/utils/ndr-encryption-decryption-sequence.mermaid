@@ -1,0 +1,85 @@
+sequenceDiagram
+    participant App as NDR Application
+    participant Crypto as Web Crypto API
+    participant Storage as LocalStorage
+
+    %% Encryption Flow
+    rect rgb(225, 242, 254)
+        Note over App,Storage: Encryption Process (During Login)
+        
+        App->>App: User inputs credentials<br/>{username, password}
+        
+        Note over App: Prepare for encryption
+        App->>Crypto: Generate Random Salt (16 bytes)
+        Crypto-->>App: Return Salt
+        App->>Crypto: Generate Random IV (12 bytes)
+        Crypto-->>App: Return IV
+        
+        Note over App: Generate encryption password
+        App->>App: Create timestamp
+        App->>Crypto: Generate Random Bytes (16 bytes)
+        Crypto-->>App: Return Random Bytes
+        App->>App: Combine timestamp + random bytes<br/>as encryption password
+        
+        Note over App: Create credential payload
+        App->>App: JSON.stringify({<br/>username: "user input",<br/>password: "user input"<br/>})
+        
+        Note over App: Generate encryption key
+        App->>Crypto: Import Key Material (PBKDF2)<br/>from encryption password
+        Crypto-->>App: Return Key Material
+        App->>Crypto: Derive AES-GCM Key<br/>using Salt & Key Material
+        Crypto-->>App: Return AES-GCM Key
+        
+        Note over App: Encrypt credentials
+        App->>Crypto: Encrypt JSON credentials<br/>using AES-GCM & IV
+        Crypto-->>App: Return Ciphertext
+        
+        Note over App: Prepare final encrypted data
+        App->>App: Combine data:<br/>Salt (16 bytes) +<br/>IV (12 bytes) +<br/>Ciphertext
+        App->>App: Convert combined data to Base64
+        
+        Note over App: Store encrypted data
+        App->>Storage: Store Base64 as<br/>'ndr-encrypted-credentials'
+        App->>Storage: Store encryption password as<br/>'ndr-crypto-key'
+    end
+
+    %% Decryption Flow
+    rect rgb(255, 243, 224)
+        Note over App,Storage: Decryption Process (Auto Login)
+        
+        Note over App: Start auto login process
+        App->>Storage: Get encryption password<br/>from 'ndr-crypto-key'
+        Storage-->>App: Return encryption password
+        
+        App->>Storage: Get encrypted credentials<br/>from 'ndr-encrypted-credentials'
+        Storage-->>App: Return Base64 encrypted data
+        
+        Note over App: Extract components
+        App->>App: Decode Base64 to binary
+        App->>App: Extract:<br/>- Salt (first 16 bytes)<br/>- IV (next 12 bytes)<br/>- Ciphertext (remaining)
+        
+        Note over App: Regenerate decryption key
+        App->>Crypto: Import Key Material (PBKDF2)<br/>from stored password
+        Crypto-->>App: Return Key Material
+        App->>Crypto: Derive AES-GCM Key<br/>using extracted Salt
+        Crypto-->>App: Return AES-GCM Key
+        
+        Note over App: Decrypt credentials
+        App->>Crypto: Decrypt using AES-GCM<br/>with extracted IV
+        Crypto-->>App: Return decrypted JSON
+        
+        Note over App: Process decrypted data
+        App->>App: Parse JSON to get<br/>{username, password}
+        
+        Note over App: Use credentials
+        App->>App: Proceed with auto login<br/>using decrypted credentials
+    end
+
+    rect rgb(240, 240, 240)
+        Note over App: Error Handling
+        alt Decryption fails
+            App->>Storage: Remove 'ndr-crypto-key'
+            App->>Storage: Remove 'ndr-encrypted-credentials'
+            App->>App: Redirect to login page
+        end
+    end
