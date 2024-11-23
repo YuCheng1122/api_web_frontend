@@ -1,20 +1,8 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { AgentDetailType, FetchAgentDetailsResponse } from '../types/agent';
 
-export interface AgentDetailType {
-  agent_name: string;
-  ip: string;
-  os: string;
-  agent_status: number;
-  last_keep_alive: string;
-}
-
-export interface fetchAgentDetailsResponse {
-  success: boolean;
-  content: AgentDetailType[];
-}
-
-export const fetchAgentDetails = async (): Promise<fetchAgentDetailsResponse> => {
+export const fetchAgentDetails = async (): Promise<FetchAgentDetailsResponse> => {
   const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/wazuh/agent-details`;
 
   try {
@@ -23,7 +11,7 @@ export const fetchAgentDetails = async (): Promise<fetchAgentDetailsResponse> =>
     };
 
     const response = await axios.get(api_url, {
-      headers: header        
+      headers: header
     });
 
     const apiData = response.data.content;

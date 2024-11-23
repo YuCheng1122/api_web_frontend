@@ -1,6 +1,15 @@
 'use client'
 import React, { createContext, useContext, useState } from "react"
-import { AgentDataType } from '@/app/agentdashboard/utils/agentdashboard/fetchAgentData';
+
+// 內嵌AgentDataType定義
+export interface AgentDataType {
+    agent_name: string;
+    ip: string;
+    os: string;
+    agent_status: string;
+    last_keep_alive: string;
+    registration_time: string;
+}
 
 type DateTimeRange = {
     start: Date | null;

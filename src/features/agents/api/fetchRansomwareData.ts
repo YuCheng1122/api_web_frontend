@@ -1,34 +1,25 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { FetchRansomwareDataResponse, FetchAgentInfoParams } from '../types/agent';
 
-type RansomwareData = {
-    ransomware_data: {
-        ransomware_name: string[];
-        ransomware_count: number;
-    };
-};
-
-export interface fetchRansomwareDataResponse {
-    success: boolean;
-    content: RansomwareData[];
-}
-type Props = {
-    id: string;
-};
-
-export const fetchRansomwareData = async (props: Props): Promise<fetchRansomwareDataResponse> => {
+export const fetchRansomwareData = async ({ id }: FetchAgentInfoParams): Promise<FetchRansomwareDataResponse> => {
     const nowtime = new Date();
     const endtime = new Date(nowtime);
     endtime.setDate(nowtime.getDate() - 1);
-    // 時間格式為 "2024-10-05T00:00:00Z"
-    const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/agent_detail/agent_ransomware?agent_name=${props.id}&start_time=${endtime.toISOString()}&end_time=${nowtime.toISOString()}`;
+    
+    const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/agent_detail/agent_ransomware`;
 
     try {
         const header = {
             'Authorization': Cookies.get('token'),
         };
         const response = await axios.get(api_url, {
-            headers: header
+            headers: header,
+            params: {
+                agent_name: id,
+                start_time: endtime.toISOString(),
+                end_time: nowtime.toISOString()
+            }
         });
 
         const apiData = response.data.ransomware_data;

@@ -1,9 +1,12 @@
-type Mitre = {
-    name: string;
-    count: number;
-};
-export default function MitreList(props: { mitres: Mitre[] }) {
-    const { mitres } = props;
+'use client'
+
+import { MitreDisplayData } from '@/features/agents/types/agent';
+
+interface MitreListProps {
+    mitres: MitreDisplayData[];
+}
+
+export default function MitreList({ mitres }: MitreListProps) {
     console.log(mitres);
 
     return (

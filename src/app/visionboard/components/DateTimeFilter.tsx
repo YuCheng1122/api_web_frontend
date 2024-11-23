@@ -2,8 +2,40 @@
 
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
-import { fetchAgentData } from '@/app/agentdashboard/utils/agentdashboard/fetchAgentData';
+import axios from 'axios';
+import Cookies from 'js-cookie';
 import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext';
+
+// 內嵌原本的fetchAgentData邏輯
+const fetchAgentData = async ({ start, end }: { start: Date; end: Date }) => {
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/agent_detail/agent-data`;
+
+  try {
+    const header = {
+      'Authorization': Cookies.get('token'),
+    };
+
+    const response = await axios.get(api_url, {
+      headers: header,
+      params: {
+        start_time: start.toISOString(),
+        end_time: end.toISOString()
+      }
+    });
+
+    const apiData = response.data.content;
+    return {
+      success: true,
+      content: apiData
+    };
+  } catch (error: any) {
+    console.error('Error fetching agent data:', error);
+    return {
+      success: false,
+      content: []
+    };
+  }
+};
 
 const DateTimeFilter = () => {
   const { changeDateTimeRange, updateAgentData } = useVisionBoardContext();
