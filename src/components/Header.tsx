@@ -24,7 +24,6 @@ interface NavItem {
 // 導航項目列表
 const navItems: NavItem[] = [
   { href: '/graph', label: '威脅獵捕圖' },
-  { href: '/dashboard', label: '儀表板' },
   { href: '/agent', label: '代理資訊' },
   { href: '/chatbot', label: 'SenseX 聊天機器人' },
   { href: '/visionboard', label: '視覺化儀表板' },
