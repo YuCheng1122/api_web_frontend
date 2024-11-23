@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { EventDetailsDialog } from '../EventDetailsDialog';
-import { useAuthContext } from '@/components/AuthContext';
 import {EventRow} from "@/features/ics/types";
 import {fetchModbusEvents} from "@/features/ics/services/modbusApi";
+import {useAuthContext} from "@/features/auth/contexts/AuthContext";
 
 export const EventTable = () => {
     const [events, setEvents] = useState<EventRow[] | null>(null);

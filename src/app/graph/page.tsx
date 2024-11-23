@@ -1,15 +1,8 @@
 'use client'
 
-// third party imports
-import React, { useEffect, useState } from 'react'
-import ReactECharts from 'echarts-for-react';
+import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
-
-// component
-import Loading from '@/components/Loading'
-import Error from '@/components/Error'
 import DateTimeFilter from '@/app/graph/components/DateTimeFilter'
-// utils
 import { initData,fetchGraphData } from '@/features/graph/fetchGraphData'
 
 
@@ -157,23 +150,6 @@ const GraphPage = () => {
         <div className='p-2 rounded-lg'>
           <DateTimeFilter handleStartDateChange={handleStartDateChange} handleEndDateChange={handleEndDateChange} handleSubmit={handleSubmit} />
         </div>
-
-      
-        {/* graph display */}    
-        {/* 
-        <div className='rounded-lg p-4 h-[75vh]'>
-          {isLoading ? 
-            <Loading /> 
-            : 
-            <ReactECharts 
-              option={option} 
-              theme={'dark'} 
-              style={{ height: '100%', width: '100%', opacity: '0.8', borderRadius: '10px',overflow: 'hidden'}} 
-            />
-          }
-        </div>   
-        */}
-
 
         {/* message */}
         <div className="relative flex items-center justify-center h-[70vh] p-4 text-center">

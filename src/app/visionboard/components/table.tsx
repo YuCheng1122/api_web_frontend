@@ -1,15 +1,10 @@
 import { useState, useEffect, use } from 'react'
 import DataTable, { TableColumn } from 'react-data-table-component';
 
-
-// components
-import Loading from '@/components/Loading'
-import ErrorDisplayer from '@/components/Error'
-
-// context
-import { useVisionBoardContext } from '@/components/VisionBoardContext';
-// utils
 import { initData, EventTableDataType, fetchEventTableData } from '@/features/vision_dashboard/visiondashboard/fetchEventTableData'
+import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext';
+import ErrorDisplayer from '@/features/shared/ui/Error';
+import Loading from '@/features/shared/ui/Loading';
 type tableData = {
     timestamp: string
     agent_name: string

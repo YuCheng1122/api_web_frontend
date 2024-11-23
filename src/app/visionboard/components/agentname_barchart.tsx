@@ -1,37 +1,16 @@
-
-
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React from "react";
 
 import { useState, useEffect } from 'react'
 
-import ErrorDisplayer from '@/components/Error' // Adjust the import path as necessary
-
-// context
-import { useVisionBoardContext } from '@/components/VisionBoardContext'
-
 // utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'
-
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-
-
+import {useVisionBoardContext} from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/features/shared/ui/card";
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/features/shared/ui/chart";
+import ErrorDisplayer from "@/features/shared/ui/Error";
 
 
 export default function AgentnameBarChartComponent() {

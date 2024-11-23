@@ -1,17 +1,11 @@
 'use client'
 
-// third-party
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
-
-// utils
 import { login } from "@/app/admin/utils/login";
-
-// context
-import { useAuthContext } from "@/components/AuthContext";
-
+import { useAuthContext } from "@/features/auth/contexts/AuthContext";
 
 const LoginPage = () => {
   const [isMaintenanceMode, setIsMaintenanceMode] = useState(false)

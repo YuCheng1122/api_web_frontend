@@ -1,11 +1,10 @@
 'use client'
 
-// third-party
 import {useState, useEffect} from 'react'
-import Loading from '@/components/Loading'
-import ErrorDisplayer from '@/components/Error'
 import {fetchAgentDetails} from "@/app/agent/utils/fetchAgentDetails";
 import AgentsDetailsTable from "@/app/agent/components/AgentsDetailsTable"; // 導入 AgentsTable 組件
+import ErrorDisplayer from '@/features/shared/ui/Error';
+import Loading from '@/features/shared/ui/Loading';
 
 
 const AgentsInfo = () => {

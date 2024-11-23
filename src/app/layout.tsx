@@ -1,11 +1,10 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
-import Header from "@/components/Header";
-import { AuthProvider } from "@/components/AuthContext";
-import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ArrowUpToLine } from "lucide-react";
+import { AuthProvider } from "@/features/auth/contexts/AuthContext";
+import Header from "@/features/shared/components/Header";
+import { ScrollToTop } from "@/features/shared/ui/scroll-to-top";
 
 const inter = Inter({ subsets: ["latin"] });
 

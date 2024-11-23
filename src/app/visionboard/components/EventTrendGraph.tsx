@@ -1,19 +1,12 @@
 'use client'
 
-// third-party
 import { useState, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 
-// componentsy
-import Loading from '@/components/Loading'
-import ErrorDisplayer from '@/components/Error'
-
-// context
-import { useVisionBoardContext } from '@/components/VisionBoardContext';
-
-
-// utils
 import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/features/vision_dashboard/visiondashboard/fetchEventTrendData';
+import Loading from '@/features/shared/ui/Loading';
+import ErrorDisplayer from '@/features/shared/ui/Error';
+import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext';
 
 const EventTrendGraph = () => {
 

@@ -1,13 +1,9 @@
 import React from "react";
 
 import { useState, useEffect } from 'react'
-
-// context
-import { useVisionBoardContext } from '@/components/VisionBoardContext'
-import ErrorDisplayer from '@/components/Error'
-
-// utils
 import { initData, EntireDataType, fetchAlertData } from '@/features/vision_dashboard/visiondashboard/fetchAlertData'
+import { useVisionBoardContext } from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
+import ErrorDisplayer from "@/features/shared/ui/Error";
 
 
 

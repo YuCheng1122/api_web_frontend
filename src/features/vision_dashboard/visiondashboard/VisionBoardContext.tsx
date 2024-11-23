@@ -1,6 +1,7 @@
 'use client'
 import React, { createContext, useContext, useState } from "react"
 import { AgentDataType } from '@/app/agentdashboard/utils/agentdashboard/fetchAgentData';
+
 type DateTimeRange = {
     start: Date | null;
     end: Date | null;
@@ -12,7 +13,9 @@ type VisionBoardContextType = {
     agentData: AgentDataType[];
     updateAgentData: (newData: AgentDataType[]) => void;
 }
+
 export const VisionBoardContext = createContext<VisionBoardContextType | undefined>(undefined);
+
 export const VisionBoardProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [dateTimeRange, setDateTimeRange] = useState<DateTimeRange>({ start: null, end: null })
     const [agentData, setAgentData] = useState<AgentDataType[]>([]);

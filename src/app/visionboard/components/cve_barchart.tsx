@@ -1,38 +1,13 @@
-
-
 "use client"
 
-import { TrendingUp } from "lucide-react"
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React from "react";
-
 import { useState, useEffect } from 'react'
-
-import ErrorDisplayer from '@/components/Error' // Adjust the import path as necessary
-
-// context
-import { useVisionBoardContext } from '@/components/VisionBoardContext'
-
-// utils
 import { initData, EntireDataType, fetchCVEBarData } from '@/features/vision_dashboard/visiondashboard/fetchCVEBarData'
-
-import {
-    Card,
-    CardContent,
-    CardDescription,
-    CardFooter,
-    CardHeader,
-    CardTitle,
-} from "@/components/ui/card"
-import {
-    ChartConfig,
-    ChartContainer,
-    ChartTooltip,
-    ChartTooltipContent,
-} from "@/components/ui/chart"
-
-
-
+import { useVisionBoardContext } from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/features/shared/ui/chart";
+import ErrorDisplayer from "@/features/shared/ui/Error";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/features/shared/ui/card";
 
 export default function CVEBarChartComponent() {
 

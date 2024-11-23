@@ -1,11 +1,7 @@
 'use client'
 
-// third-party
 import ReactECharts from "echarts-for-react";
-
-// utils
-import { fetchPieDataType } from '@/utils/dashboard/fetchPieGaphData1'
-
+import {fetchPieDataType} from "@/features/vision_dashboard/visiondashboard/fetchAgentOSPiegraphData";
 
 const PieGraph = ({ title, data }: { title: string, data: fetchPieDataType[] }) => {
   const processedData = data.map(item => ({

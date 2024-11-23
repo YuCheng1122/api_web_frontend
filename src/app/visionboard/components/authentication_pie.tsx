@@ -1,13 +1,8 @@
-// third-party
 import { useState, useEffect } from 'react'
-
-// context
-import { useVisionBoardContext } from '@/components/VisionBoardContext'
-import ErrorDisplayer from '@/components/Error'
-
-// utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAuthenticationpiechartData'
 import PieGraph from '@/app/visionboard/components/PieGraph'
+import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext'
+import ErrorDisplayer from '@/features/shared/ui/Error'
 
 export default function AgentAuthenticationPie() {
     // pie graph data

@@ -1,6 +1,6 @@
 import React from 'react';
 import Image from 'next/image';
-import SecuritySolutions from '@/components/home/SecuritySolutions';
+import SecuritySolutions from '@/features/home/components/SecuritySolutions';
 
 export default function Home() {
   return (

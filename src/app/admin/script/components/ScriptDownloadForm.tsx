@@ -3,9 +3,7 @@ import Image from 'next/image';
 import { generateScripts } from './Script'; // 根據實際路徑調整
 import { getTotalAgentsAndLicense } from '@/app/admin/utils/TotalLicenseAgent';
 import { fetchNextAgentName } from '@/app/admin/utils/fetchCountingAgent'; // 導入 fetchNextAgentName
-
-// context
-import { useAuthContext } from '@/components/AuthContext'
+import { useAuthContext } from '@/features/auth/contexts/AuthContext';
 
 const ScriptDownloadForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState<Record<string, any>>({
