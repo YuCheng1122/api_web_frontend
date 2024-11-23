@@ -1,5 +1,5 @@
 import {EventRow} from "@/features/ics/types";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/features/shared/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/app/ui/dialog";
 
 interface EventDetailsDialogProps {
     event: EventRow | null;

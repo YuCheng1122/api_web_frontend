@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react'
 import ReactECharts from 'echarts-for-react';
 
 import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/features/vision_dashboard/visiondashboard/fetchEventTrendData';
-import Loading from '@/features/shared/ui/Loading';
-import ErrorDisplayer from '@/features/shared/ui/Error';
+import Loading from '@/app/ui/Loading';
+import ErrorDisplayer from '@/app/ui/Error';
 import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext';
 
 const EventTrendGraph = () => {

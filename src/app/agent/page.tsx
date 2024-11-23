@@ -3,8 +3,8 @@
 import {useState, useEffect} from 'react'
 import {fetchAgentDetails} from "@/app/agent/utils/fetchAgentDetails";
 import AgentsDetailsTable from "@/app/agent/components/AgentsDetailsTable"; // 導入 AgentsTable 組件
-import ErrorDisplayer from '@/features/shared/ui/Error';
-import Loading from '@/features/shared/ui/Loading';
+import ErrorDisplayer from '@/app/ui/Error';
+import Loading from '@/app/ui/Loading';
 
 
 const AgentsInfo = () => {

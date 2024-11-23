@@ -1,4 +1,4 @@
-import { cn } from "@/features/shared/utils/utils"
+import { cn } from "@/app/ui/utils/utils"
 import React from "react";
 
 const Card = React.forwardRef<

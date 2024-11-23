@@ -12,7 +12,7 @@ import {
     DropdownMenuLabel,
     DropdownMenuSeparator,
     DropdownMenuTrigger
-} from "@/features/shared/ui/dropdown-menu";
+} from "@/app/ui/dropdown-menu";
 
 // 定義導航項目類型
 interface NavItem {

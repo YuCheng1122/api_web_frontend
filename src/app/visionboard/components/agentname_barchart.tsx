@@ -5,9 +5,9 @@ import React from "react";
 import { useState, useEffect } from 'react'
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'
 import {useVisionBoardContext} from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
-import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/features/shared/ui/card";
-import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/features/shared/ui/chart";
-import ErrorDisplayer from "@/features/shared/ui/Error";
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/app/ui/card";
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/app/ui/chart";
+import ErrorDisplayer from "@/app/ui/Error";
 
 
 export default function AgentnameBarChartComponent() {

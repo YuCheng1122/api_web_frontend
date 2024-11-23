@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { fetchUser } from '@/features/manage_center/managecenter/fetchUser'
 import Card from "@/app/managecenter/components/Card";
-import Loading from '@/features/shared/ui/Loading';
+import Loading from '@/app/ui/Loading';
 type UserDataType = {
     username: string
     email: string

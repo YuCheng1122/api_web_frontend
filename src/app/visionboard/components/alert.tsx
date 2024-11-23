@@ -3,7 +3,7 @@ import React from "react";
 import { useState, useEffect } from 'react'
 import { initData, EntireDataType, fetchAlertData } from '@/features/vision_dashboard/visiondashboard/fetchAlertData'
 import { useVisionBoardContext } from "@/features/vision_dashboard/visiondashboard/VisionBoardContext";
-import ErrorDisplayer from "@/features/shared/ui/Error";
+import ErrorDisplayer from "@/app/ui/Error";
 
 type AlertProps = {
     critical_severity: number;

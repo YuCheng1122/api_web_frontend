@@ -3,8 +3,8 @@ import DataTable, { TableColumn } from 'react-data-table-component';
 
 import { initData, EventTableDataType, fetchEventTableData } from '@/features/vision_dashboard/visiondashboard/fetchEventTableData'
 import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext';
-import ErrorDisplayer from '@/features/shared/ui/Error';
-import Loading from '@/features/shared/ui/Loading';
+import ErrorDisplayer from '@/app/ui/Error';
+import Loading from '@/app/ui/Loading';
 type tableData = {
     timestamp: string
     agent_name: string

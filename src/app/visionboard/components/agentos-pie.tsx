@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react'
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentOSPiegraphData'
 import PieGraph from '@/app/visionboard/components/PieGraph'
 import { useVisionBoardContext } from '@/features/vision_dashboard/visiondashboard/VisionBoardContext'
-import ErrorDisplayer from '@/features/shared/ui/Error'
+import ErrorDisplayer from '@/app/ui/Error'
 
 export default function AgentOSPie() {
     // pie graph data
