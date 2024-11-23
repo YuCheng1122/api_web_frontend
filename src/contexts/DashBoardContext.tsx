@@ -1,7 +1,7 @@
 'use client' 
 
 import React, { createContext, useContext, useState } from "react"
-import { AgentDataType } from '@/utils/dashboard/fetchAgentData';
+import { AgentDataType } from '@/utils/agentdashboard/fetchAgentData';
 
 interface DateTimeRange {
   start: Date | null;
