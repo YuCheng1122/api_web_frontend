@@ -7,7 +7,7 @@ import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 import ErrorDisplayer from '@/components/Error'
 
 // utils
-import { initData, EntireDataType, fetchAlertData } from '@/utils/visiondashboard/fetchAlertData'
+import { initData, EntireDataType, fetchAlertData } from '@/features/vision_dashboard/visiondashboard/fetchAlertData'
 
 
 

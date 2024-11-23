@@ -13,7 +13,7 @@ import { useVisionBoardContext } from '@/contexts/VisionBoardContext';
 
 
 // utils
-import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/utils/visiondashboard/fetchEventTrendData';
+import { initData, fetchEventTrendData, fetchEventTrendDataType } from '@/features/vision_dashboard/visiondashboard/fetchEventTrendData';
 
 const EventTrendGraph = () => {
 

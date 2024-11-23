@@ -14,7 +14,7 @@ import ErrorDisplayer from '@/components/Error' // Adjust the import path as nec
 import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 
 // utils
-import { initData, EntireDataType, fetchCVEBarData } from '@/utils/visiondashboard/fetchCVEBarData'
+import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'
 
 import {
     Card,
@@ -34,11 +34,11 @@ import {
 
 
 
-export default function CVEBarChartComponent() {
+export default function AgentnameBarChartComponent() {
 
     const { dateTimeRange } = useVisionBoardContext()
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const [chartData, setChartData] = useState<EntireDataType[]>(initData)
+    const [chartData, setChartData] = useState<EntirePieDataType>(initData)
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
@@ -47,18 +47,15 @@ export default function CVEBarChartComponent() {
             try {
                 setChartData(initData)
                 if (dateTimeRange?.start && dateTimeRange?.end) {
-                    const response = await fetchCVEBarData({ start: dateTimeRange.start, end: dateTimeRange.end })
+                    const response = await fetchPieGraphData({ start: dateTimeRange.start, end: dateTimeRange.end })
                     if (response.success) {
-                        // slice only 5 data
-                        setChartData(response.content.slice(0, 5))
 
-
+                        setChartData(response.content)
                     } else {
                         throw new Error('Failed to fetch data')
                     }
                 }
             } catch (error) {
-                console.log(error)
                 setError('Failed to fetch pie graph data 😢. Please try again later.')
                 setTimeout(() => {
                     setError(null)
@@ -72,14 +69,17 @@ export default function CVEBarChartComponent() {
     }, [dateTimeRange])
 
     const chartConfig = {
-        count: {
-            label: "count",
-            color: "hsl(var(--chart-1))",
+        value: {
+            label: "value",
+            color: "#4CAF50", // Green bar color for a modern look
         },
-        label: {
-            color: "hsl(var(--background))",
+        name: {
+            color: "#333333", // Dark gray for labels
         },
     } satisfies ChartConfig
+
+
+
 
 
     return (
@@ -91,17 +91,17 @@ export default function CVEBarChartComponent() {
                 error && <ErrorDisplayer errorMessage={error} setError={setError} />
             }
             {
-                chartData.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col h-96 "><p className=' text-2xl font-bold'>CVE分析</p> <p>目前沒有發現CVE漏洞</p></div> :
-                    <Card className="h-full md:min-w-[600px]">
+                chartData.agent_name.length <= 0 ? <div className="w-full bg-white rounded shadow-md flex justify-center items-center flex-col  h-96 "><p className=' text-2xl font-bold'>場域設備事件數量</p> <p>未發生何事件</p></div> :
+                    <Card className="h-full w-full min-h-96 flex justify-center min-w-80 flex-col">
                         <CardHeader>
-                            <CardTitle>CVE分析</CardTitle>
-                            <CardDescription>攻擊次數</CardDescription>
+                            <CardTitle>場域設備事件數量</CardTitle>
+                            <CardDescription>發生次數</CardDescription>
                         </CardHeader>
                         <CardContent>
                             <ChartContainer config={chartConfig}>
                                 <BarChart
                                     accessibilityLayer
-                                    data={chartData}
+                                    data={chartData.agent_name}
                                     layout="vertical"
                                     margin={{
                                         right: 16,
@@ -109,41 +109,40 @@ export default function CVEBarChartComponent() {
                                 >
                                     <CartesianGrid horizontal={false} />
                                     <YAxis
-                                        dataKey="cve_name"
+                                        dataKey="name"
                                         type="category"
                                         tickLine={false}
                                         tickMargin={10}
+                                        tickFormatter={(value) => value.slice(0, 3) + '...'}
                                         axisLine={false}
-                                        tickFormatter={(value) => value.slice(0, 3)}
-                                        hide
                                     />
-                                    <XAxis dataKey="count" type="number" hide />
+                                    <XAxis dataKey="value" type="number" />
                                     <ChartTooltip
-                                        cursor={false}
+                                        cursor={{ fill: '#f0f0f0' }}
                                         content={<ChartTooltipContent indicator="line" />}
                                     />
                                     <Bar
-                                        dataKey="count"
-                                        layout="vertical"
-                                        fill="var(--color-count)"
+                                        dataKey="value"
+                                        fill="#4CAF50" // Applying a fixed color for the bars
                                         radius={4}
                                     >
                                         <LabelList
-                                            dataKey="cve_name"
+                                            dataKey="name"
                                             position="insideLeft"
                                             offset={8}
-                                            className="fill-[--color-label]"
+                                            style={{ fill: '#ffffff', fontWeight: 'bold' }}
                                             fontSize={12}
                                         />
                                         <LabelList
-                                            dataKey="count"
+                                            dataKey="value"
                                             position="right"
                                             offset={8}
-                                            className="fill-foreground"
+                                            style={{ fill: '#000000', fontWeight: 'bold' }}
                                             fontSize={12}
                                         />
                                     </Bar>
                                 </BarChart>
+
                             </ChartContainer>
                         </CardContent>
                     </Card>

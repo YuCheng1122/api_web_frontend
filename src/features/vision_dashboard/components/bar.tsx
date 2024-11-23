@@ -13,7 +13,7 @@ import { useState, useEffect } from 'react'
 import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 
 // utils
-import { initData, EntireDataType, fetchMaliciousBarData } from '@/utils/visiondashboard/fetchMaliciousBarData'
+import { initData, EntireDataType, fetchMaliciousBarData } from '@/features/vision_dashboard/visiondashboard/fetchMaliciousBarData'
 
 import {
     Card,

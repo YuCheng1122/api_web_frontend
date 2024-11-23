@@ -6,8 +6,8 @@ import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
 import ErrorDisplayer from '@/components/Error'
 
 // utils
-import { initData, EntirePieDataType, fetchPieGraphData } from '@/utils/visiondashboard/fetchAgentnamePiegraphData'
-import PieGraph from '@/components/visiondashboard/PieGraph'
+import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'
+import PieGraph from '@/features/vision_dashboard/components/PieGraph'
 
 export default function AgentNamePie() {
     // pie graph data
