@@ -30,7 +30,7 @@ const navItems: NavItem[] = [
     { href: '/managecenter', label: '管理中心', adminOnly: true },
     { href: '/ics', label: 'ICS' },
     { href: '/ndr', label: 'NDR' },
-    { href: '/admin/script', label: '軟體下載' }
+    { href: '/agent-deployment', label: '軟體下載' }
 ]
 
 // 導航項目組件 - 行動版
@@ -131,8 +131,8 @@ const Header = () => {
                         )}
                         {!isLogin && (
                             <>
-                                <NavMenuItem href="/admin/signup" label="註冊" />
-                                <NavMenuItem href="/admin/login" label="登入" />
+                                <NavMenuItem href="/auth/signup" label="註冊" />
+                                <NavMenuItem href="/auth/login" label="登入" />
                             </>
                         )}
                     </DropdownMenuContent>
@@ -144,7 +144,7 @@ const Header = () => {
                 <div className='flex items-center space-x-4 whitespace-nowrap'>
                     {!isLogin && (
                         <Link
-                            href={'/admin/signup'}
+                            href={'/auth/signup'}
                             className='nav-item text-lg font-bold px-4 py-2 text-[#423838]'
                         >
                             註冊
@@ -198,7 +198,7 @@ const Header = () => {
                             </DropdownMenu>
                         ) : (
                             <Link
-                                href={'/admin/login'}
+                                href={'/auth/login'}
                                 className='nav-item text-xl font-semibold text-[#423838]'
                             >
                                 登入

@@ -1,11 +1,13 @@
+'use client'
+
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
-import { generateScripts } from './Script'; // 根據實際路徑調整
-import { getTotalAgentsAndLicense } from '@/app/admin/utils/TotalLicenseAgent';
-import { fetchNextAgentName } from '@/app/admin/utils/fetchCountingAgent'; // 導入 fetchNextAgentName
+import { generateScripts } from '@/features/agent-deployment/Script';
+import { getTotalAgentsAndLicense } from '@/features/agent-deployment/api/totalLicenseAgent';
+import { fetchNextAgentName } from '@/features/agent-deployment/api/fetchCountingAgent';
 import { useAuthContext } from '@/features/auth/contexts/AuthContext';
 
-const ScriptDownloadForm = ({ className }: { className?: string }) => {
+const AgentDownloadForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState<Record<string, any>>({
         linux: { rpm_amd64: false, rpm_aarch64: false, deb_amd64: false, deb_aarch64: false },
         windows: { msi: false },
@@ -14,42 +16,40 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
     });
 
     const [agentNames, setAgentNames] = useState<string[]>([]);
-    const [nextAgentName, setNextAgentName] = useState<string | null>(null); // 新增狀態變量
+    const [nextAgentName, setNextAgentName] = useState<string | null>(null);
     const { isLogin, username, updateLoginState } = useAuthContext();
-    const [remainingAgents, setRemainingAgents] = useState<number>(0); // 初始狀態設為 0
-    const pdfUrl = '/Wazuh_agent安裝說明.pdf'; // 使用相對 URL
+    const [remainingAgents, setRemainingAgents] = useState<number>(0);
+    const pdfUrl = '/Wazuh_agent安裝說明.pdf';
 
     useEffect(() => {
         const fetchTotalAgents = async () => {
             try {
                 const response = await getTotalAgentsAndLicense();
-                setRemainingAgents(response.total_license - response.total_agents); // 設置 remainingAgents 為 response.total_agents
+                setRemainingAgents(response.total_license - response.total_agents);
             } catch (error: any) {
                 console.error('Error during fetching total agents and license:', error);
                 const message = error.response?.data?.message || 'Failed to fetch total agents and license';
-                alert(message); // 顯示錯誤消息
+                alert(message);
             }
         };
 
-        fetchTotalAgents(); // 調用函數以獲取代理數量
-    }, []); // 只在組件掛載時執行一次
+        fetchTotalAgents();
+    }, []);
 
     useEffect(() => {
         const fetchAgentName = async () => {
             const { success, next_agent_name } = await fetchNextAgentName();
-            if (success) {  // 確保成功獲取資料
-                setAgentNames([next_agent_name]); // 將 next_agent_name 設置為 agentNames 陣列的唯一元素
-                setNextAgentName(next_agent_name); // 將 next_agent_name 存儲到狀態中
+            if (success) {
+                setAgentNames([next_agent_name]);
+                setNextAgentName(next_agent_name);
             }
         };
-        fetchAgentName(); // 調用函數以獲取代理名稱
+        fetchAgentName();
     }, []);
 
-    // 計算所有選中的輸入框數量總和並生成 Agent 名稱
     useEffect(() => {
         const { linux, windows, macos, quantities } = formData;
 
-        // 根據核取方塊是否選中來計算對應數量的總和
         const totalAgents = (linux.rpm_amd64 ? quantities.rpm_amd64 : 0) +
             (linux.rpm_aarch64 ? quantities.rpm_aarch64 : 0) +
             (linux.deb_amd64 ? quantities.deb_amd64 : 0) +
@@ -58,40 +58,35 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             (macos.intel ? quantities.intel : 0) +
             (macos.apple_silicon ? quantities.apple_silicon : 0);
 
-        // 只有當 totalAgents 大於 0 時才生成 Agent
         if (totalAgents > 0) {
             const agents = Array.from({ length: totalAgents }, (_, index) =>
-                `${username}_${String(index + 1).padStart(3, '0')}` // 使用 username 和編號格式
+                `${username}_${String(index + 1).padStart(3, '0')}`
             );
-            setAgentNames((prev) => [prev[0], ...agents]); // 保留第一個代理名稱並添加後續名稱
+            setAgentNames((prev) => [prev[0], ...agents]);
         } else {
-            setAgentNames([]);  // 預設為空陣列
+            setAgentNames([]);
         }
-    }, [formData]);
+    }, [formData, username]);
 
     const handleCheckboxChange = (os: string, arch: string) => {
         const isChecked = !formData[os][arch];
         const newQuantities = { ...formData.quantities };
 
-        // 如果取消勾選，將數量加回 remainingAgents
         if (!isChecked) {
             setRemainingAgents(remainingAgents + newQuantities[arch]);
-            newQuantities[arch] = 0; // 將數量設為 0
+            newQuantities[arch] = 0;
         }
 
-        // 只有在 remainingAgents 大於 0 時才允許勾選
         if (isChecked && remainingAgents === 0) {
             alert('無法勾選，剩餘代理數量為 0');
-            return; // 直接返回，不更新
+            return;
         }
 
-        // 勾選時，remainingAgents 減少 1
         if (isChecked) {
             setRemainingAgents(remainingAgents - 1);
         } else {
-            // 如果取消勾選，將數量加回 remainingAgents
             setRemainingAgents(remainingAgents + newQuantities[arch]);
-            newQuantities[arch] = 1; // 將數量設為 0
+            newQuantities[arch] = 1;
         }
 
         setFormData((prevFormData) => ({
@@ -103,17 +98,16 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
 
     const handleQuantityChange = (arch: string, value: string) => {
         const newQuantity = Number(value);
-        // 檢查 remainingAgents 是否為 0，並且新數量大於當前數量
         if (remainingAgents === 0 && newQuantity > formData.quantities[arch]) {
             alert('無法增加代理數量，剩餘代理數量為 0');
-            return; // 直接返回，不更新
+            return;
         }
 
         setFormData((prevFormData) => {
-            const newQuantities: { [key: string]: number } = { ...prevFormData.quantities, [arch]: newQuantity }; // 明確指定類型
-            const totalAgents = Object.values(newQuantities).reduce((acc: number, count) => acc + (count as number), 0); // 明確指定 acc 的類型
-            const previousTotalAgents = Object.values(prevFormData.quantities).reduce((acc: number, count) => acc + (count as number), 0); // 明確指定 acc 的類型
-            setRemainingAgents(remainingAgents - (totalAgents - previousTotalAgents)); // 更新 remainingAgents
+            const newQuantities: { [key: string]: number } = { ...prevFormData.quantities, [arch]: newQuantity };
+            const totalAgents = Object.values(newQuantities).reduce((acc: number, count) => acc + (count as number), 0);
+            const previousTotalAgents = Object.values(prevFormData.quantities).reduce((acc: number, count) => acc + (count as number), 0);
+            setRemainingAgents(remainingAgents - (totalAgents - previousTotalAgents));
             return {
                 ...prevFormData,
                 quantities: newQuantities,
@@ -121,10 +115,9 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
         });
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {  // 將這行改為 async
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        // 計算各個操作系統的數量
         const { linux, windows, macos, quantities } = formData;
         const stats = {
             rpm_amd64: linux.rpm_amd64 ? quantities.rpm_amd64 : 0,
@@ -136,45 +129,40 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             apple_silicon: macos.apple_silicon ? quantities.apple_silicon : 0,
         };
 
-        // 計算總代理數量
         const totalAgents = Object.values(stats).reduce((acc, count) => acc + count, 0);
         try {
             const response = await getTotalAgentsAndLicense();
             if (response.total_license - response.total_agents >= Number(totalAgents)) {
-                generateScripts(username, stats, totalAgents, pdfUrl); // 呼叫生成腳本函數，傳遞各個操作系統的代理數量和 PDF URL
+                generateScripts(username, stats, totalAgents, pdfUrl);
             } else {
                 alert('代理數量驗證失敗');
             }
         } catch (error: any) {
             console.error('Error during fetching total agents and license:', error);
             const message = error.response?.data?.message || 'Failed to fetch total agents and license';
-            alert(message); // 顯示錯誤消息
+            alert(message);
         }
     };
 
-    // 提取編號部分
-    const agentNumber = nextAgentName?.split('_')[1]; // 使用 '?' 以防 nextAgentName 為 null
-    let currentIndex = agentNumber ? parseInt(agentNumber, 10) : 0; // 將編號轉換為整數，若為 null 則設為 0
+    const agentNumber = nextAgentName?.split('_')[1];
+    let currentIndex = agentNumber ? parseInt(agentNumber, 10) : 0;
 
-    // 計算代理名稱
     const agentNamesList = agentNames.map((_, index) => {
-        return `${username}-${String(currentIndex + index).padStart(3, '0')}`; // 使用 currentIndex 開始生成代理名稱
+        return `${username}-${String(currentIndex + index).padStart(3, '0')}`;
     });
 
     return (
-        <div className="bg-white rounded-lg flex flex-col items-center min-h-screen bg-gray-100 p-6 w-[54vw] ">
-            {/* 主介面部分 */}
-            <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300"> {/*shadow-md 可添加陰影*/}
+        <div className="bg-white rounded-lg flex flex-col items-center min-h-screen bg-gray-100 p-6 w-[54vw]">
+            <div className="bg-white rounded-lg p-6 w-full max-w-7xl mb-6 border border-gray-300">
                 <h2 className="text-lg font-bold mb-4">軟體下載</h2>
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-6">
-                    {/* 顯示剩下代理數量 */}
-                    <div className="flex justify-between items-center"> {/* 新增 flex 以便排列 */}
-                        <h3>剩下的下載代理數量: {remainingAgents}</h3> {/* 顯示剩下的 agents 數 */}
+                    <div className="flex justify-between items-center">
+                        <h3>剩下的下載代理數量: {remainingAgents}</h3>
                     </div>
+
                     {/* Linux 部分 */}
                     <div className="border p-4 rounded-lg">
                         <h3 className="text-md font-bold mb-2 flex items-center">
-                            {/* 使用 Image 替換原來的表情符號 */}
                             <Image src="/linux-logo.png" alt="Linux" width={20} height={20} className="mr-2" />
                             Linux
                         </h3>
@@ -191,7 +179,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 </label>
                                 <input
                                     type="number"
-                                    value={formData.linux.rpm_amd64 ? formData.quantities.rpm_amd64 : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.linux.rpm_amd64 ? formData.quantities.rpm_amd64 : ''}
                                     onChange={(e) => handleQuantityChange('rpm_amd64', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -212,7 +200,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 </label>
                                 <input
                                     type="number"
-                                    value={formData.linux.rpm_aarch64 ? formData.quantities.rpm_aarch64 : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.linux.rpm_aarch64 ? formData.quantities.rpm_aarch64 : ''}
                                     onChange={(e) => handleQuantityChange('rpm_aarch64', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -233,7 +221,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 </label>
                                 <input
                                     type="number"
-                                    value={formData.linux.deb_amd64 ? formData.quantities.deb_amd64 : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.linux.deb_amd64 ? formData.quantities.deb_amd64 : ''}
                                     onChange={(e) => handleQuantityChange('deb_amd64', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -254,7 +242,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 </label>
                                 <input
                                     type="number"
-                                    value={formData.linux.deb_aarch64 ? formData.quantities.deb_aarch64 : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.linux.deb_aarch64 ? formData.quantities.deb_aarch64 : ''}
                                     onChange={(e) => handleQuantityChange('deb_aarch64', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -265,12 +253,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         </div>
                     </div>
 
-
                     {/* Windows 部分 */}
                     <div className="border p-4 rounded-lg">
                         <h3 className="text-md font-bold mb-2 flex items-center">
-                            {/* 使用 Image 替換原來的表情符號 */}
-                            <Image src="/windows-logo.png" alt="Linux" width={20} height={20} className="mr-2" />
+                            <Image src="/windows-logo.png" alt="Windows" width={20} height={20} className="mr-2" />
                             Windows
                         </h3>
                         <div className="flex space-x-6 items-center">
@@ -285,7 +271,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                             </label>
                             <input
                                 type="number"
-                                value={formData.windows.msi ? formData.quantities.msi : ''}  // 只有核取方塊被選中時顯示數字
+                                value={formData.windows.msi ? formData.quantities.msi : ''}
                                 onChange={(e) => handleQuantityChange('msi', e.target.value)}
                                 className="ml-4 w-16 border rounded p-1"
                                 min="1"
@@ -295,12 +281,10 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         </div>
                     </div>
 
-
                     {/* macOS 部分 */}
                     <div className="border p-4 rounded-lg">
                         <h3 className="text-md font-bold mb-2 flex items-center">
-                            {/* 使用 Image 替換原來的表情符號 */}
-                            <Image src="/mac-logo.png" alt="Linux" width={20} height={20} className="mr-2" />
+                            <Image src="/mac-logo.png" alt="macOS" width={20} height={20} className="mr-2" />
                             macOS
                         </h3>
                         <div className="flex space-x-6 items-center">
@@ -314,7 +298,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 <span className="ml-2">Intel</span>
                                 <input
                                     type="number"
-                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊���選中時顯示數字
+                                    value={formData.macos.intel ? formData.quantities.intel : ''}
                                     onChange={(e) => handleQuantityChange('intel', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -333,7 +317,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 <span className="ml-2">Apple silicon</span>
                                 <input
                                     type="number"
-                                    value={formData.macos.apple_silicon ? formData.quantities.apple_silicon : ''}  // 只有核取方塊被選中時顯示數字
+                                    value={formData.macos.apple_silicon ? formData.quantities.apple_silicon : ''}
                                     onChange={(e) => handleQuantityChange('apple_silicon', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -344,7 +328,6 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         </div>
                     </div>
 
-                    {/* 生成腳本按鈕 */}
                     <button
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
@@ -356,7 +339,6 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                 </form>
             </div>
 
-            {/* Agent 命名列表 */}
             <div className="bg-white p-4 rounded-lg w-full w-[54vw] max-w-7xl border border-gray-300">
                 <h3 className="text-lg font-bold mb-4">代理名稱：</h3>
                 <ul className="text-sm grid grid-cols-4 gap-4">
@@ -371,4 +353,4 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
     );
 };
 
-export default ScriptDownloadForm;
+export default AgentDownloadForm;

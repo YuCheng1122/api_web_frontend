@@ -1,18 +1,9 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-
-export interface SignupResponse {
-  success: boolean;
-  message?: string;
-}
-
-export interface TotalAgentsAndLicenseResponse {
-  total_agents: number;
-  total_license: number;
-}
+import { TotalAgentsAndLicenseResponse } from '../types';
 
 export const getTotalAgentsAndLicense = async (): Promise<TotalAgentsAndLicenseResponse> => {
-  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/total-agents-and-license`
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/total-agents-and-license`;
 
   try {
     const response = await axios.get(api_url, {

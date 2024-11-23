@@ -1,19 +1,9 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
+import { SignupResponse, SignupFormData } from '../types';
 
-export interface SignupResponse {
-  success: boolean;
-  message?: string;
-}
-
-export const signup = async (formData: {
-  username: string;
-  password: string;
-  email: string;
-  company_name: string;
-  license_amount: string;
-}): Promise<SignupResponse> => {
-  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`
+export const signup = async (formData: SignupFormData): Promise<SignupResponse> => {
+  const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/signup`;
 
   try {
     const response = await axios.post(api_url, formData, {

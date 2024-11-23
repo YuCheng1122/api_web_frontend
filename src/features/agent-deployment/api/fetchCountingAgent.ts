@@ -1,10 +1,6 @@
 import axios from "axios";
 import Cookies from 'js-cookie';
-
-export interface FetchCountingAgentResponse {
-    success: boolean;
-    next_agent_name: string;
-}
+import { FetchCountingAgentResponse } from "../types";
 
 const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/manage/next-agent-name`;
 

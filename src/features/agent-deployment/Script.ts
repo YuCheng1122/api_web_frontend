@@ -1,12 +1,12 @@
-import JSZip from 'jszip'; // 確保導入 JSZip
-import { fetchNextAgentName } from '@/app/admin/utils/fetchCountingAgent'; // 導入 fetchNextAgentName
+import JSZip from 'jszip';
+import { fetchNextAgentName } from '@/features/agent-deployment/api/fetchCountingAgent';
 
 export async function generateScripts(group: string, stats: any, totalAgentsInput: number, pdfUrl: string) {
-    const zip = new JSZip(); // 使用 JSZip 來創建 ZIP 文件
+    const zip = new JSZip();
     const { success, next_agent_name } = await fetchNextAgentName();
     console.log("Fetched Agent Name:", { success, next_agent_name });
 
-    let totalAgents = 0; // 將變數名稱改為 totalAgentsInput
+    let totalAgents = 0;
 
     // Linux
     const linuxPackages = [
@@ -17,7 +17,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     ];
 
     linuxPackages.forEach(pkg => {
-        totalAgents += pkg.count; // 計算總代理數量
+        totalAgents += pkg.count;
     });
 
     // Windows
@@ -31,21 +31,20 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     ];
 
     macPackages.forEach(pkg => {
-        totalAgents += pkg.count; // 計算總代理數量
+        totalAgents += pkg.count;
     });
 
     // 提取編號部分
-    const agentNumber = next_agent_name.split('_')[1]; // 使用 '_' 分割字串並獲取第二部分
-    let currentIndex = parseInt(agentNumber, 10); // 將編號轉換為整數
+    const agentNumber = next_agent_name.split('_')[1];
+    let currentIndex = parseInt(agentNumber, 10);
 
     // Linux
     linuxPackages.forEach(pkg => {
         for (let i = 1; i <= pkg.count; i++) {
-            const index = String(currentIndex++).padStart(3, '0'); // 更新 index
+            const index = String(currentIndex++).padStart(3, '0');
             const hostName = next_agent_name;
             let script = '';
 
-            // 根據 pkg.type 生成相應的腳本
             if (pkg.type === 'rpm_amd64') {
                 script = `curl -o wazuh-agent-4.7.4-1.x86_64.rpm https://packages.wazuh.com/4.x/yum/wazuh-agent-4.7.4-1.x86_64.rpm && sudo WAZUH_MANAGER='wazuh.aixsoar.com' WAZUH_AGENT_GROUP='${group}' WAZUH_AGENT_NAME='${hostName}' rpm -ihv wazuh-agent-4.7.4-1.x86_64.rpm\nsudo systemctl daemon-reload\nsudo systemctl enable wazuh-agent\nsudo systemctl start wazuh-agent`;
                 zip.file(`${hostName}_Linux_rpm_amd64.sh`, script);
@@ -64,7 +63,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
 
     // Windows
     for (let i = 1; i <= windowsCount; i++) {
-        const index = String(currentIndex++).padStart(3, '0'); // 更新 index
+        const index = String(currentIndex++).padStart(3, '0');
         const hostName = `${group}_${index}`;
         const script = `$ErrorActionPreference = 'Stop'; \$identity = [Security.Principal.WindowsIdentity]::GetCurrent(); \$wp = New-Object Security.Principal.WindowsPrincipal(\$identity); if (-Not \$wp.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { \$scriptPath = \$MyInvocation.MyCommand.Path; Start-Process powershell -Verb runAs -ArgumentList "-ExecutionPolicy Bypass -File \`"\$scriptPath\`""; exit }\n\$wazuhManager = '${process.env.NEXT_PUBLIC_API_BASE_DOMAIN}'; \$agentGroup = '${group}'; \$agentName = '${hostName}'\ntry { Invoke-WebRequest -Uri https://packages.wazuh.com/4.x/windows/wazuh-agent-4.9.0-1.msi -OutFile "\$env:TEMP\\wazuh-agent.msi"\nmsiexec.exe /i "\$env:TEMP\\wazuh-agent.msi" /q WAZUH_MANAGER='${process.env.NEXT_PUBLIC_API_BASE_DOMAIN}' WAZUH_AGENT_GROUP='${group}' WAZUH_AGENT_NAME='${hostName}'\nWrite-Host "Wazuh Agent installation completed."\nWrite-Host "Waiting 10 second."\nStart-Sleep -Seconds 10\nWrite-Host "Starting Wazuh Agent service..."\nNET START WazuhSvc\nWrite-Host "Wazuh Agent service started successfully." } catch { Write-Host "An error occurred: \$($_.Exception.Message)"; exit 1 } finally { if (Test-Path -Path "\$env:TEMP\\wazuh-agent.msi") { Remove-Item -Path "\$env:TEMP\\wazuh-agent.msi" -Force; Write-Host "Downloaded installation file deleted." } }`;
         zip.file(`${hostName}_Windows.ps1`, script);
@@ -73,7 +72,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     // macOS
     macPackages.forEach(pkg => {
         for (let i = 1; i <= pkg.count; i++) {
-            const index = String(currentIndex++).padStart(3, '0'); // 更新 index
+            const index = String(currentIndex++).padStart(3, '0');
             const hostName = next_agent_name;
             let script = '';
 
@@ -88,9 +87,9 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     });
 
     // 將 PDF 文件添加到 ZIP
-    const pdfResponse = await fetch(pdfUrl); // 獲取 PDF 文件
-    const pdfBlob = await pdfResponse.blob(); // 將其轉換為 Blob
-    zip.file('Wazuh_agent安裝說明.pdf', pdfBlob); // 將 PDF 文件添加到 ZIP，使用指定的文件名
+    const pdfResponse = await fetch(pdfUrl);
+    const pdfBlob = await pdfResponse.blob();
+    zip.file('Wazuh_agent安裝說明.pdf', pdfBlob);
 
     // 生成 ZIP 文件
     zip.generateAsync({ type: "blob" }).then(function (content) {
@@ -98,7 +97,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
         const a = document.createElement('a');
         a.style.display = 'none';
         a.href = url;
-        a.download = `${group}_scripts.zip`; // 設定 ZIP 文件名
+        a.download = `${group}_scripts.zip`;
         document.body.appendChild(a);
         a.click();
         window.URL.revokeObjectURL(url);
