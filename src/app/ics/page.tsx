@@ -1,6 +1,7 @@
 'use client';
 
-import { EventTable } from '@/features/ics/components/EventTable';
+
+import {EventTable} from "@/app/ics/components/EventTable";
 
 export default function ICSPage() {
     return (

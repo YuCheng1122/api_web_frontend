@@ -1,4 +1,3 @@
-import { EventRow } from '../../types';
 import {
     Dialog,
     DialogContent,
@@ -6,6 +5,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import {EventRow} from "@/features/ics/types";
 
 interface EventDetailsDialogProps {
     event: EventRow | null;
