@@ -11,7 +11,7 @@ import { useState, useEffect } from 'react'
 import ErrorDisplayer from '@/components/Error' // Adjust the import path as necessary
 
 // context
-import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
+import { useVisionBoardContext } from '@/components/VisionBoardContext'
 
 // utils
 import { initData, EntirePieDataType, fetchPieGraphData } from '@/features/vision_dashboard/visiondashboard/fetchAgentnamePiegraphData'

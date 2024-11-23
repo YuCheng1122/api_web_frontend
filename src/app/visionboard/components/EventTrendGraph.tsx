@@ -9,7 +9,7 @@ import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import { useVisionBoardContext } from '@/contexts/VisionBoardContext';
+import { useVisionBoardContext } from '@/components/VisionBoardContext';
 
 
 // utils

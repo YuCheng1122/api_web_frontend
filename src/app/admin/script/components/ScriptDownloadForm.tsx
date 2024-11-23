@@ -5,7 +5,7 @@ import { getTotalAgentsAndLicense } from '@/app/admin/utils/TotalLicenseAgent';
 import { fetchNextAgentName } from '@/app/admin/utils/fetchCountingAgent'; // 導入 fetchNextAgentName
 
 // context
-import { useAuthContext } from '@/contexts/AuthContext'
+import { useAuthContext } from '@/components/AuthContext'
 
 const ScriptDownloadForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState<Record<string, any>>({

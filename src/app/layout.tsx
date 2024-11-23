@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 
 import Header from "@/components/Header";
-import { AuthProvider } from "@/contexts/AuthContext";
+import { AuthProvider } from "@/components/AuthContext";
 import { ScrollToTop } from "@/components/ui/scroll-to-top";
 import { ArrowUpToLine } from "lucide-react";
 

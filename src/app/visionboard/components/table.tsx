@@ -7,7 +7,7 @@ import Loading from '@/components/Loading'
 import ErrorDisplayer from '@/components/Error'
 
 // context
-import { useVisionBoardContext } from '@/contexts/VisionBoardContext';
+import { useVisionBoardContext } from '@/components/VisionBoardContext';
 // utils
 import { initData, EventTableDataType, fetchEventTableData } from '@/features/vision_dashboard/visiondashboard/fetchEventTableData'
 type tableData = {

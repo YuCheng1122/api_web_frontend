@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useAuthContext } from '@/contexts/AuthContext'
+import { useAuthContext } from '@/components/AuthContext'
 import { useEffect } from 'react'
 import {
   DropdownMenu,

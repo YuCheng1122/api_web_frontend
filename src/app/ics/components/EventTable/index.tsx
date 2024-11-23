@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { EventDetailsDialog } from '../EventDetailsDialog';
-import { useAuthContext } from '@/contexts/AuthContext';
+import { useAuthContext } from '@/components/AuthContext';
 import {EventRow} from "@/features/ics/types";
 import {fetchModbusEvents} from "@/features/ics/services/modbusApi";
 

@@ -10,7 +10,7 @@ import { ToastContainer, toast } from "react-toastify";
 import { login } from "@/app/admin/utils/login";
 
 // context
-import { useAuthContext } from "@/contexts/AuthContext";
+import { useAuthContext } from "@/components/AuthContext";
 
 
 const LoginPage = () => {

@@ -10,7 +10,7 @@ import ErrorDisplayer from '@/components/Error' // Adjust the import path as nec
 import { useState, useEffect } from 'react'
 
 // context
-import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
+import { useVisionBoardContext } from '@/components/VisionBoardContext'
 
 // utils
 import { initData, EntireDataType, fetchMaliciousBarData } from '@/features/vision_dashboard/visiondashboard/fetchMaliciousBarData'

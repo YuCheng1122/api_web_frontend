@@ -2,7 +2,7 @@
 import { useState, useEffect } from 'react'
 
 // context
-import { useVisionBoardContext } from '@/contexts/VisionBoardContext'
+import { useVisionBoardContext } from '@/components/VisionBoardContext'
 import ErrorDisplayer from '@/components/Error'
 
 // utils

@@ -1,8 +1,8 @@
 'use client'
 
-import { VisionBoardProvider } from "@/contexts/VisionBoardContext";
+import { VisionBoardProvider } from "@/components/VisionBoardContext";
 import { useRouter } from "next/navigation"
-import { useAuthContext } from "@/contexts/AuthContext"
+import { useAuthContext } from "@/components/AuthContext"
 import { useEffect } from "react"
 
 export default function Layout({ children }: { children: React.ReactNode }) {
