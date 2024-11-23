@@ -1,6 +1,6 @@
 import JSZip from 'jszip'; // 確保導入 JSZip
 import { hostname } from 'os';
-import { fetchNextAgentName } from '../../../utils/admin/fetchCountingAgent'; // 導入 fetchNextAgentName
+import { fetchNextAgentName } from '@/app/admin/utils/fetchCountingAgent'; // 導入 fetchNextAgentName
 
 export async function generateScripts(group: string, stats: any, totalAgentsInput: number, pdfUrl: string) {
     const zip = new JSZip(); // 使用 JSZip 來創建 ZIP 文件

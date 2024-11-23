@@ -1,7 +1,7 @@
 "use client"; // 標記為客戶端組件
 
 import React from 'react';
-import ScriptDownloadForm from '../../../components/admin/script/ScriptDownloadForm'; // 引入表單組件
+import ScriptDownloadForm from './components/ScriptDownloadForm'; // 引入表單組件
 
 const SignupPage = () => {
     return (

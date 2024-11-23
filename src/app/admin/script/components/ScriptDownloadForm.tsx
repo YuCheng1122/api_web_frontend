@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { generateScripts } from './Script'; // 根據實際路徑調整
-import { getTotalAgentsAndLicense } from '../../../utils/admin/TotalLicenseAgent';
-import { fetchNextAgentName } from '../../../utils/admin/fetchCountingAgent'; // 導入 fetchNextAgentName
+import { getTotalAgentsAndLicense } from '@/app/admin/utils/TotalLicenseAgent';
+import { fetchNextAgentName } from '@/app/admin/utils/fetchCountingAgent'; // 導入 fetchNextAgentName
 
 // context
 import { useAuthContext } from '@/contexts/AuthContext'

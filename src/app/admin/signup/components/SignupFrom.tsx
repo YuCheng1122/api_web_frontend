@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { signup } from '../../../utils/admin/signup'; // 導入 signup 函數
-import PasswordInput from '@/components/admin/signup/PasswordInput';
+import { signup } from '@/app/admin/utils/signup'; // 導入 signup 函數
+import PasswordInput from '@/app/admin/signup/components/PasswordInput';
 const SignUpForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState({
         username: '',
@@ -82,7 +82,7 @@ const SignUpForm = ({ className }: { className?: string }) => {
                 setMessageType('success');
                 // 設定延遲後跳轉
                 setTimeout(() => {
-                    window.location.href = '/admin/login'; // 跳轉到登入頁面
+                    window.location.href = '/utils/login'; // 跳轉到登入頁面
                 }, 3000); // 延遲3秒
             }
         } catch (error) {

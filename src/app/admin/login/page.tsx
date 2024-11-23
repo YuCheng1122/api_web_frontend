@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 
 // utils
-import { login } from "@/utils/admin/login";
+import { login } from "@/app/admin/utils/login";
 
 // context
 import { useAuthContext } from "@/contexts/AuthContext";
