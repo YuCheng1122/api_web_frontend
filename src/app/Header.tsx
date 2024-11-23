@@ -76,7 +76,7 @@ const Header = () => {
         <div className='flex items-center justify-between py-4 header-animation'>
             {/* 左側：標題 */}
             <div className="text-3xl font-bold text-black whitespace-nowrap">
-                <Link href={'/'} className='nav-item'>
+                <Link href={'/public'} className='nav-item'>
                     AVOCADO
                 </Link>
             </div>

@@ -3,7 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ArrowUpToLine } from "lucide-react";
 import { AuthProvider } from "@/features/auth/contexts/AuthContext";
-import Header from "@/features/shared/components/Header";
+import Header from "@/app/Header";
 import { ScrollToTop } from "@/features/shared/ui/scroll-to-top";
 
 const inter = Inter({ subsets: ["latin"] });
