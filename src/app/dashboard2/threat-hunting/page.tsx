@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import ThreatHuntingChart from '../components/ThreatHuntingChart';
 import Loading from '../components/Loading';
 import { DashboardService } from '@/features/dashboard2.0/api/dashboardService';
 import type { EventTable } from '@/features/dashboard2.0/types/generated';
@@ -90,12 +89,6 @@ export default function ThreatHuntingPage() {
                 >
                     Back to Dashboard
                 </Link>
-            </div>
-
-            <div className="bg-white rounded-lg shadow-sm">
-                <div className="h-[800px]">
-                    <ThreatHuntingChart data={data.content.event_table} />
-                </div>
             </div>
 
             <div className="mt-4 text-sm text-gray-500">
