@@ -10,11 +10,26 @@ import { LoginResponse } from "../types";
  * 3. Using AvocadoClient here would create a circular dependency since
  *    AvocadoClient needs the auth token that this endpoint provides
  * 
- * Note: The backend requires double slashes in the URL for auth endpoints
+ * Development Mode:
+ * Set NEXT_PUBLIC_BYPASS_AUTH=true in .env.development to bypass authentication
+ * and return mock response for UI/UX development
  */
 export const login = async (username: string, password: string): Promise<LoginResponse> => {
+  // Check if we should bypass auth in development
+  if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
+    console.log('Development mode: Bypassing authentication');
+    return {
+      success: true,
+      content: {
+        access_token: "mock_token_for_development",
+        token_type: "bearer"
+      },
+      message: "Login successfully"
+    };
+  }
+
+  // Normal authentication flow
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-  // Intentionally keeping double slash as required by backend
   const login_api = `${baseURL}/api/auth/login`;
 
   const formData = new FormData();

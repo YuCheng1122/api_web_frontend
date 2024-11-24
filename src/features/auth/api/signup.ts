@@ -11,11 +11,22 @@ import { SignupResponse, SignupFormData } from '../types';
  * 3. Auth endpoints should be independent of the main API client to avoid
  *    potential circular dependencies or auth state issues
  * 
- * Note: The backend requires double slashes in the URL for auth endpoints
+ * Development Mode:
+ * Set NEXT_PUBLIC_BYPASS_AUTH=true in .env.development to bypass authentication
+ * and return mock response for UI/UX development
  */
 export const signup = async (formData: SignupFormData): Promise<SignupResponse> => {
+  // Check if we should bypass auth in development
+  if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
+    console.log('Development mode: Bypassing signup');
+    return {
+      success: true,
+      message: "User signup successfully"
+    };
+  }
+
+  // Normal signup flow
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
-  // Intentionally keeping double slash as required by backend
   const api_url = `${baseURL}/api/auth/signup`;
 
   try {
