@@ -1,7 +1,7 @@
 'use client';
 
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import type { TtpLinechart } from '@/features/dashboard2.0/types/generated';
+import type { TtpLinechart } from '@/features/dashboard_v2/types';
 
 interface Props {
     data: TtpLinechart;

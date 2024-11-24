@@ -1,8 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import type { EventTable } from '@/features/dashboard2.0/types/generated';
-import { RuleMitreTactic, RuleMitreID } from '@/features/dashboard2.0/types/generated/event_table';
+import type { EventTable } from '@/features/dashboard_v2/types';
+import { RuleMitreTactic, RuleMitreID } from '@/features/dashboard_v2/types/event_table';
 
 interface Props {
     data: EventTable;

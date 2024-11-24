@@ -1,6 +1,6 @@
 'use client';
 
-import type { AgentSummary } from '@/features/dashboard2.0/types/generated';
+import type { AgentSummary } from '@/features/dashboard_v2/types';
 
 interface Props {
     data: AgentSummary;

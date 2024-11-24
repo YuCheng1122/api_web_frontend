@@ -1,5 +1,5 @@
 import { avocadoClient } from '@/features/api/AvocadoClient';
-import type { TimeRange } from '../types';
+import type { TimeRange } from '@/features/dashboard_v2';
 import type {
     AgentSummary,
     AgentOS,
@@ -8,7 +8,7 @@ import type {
     MaliciousFile,
     Authentication,
     EventTable as EventTableType
-} from '../types/generated';
+} from '../types';
 
 export interface CriticalData {
     agentSummary: AgentSummary;

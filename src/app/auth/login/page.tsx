@@ -36,7 +36,7 @@ const LoginPage = () => {
                 updateLoginState(true, username, token)
 
                 setTimeout(() => {
-                    router.push('/vision_board')
+                    router.push('/hunting_lodge')
                 }, 3000)
             } else {
                 throw new Error(response.message)

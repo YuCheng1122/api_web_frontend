@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from 'react';
 import * as d3 from 'd3';
-import type { EventTableElement } from '@/features/dashboard2.0/types/generated';
+import type { EventTableElement } from '@/features/dashboard_v2/types';
 
 interface Props {
     data: EventTableElement[];

@@ -1,14 +1,15 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { DashboardService } from '@/features/dashboard2.0/api/dashboardService';
-import type { EventTable as EventTableType } from '@/features/dashboard2.0/types/generated';
-import NetworkTopologyChart from '../components/NetworkTopologyChart';
-import Loading from '../components/Loading';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import Loading from '@/app/hunting_lodge/components/Loading';
+import { DashboardService } from '@/features/dashboard_v2/api/dashboardService';
+import type { EventTable } from '@/features/dashboard_v2/types';
 
-export default function NetworkPage() {
-    const [eventData, setEventData] = useState<EventTableType | null>(null);
+export default function ThreatHuntingPage() {
+    const router = useRouter();
+    const [data, setData] = useState<EventTable | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -21,26 +22,31 @@ export default function NetworkPage() {
                     end_time: new Date().toISOString()
                 };
 
-                const data = await DashboardService.fetchEventTableData(timeRange);
-                setEventData(data);
+                const eventData = await DashboardService.fetchEventTableData(timeRange);
+                setData(eventData);
+                setError(null);
             } catch (err: any) {
-                console.error('Failed to fetch network data:', err);
-                setError(err.message || 'Failed to load network data. Please try again later.');
+                console.error('Failed to fetch threat data:', err);
+                if (err.response?.status === 401) {
+                    router.push('/auth/login');
+                    return;
+                }
+                setError(err.message || 'Failed to load threat data. Please try again later.');
             } finally {
                 setIsLoading(false);
             }
         };
 
         fetchData();
-    }, []);
+    }, [router]);
 
     if (error) {
         return (
             <div className="container mx-auto p-4">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Network Topology</h1>
+                    <h1 className="text-2xl font-bold">Threat Hunting</h1>
                     <Link
-                        href="/dashboard2"
+                        href="/hunting_lodge"
                         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                     >
                         Back to Dashboard
@@ -54,19 +60,21 @@ export default function NetworkPage() {
         );
     }
 
-    if (isLoading || !eventData) {
+    if (isLoading || !data) {
         return (
             <div className="container mx-auto p-4">
                 <div className="mb-6 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Network Topology</h1>
+                    <h1 className="text-2xl font-bold">Threat Hunting</h1>
                     <Link
-                        href="/dashboard2"
+                        href="/hunting_lodge"
                         className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                     >
                         Back to Dashboard
                     </Link>
                 </div>
-                <Loading />
+                <div className="flex items-center justify-center min-h-[600px]">
+                    <Loading />
+                </div>
             </div>
         );
     }
@@ -74,24 +82,18 @@ export default function NetworkPage() {
     return (
         <div className="container mx-auto p-4">
             <div className="mb-6 flex items-center justify-between">
-                <h1 className="text-2xl font-bold">Network Topology</h1>
+                <h1 className="text-2xl font-bold">Threat Hunting</h1>
                 <Link
-                    href="/dashboard2"
+                    href="/hunting_lodge"
                     className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
                 >
                     Back to Dashboard
                 </Link>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm">
-                <div className="h-[800px]"> {/* Fixed height for better visualization */}
-                    <NetworkTopologyChart data={eventData.content.event_table} />
-                </div>
-            </div>
-
             <div className="mt-4 text-sm text-gray-500">
-                * Nodes represent agents, lines represent potential attack paths.
-                Drag nodes to explore relationships. Use mouse wheel to zoom.
+                * This visualization shows the relationships between security events, MITRE ATT&CK tactics, and techniques.
+                Use mouse wheel to zoom and drag to pan around the visualization.
             </div>
         </div>
     );

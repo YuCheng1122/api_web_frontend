@@ -2,8 +2,8 @@
 
 import { useEffect, useRef, useState, useMemo } from 'react';
 import * as d3 from 'd3';
-import type { EventTableElement } from '@/features/dashboard2.0/types/generated';
-import { RuleMitreTactic, RuleMitreID } from '@/features/dashboard2.0/types/generated/event_table';
+import type { EventTableElement } from '@/features/dashboard_v2/types';
+import { RuleMitreTactic, RuleMitreID } from '@/features/dashboard_v2/types/event_table';
 
 interface Props {
     data: EventTableElement[];

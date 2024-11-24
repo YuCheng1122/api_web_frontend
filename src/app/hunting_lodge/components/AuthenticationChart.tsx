@@ -1,6 +1,6 @@
 'use client';
 
-import type { Authentication } from '@/features/dashboard2.0/types/generated';
+import type { Authentication } from '@/features/dashboard_v2/types';
 
 interface Props {
     data: Authentication;

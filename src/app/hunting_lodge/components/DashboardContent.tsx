@@ -1,9 +1,9 @@
 'use client';
 
 import { useEffect, useState, Suspense, lazy } from 'react';
-import { DashboardService, CriticalData, ChartData } from '@/features/dashboard2.0/api/dashboardService';
-import type { TimeRange } from '@/features/dashboard2.0/types';
-import type { AgentOS, EventTable as EventTableType } from '@/features/dashboard2.0/types/generated';
+import { DashboardService, CriticalData, ChartData } from '@/features/dashboard_v2/api/dashboardService';
+import type { TimeRange } from '@/features/dashboard_v2';
+import type { AgentOS, EventTable as EventTableType } from '@/features/dashboard_v2/types';
 import TimeRangeSelector from './TimeRangeSelector';
 import Loading from './Loading';
 

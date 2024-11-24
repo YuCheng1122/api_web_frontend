@@ -11,7 +11,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
 
     useEffect(() => {
         if (isLogin) {
-            router.push('/dashboard2');
+            router.push('/hunting_lodge');
         } else {
             router.push('/admin/login');
         }

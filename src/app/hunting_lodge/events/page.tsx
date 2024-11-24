@@ -1,11 +1,11 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { DashboardService } from '@/features/dashboard2.0/api/dashboardService';
-import type { EventTable } from '@/features/dashboard2.0/types/generated';
-import EventTableComponent from '../components/EventTable';
-import TimeRangeSelector from '../components/TimeRangeSelector';
-import type { TimeRange } from '@/features/dashboard2.0/types';
+import { DashboardService } from '@/features/dashboard_v2/api/dashboardService';
+import type { EventTable } from '@/features/dashboard_v2/types';
+import EventTableComponent from '@/app/hunting_lodge/components/EventTable';
+import TimeRangeSelector from '@/app/hunting_lodge/components/TimeRangeSelector';
+import type { TimeRange } from '@/features/dashboard_v2';
 
 export default function EventsPage() {
     const [eventData, setEventData] = useState<EventTable | null>(null);

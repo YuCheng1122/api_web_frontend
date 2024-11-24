@@ -10,7 +10,7 @@ import {
     ColumnDef
 } from '@tanstack/react-table';
 import { useVirtualizer } from '@tanstack/react-virtual';
-import type { EventTable, EventTableElement } from '@/features/dashboard2.0/types/generated';
+import type { EventTable, EventTableElement } from '@/features/dashboard_v2/types';
 import debounce from 'lodash/debounce';
 
 interface Props {

@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter } from 'next/navigation';
-import type { EventTable } from '@/features/dashboard2.0/types/generated';
+import type { EventTable } from '@/features/dashboard_v2/types';
 
 interface Props {
     data: EventTable;
@@ -18,15 +18,15 @@ export default function SecurityEventsCard({ data }: Props) {
     const mediumEvents = events.filter(e => e.rule_level >= 4 && e.rule_level < 7).length;
 
     const handleEventsClick = () => {
-        router.push('/dashboard2/events');
+        router.push('/hunting_lodge/events');
     };
 
     const handleNetworkClick = () => {
-        router.push('/dashboard2/network');
+        router.push('/hunting_lodge/network');
     };
 
     const handleThreatHuntingClick = () => {
-        router.push('/dashboard2/threat-hunting');
+        router.push('/hunting_lodge/threat-hunting');
     };
 
     return (
