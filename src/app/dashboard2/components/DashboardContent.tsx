@@ -1,23 +1,28 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { DashboardService, CriticalData } from '@/features/dashboard2.0/api/dashboardService';
+import { DashboardService, CriticalData, ChartData } from '@/features/dashboard2.0/api/dashboardService';
 import type { TimeRange } from '@/features/dashboard2.0/types';
 import type { AgentOS, EventTable as EventTableType } from '@/features/dashboard2.0/types/generated';
 import AgentSummaryChart from './AgentSummaryChart';
 import AgentOSChart from './AgentOSChart';
 import AlertsChart from './AlertsChart';
 import SecurityEventsCard from './SecurityEventsCard';
+import TtpLineChart from './TtpLineChart';
+import MaliciousFileChart from './MaliciousFileChart';
+import AuthenticationChart from './AuthenticationChart';
 import TimeRangeSelector from './TimeRangeSelector';
 
 export default function DashboardContent() {
     const [criticalData, setCriticalData] = useState<CriticalData | null>(null);
     const [osData, setOSData] = useState<AgentOS | null>(null);
     const [eventData, setEventData] = useState<EventTableType | null>(null);
+    const [chartData, setChartData] = useState<ChartData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoadingCritical, setIsLoadingCritical] = useState(true);
     const [isLoadingOS, setIsLoadingOS] = useState(true);
     const [isLoadingEvents, setIsLoadingEvents] = useState(true);
+    const [isLoadingCharts, setIsLoadingCharts] = useState(true);
 
     const fetchData = async (timeRange: TimeRange) => {
         setError(null);
@@ -26,6 +31,7 @@ export default function DashboardContent() {
         setIsLoadingCritical(true);
         setIsLoadingOS(true);
         setIsLoadingEvents(true);
+        setIsLoadingCharts(true);
 
         try {
             // Fetch critical data first (summary and alerts)
@@ -49,12 +55,21 @@ export default function DashboardContent() {
                 })
                 .catch(console.error);
 
+            // Fetch chart data
+            DashboardService.fetchChartData(timeRange)
+                .then(data => {
+                    setChartData(data);
+                    setIsLoadingCharts(false);
+                })
+                .catch(console.error);
+
         } catch (err: any) {
             console.error('Failed to fetch dashboard data:', err);
             setError(err.message || 'Failed to load dashboard data. Please try again later.');
             setIsLoadingCritical(false);
             setIsLoadingOS(false);
             setIsLoadingEvents(false);
+            setIsLoadingCharts(false);
         }
     };
 
@@ -91,14 +106,12 @@ export default function DashboardContent() {
 
             {/* First Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Agent Status */}
                 {isLoadingCritical ? (
                     <LoadingCard />
                 ) : criticalData && (
                     <AgentSummaryChart data={criticalData.agentSummary} />
                 )}
 
-                {/* Alert Severity Distribution */}
                 {isLoadingCritical ? (
                     <LoadingCard />
                 ) : criticalData && (
@@ -108,20 +121,40 @@ export default function DashboardContent() {
 
             {/* Second Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {/* Operating System Distribution */}
                 {isLoadingOS ? (
                     <LoadingCard />
                 ) : osData && (
                     <AgentOSChart data={osData} />
                 )}
 
-                {/* Security Events Summary */}
                 {isLoadingEvents ? (
                     <LoadingCard />
                 ) : eventData && (
                     <SecurityEventsCard data={eventData} />
                 )}
             </div>
+
+            {/* Third Row */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {isLoadingCharts ? (
+                    <LoadingCard />
+                ) : chartData && (
+                    <MaliciousFileChart data={chartData.maliciousFile} />
+                )}
+
+                {isLoadingCharts ? (
+                    <LoadingCard />
+                ) : chartData && (
+                    <AuthenticationChart data={chartData.authentication} />
+                )}
+            </div>
+
+            {/* Fourth Row - Full Width */}
+            {isLoadingCharts ? (
+                <LoadingCard />
+            ) : chartData && (
+                <TtpLineChart data={chartData.ttpLinechart} />
+            )}
         </div>
     );
 }
