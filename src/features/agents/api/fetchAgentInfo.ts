@@ -1,17 +1,9 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { avocadoClient } from '@/features/api/AvocadoClient';
 import { FetchAgentDashboardResponse, FetchAgentInfoParams } from '../types/agent';
 
 export const fetchAgentInfo = async ({ id }: FetchAgentInfoParams): Promise<FetchAgentDashboardResponse> => {
-    const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/agent_detail/agent-info`;
-    
     try {
-        const header = {
-            'Authorization': Cookies.get('token'),
-        };
-
-        const response = await axios.get(api_url, {
-            headers: header,
+        const response = await avocadoClient.get('/api/agent_detail/agent-info', {
             params: {
                 agent_name: id
             }
@@ -19,7 +11,7 @@ export const fetchAgentInfo = async ({ id }: FetchAgentInfoParams): Promise<Fetc
         
         return {
             success: true,
-            content: response.data.content
+            content: response.content
         };
     } catch (error: any) {
         console.error('Error fetching agent info:', error);
@@ -36,4 +28,4 @@ export const fetchAgentInfo = async ({ id }: FetchAgentInfoParams): Promise<Fetc
             }
         };
     }
-}
+};

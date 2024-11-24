@@ -1,7 +1,6 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
-import {createSystemPrompt} from "@/features/chatbot/services/prompts";
-import {DashboardInfo, Message} from "@/features/chatbot/types/chat";
+import { avocadoClient } from '@/features/api/AvocadoClient';
+import {createSystemPrompt} from './prompts';
+import {DashboardInfo, Message} from '../types/chat';
 
 interface ChatServiceResponse {
     success: boolean;
@@ -47,10 +46,6 @@ export class ChatService {
 
     private async fetchChatbotData(): Promise<ChatServiceResponse> {
         try {
-            const headers = {
-                'Authorization': Cookies.get('token')
-            };
-
             const { startTime, endTime } = this.getTimeRange();
             console.log('Fetching data for time range:', {
                 start: startTime.toISOString(),
@@ -70,26 +65,26 @@ export class ChatService {
                 messagesResponse,
                 totalEventResponse
             ] = await Promise.all([
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/agents/summary`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/line-chart`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/pie-chart`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/messages`, { params, headers }),
-                axios.get(`${process.env.NEXT_PUBLIC_API_BASE_URL}api/wazuh/total-event`, { params, headers })
+                avocadoClient.get('api/wazuh/agents/summary', { params }),
+                avocadoClient.get('api/wazuh/line-chart', { params }),
+                avocadoClient.get('api/wazuh/pie-chart', { params }),
+                avocadoClient.get('api/wazuh/messages', { params }),
+                avocadoClient.get('api/wazuh/total-event', { params })
             ]);
 
             // 整理數據為 DashboardInfo 格式
             this.dashboardInfo = {
-                totalAgents: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Total agents")?.data || 0,
-                activeAgents: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Active agents")?.data || 0,
-                topAgent: pieChartResponse.data.content.top_agents[0]?.name || 'N/A',
-                topEvent: pieChartResponse.data.content.top_events[0]?.name || 'N/A',
-                topMitre: pieChartResponse.data.content.top_mitre[0]?.name || 'N/A',
-                totalEvents: parseInt(totalEventResponse.data.content.count),
-                latestEventTrends: lineChartResponse.data.datas.map((d: any) => ({
+                totalAgents: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Total agents")?.data || 0,
+                activeAgents: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Active agents")?.data || 0,
+                topAgent: pieChartResponse.content.top_agents[0]?.name || 'N/A',
+                topEvent: pieChartResponse.content.top_events[0]?.name || 'N/A',
+                topMitre: pieChartResponse.content.top_mitre[0]?.name || 'N/A',
+                totalEvents: parseInt(totalEventResponse.content.count),
+                latestEventTrends: lineChartResponse.datas.map((d: any) => ({
                     name: d.name,
                     value: d.data[d.data.length - 1][1]
                 })),
-                recentEvents: messagesResponse.data.datas.map((msg: any) => ({
+                recentEvents: messagesResponse.datas.map((msg: any) => ({
                     time: msg.time,
                     agent_name: msg.agent_name,
                     rule_description: msg.rule_description,
@@ -99,16 +94,16 @@ export class ChatService {
                 })),
                 agentDistribution: {
                     windows: {
-                        total: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Windows agents")?.data || 0,
-                        active: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Active Windows agents")?.data || 0
+                        total: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Windows agents")?.data || 0,
+                        active: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Active Windows agents")?.data || 0
                     },
                     linux: {
-                        total: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Linux agents")?.data || 0,
-                        active: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Active Linux agents")?.data || 0
+                        total: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Linux agents")?.data || 0,
+                        active: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Active Linux agents")?.data || 0
                     },
                     macos: {
-                        total: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "MacOs agents")?.data || 0,
-                        active: agentSummaryResponse.data.agents.find((a: any) => a.agent_name === "Active MacOS agents")?.data || 0
+                        total: agentSummaryResponse.agents.find((a: any) => a.agent_name === "MacOs agents")?.data || 0,
+                        active: agentSummaryResponse.agents.find((a: any) => a.agent_name === "Active MacOS agents")?.data || 0
                     }
                 }
             };

@@ -1,5 +1,4 @@
-import axios from 'axios';
-import Cookies from 'js-cookie';
+import { avocadoClient } from '@/features/api/AvocadoClient';
 import { FetchRansomwareDataResponse, FetchAgentInfoParams } from '../types/agent';
 
 export const fetchRansomwareData = async ({ id }: FetchAgentInfoParams): Promise<FetchRansomwareDataResponse> => {
@@ -7,14 +6,8 @@ export const fetchRansomwareData = async ({ id }: FetchAgentInfoParams): Promise
     const endtime = new Date(nowtime);
     endtime.setDate(nowtime.getDate() - 1);
     
-    const api_url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/agent_detail/agent_ransomware`;
-
     try {
-        const header = {
-            'Authorization': Cookies.get('token'),
-        };
-        const response = await axios.get(api_url, {
-            headers: header,
+        const response = await avocadoClient.get('/api/agent_detail/agent_ransomware', {
             params: {
                 agent_name: id,
                 start_time: endtime.toISOString(),
@@ -22,7 +15,7 @@ export const fetchRansomwareData = async ({ id }: FetchAgentInfoParams): Promise
             }
         });
 
-        const apiData = response.data.ransomware_data;
+        const apiData = response.ransomware_data;  // response is already response.data from axios
         return {
             success: true,
             content: apiData
@@ -35,4 +28,4 @@ export const fetchRansomwareData = async ({ id }: FetchAgentInfoParams): Promise
             content: []
         };
     }
-}
+};
