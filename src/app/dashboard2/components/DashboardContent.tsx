@@ -217,7 +217,7 @@ export default function DashboardContent() {
                 </div>
             </Suspense>
 
-            {/* Add Real-time Event Stream */}
+            {/* Add Event Stream */}
             <Suspense fallback={<Loading />}>
                 <div className="transform transition-transform duration-200 hover:scale-[1.02]">
                     <EventStream data={eventData.content.event_table} maxEvents={15} />

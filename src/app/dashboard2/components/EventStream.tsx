@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, useCallback, useRef } from 'react';
+import * as d3 from 'd3';
 import type { EventTableElement } from '@/features/dashboard2.0/types/generated';
 
 interface Props {
@@ -8,36 +9,129 @@ interface Props {
     maxEvents?: number;
 }
 
+interface EventGroup {
+    severity: 'critical' | 'high' | 'medium' | 'low';
+    count: number;
+    events: EventTableElement[];
+}
+
 const SEVERITY_COLORS = {
-    critical: 'bg-red-100 border-red-500 text-red-800',
-    high: 'bg-orange-100 border-orange-500 text-orange-800',
-    medium: 'bg-yellow-100 border-yellow-500 text-yellow-800',
-    low: 'bg-green-100 border-green-500 text-green-800'
+    critical: {
+        bg: 'bg-red-100',
+        border: 'border-red-500',
+        text: 'text-red-800',
+        fill: '#EF4444'
+    },
+    high: {
+        bg: 'bg-orange-100',
+        border: 'border-orange-500',
+        text: 'text-orange-800',
+        fill: '#F97316'
+    },
+    medium: {
+        bg: 'bg-yellow-100',
+        border: 'border-yellow-500',
+        text: 'text-yellow-800',
+        fill: '#F59E0B'
+    },
+    low: {
+        bg: 'bg-green-100',
+        border: 'border-green-500',
+        text: 'text-green-800',
+        fill: '#10B981'
+    }
 };
 
-const getSeverityClass = (level: number) => {
-    if (level >= 10) return SEVERITY_COLORS.critical;
-    if (level >= 7) return SEVERITY_COLORS.high;
-    if (level >= 4) return SEVERITY_COLORS.medium;
-    return SEVERITY_COLORS.low;
+const getSeverityLevel = (level: number): keyof typeof SEVERITY_COLORS => {
+    if (level >= 10) return 'critical';
+    if (level >= 7) return 'high';
+    if (level >= 4) return 'medium';
+    return 'low';
 };
 
 export default function EventStream({ data, maxEvents = 10 }: Props) {
     const [events, setEvents] = useState<EventTableElement[]>([]);
     const [animatingEvents, setAnimatingEvents] = useState<Set<string>>(new Set());
+    const [selectedSeverity, setSelectedSeverity] = useState<string>('all');
+    const [timelineData, setTimelineData] = useState<EventGroup[]>([]);
     const containerRef = useRef<HTMLDivElement>(null);
+    const timelineRef = useRef<SVGSVGElement>(null);
 
     // Format timestamp to local time
     const formatTime = (timestamp: Date) => {
         return new Date(timestamp).toLocaleTimeString();
     };
 
+    // Group events by severity
+    const groupEventsBySeverity = useCallback((events: EventTableElement[]): EventGroup[] => {
+        const groups: Record<string, EventGroup> = {
+            critical: { severity: 'critical', count: 0, events: [] },
+            high: { severity: 'high', count: 0, events: [] },
+            medium: { severity: 'medium', count: 0, events: [] },
+            low: { severity: 'low', count: 0, events: [] }
+        };
+
+        events.forEach(event => {
+            const severity = getSeverityLevel(event.rule_level);
+            groups[severity].count++;
+            groups[severity].events.push(event);
+        });
+
+        return Object.values(groups);
+    }, []);
+
+    // Update timeline visualization
+    const updateTimeline = useCallback(() => {
+        if (!timelineRef.current) return;
+
+        const width = timelineRef.current.clientWidth;
+        const height = 60;
+        const margin = { top: 10, right: 30, bottom: 20, left: 30 };
+
+        const svg = d3.select(timelineRef.current);
+        svg.selectAll('*').remove();
+
+        const grouped = groupEventsBySeverity(events);
+        const total = grouped.reduce((sum, g) => sum + g.count, 0);
+
+        let x = margin.left;
+        grouped.forEach(group => {
+            const width = (group.count / total) * (timelineRef.current!.clientWidth - margin.left - margin.right);
+
+            svg.append('rect')
+                .attr('x', x)
+                .attr('y', margin.top)
+                .attr('width', width)
+                .attr('height', height - margin.top - margin.bottom)
+                .attr('fill', SEVERITY_COLORS[group.severity].fill)
+                .attr('opacity', 0.7)
+                .attr('rx', 4);
+
+            if (width > 40) {
+                svg.append('text')
+                    .attr('x', x + width / 2)
+                    .attr('y', height / 2)
+                    .attr('text-anchor', 'middle')
+                    .attr('dominant-baseline', 'middle')
+                    .attr('fill', 'white')
+                    .attr('font-size', '12px')
+                    .text(`${group.count}`);
+            }
+
+            x += width;
+        });
+    }, [events, groupEventsBySeverity]);
+
     // Add new events with animation
     const addEvent = useCallback((event: EventTableElement) => {
         const eventKey = `${event.timestamp}-${event.agent_name}-${event.rule_description}`;
 
         setAnimatingEvents(prev => new Set(prev).add(eventKey));
-        setEvents(prev => [event, ...prev].slice(0, maxEvents));
+        setEvents(prev => {
+            const newEvents = [event, ...prev].slice(0, maxEvents);
+            setTimelineData(groupEventsBySeverity(newEvents));
+            return newEvents;
+        });
 
         // Remove animation class after animation completes
         setTimeout(() => {
@@ -55,7 +149,7 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                 behavior: 'smooth'
             });
         }
-    }, [maxEvents]);
+    }, [maxEvents, groupEventsBySeverity]);
 
     // Simulate real-time updates using the provided data
     useEffect(() => {
@@ -74,26 +168,69 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         return () => clearInterval(interval);
     }, [data, addEvent]);
 
+    // Update timeline when events change
+    useEffect(() => {
+        updateTimeline();
+    }, [events, updateTimeline]);
+
+    const filteredEvents = events.filter(event =>
+        selectedSeverity === 'all' || getSeverityLevel(event.rule_level) === selectedSeverity
+    );
+
     return (
         <div className="w-full bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Real-time Event Stream</h2>
+
+            {/* Timeline Visualization */}
+            <div className="mb-4">
+                <svg ref={timelineRef} className="w-full" height="60" />
+            </div>
+
+            {/* Severity Filter */}
+            <div className="flex gap-2 mb-4">
+                <button
+                    onClick={() => setSelectedSeverity('all')}
+                    className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === 'all'
+                            ? 'bg-gray-200 text-gray-800'
+                            : 'bg-gray-100 text-gray-600'
+                        }`}
+                >
+                    All
+                </button>
+                {Object.entries(SEVERITY_COLORS).map(([severity, colors]) => (
+                    <button
+                        key={severity}
+                        onClick={() => setSelectedSeverity(severity)}
+                        className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === severity
+                                ? `${colors.bg} ${colors.text} font-medium`
+                                : 'bg-gray-100 text-gray-600'
+                            }`}
+                    >
+                        {severity.charAt(0).toUpperCase() + severity.slice(1)}
+                    </button>
+                ))}
+            </div>
+
             <div className="relative">
                 <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-white to-transparent z-10"></div>
                 <div
                     ref={containerRef}
                     className="h-[400px] overflow-y-auto space-y-3 scrollbar-hide"
                 >
-                    {events.map((event, index) => {
+                    {filteredEvents.map((event) => {
                         const eventKey = `${event.timestamp}-${event.agent_name}-${event.rule_description}`;
                         const isAnimating = animatingEvents.has(eventKey);
+                        const severity = getSeverityLevel(event.rule_level);
+                        const colors = SEVERITY_COLORS[severity];
 
                         return (
                             <div
                                 key={eventKey}
                                 className={`
                                     border-l-4 rounded p-3 transition-all duration-500
-                                    ${getSeverityClass(event.rule_level)}
+                                    ${colors.bg} ${colors.border} ${colors.text}
                                     ${isAnimating ? 'animate-slide-in' : ''}
+                                    hover:shadow-md
                                 `}
                             >
                                 <div className="flex justify-between items-start">
@@ -122,10 +259,7 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                                     </div>
                                     <div className={`
                                         ml-4 px-2 py-1 rounded text-sm font-medium
-                                        ${event.rule_level >= 10 ? 'bg-red-200' :
-                                            event.rule_level >= 7 ? 'bg-orange-200' :
-                                                event.rule_level >= 4 ? 'bg-yellow-200' :
-                                                    'bg-green-200'}
+                                        ${colors.bg} ${colors.text}
                                     `}>
                                         Level {event.rule_level}
                                     </div>

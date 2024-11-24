@@ -17,21 +17,26 @@ export default function SecurityEventsCard({ data }: Props) {
     const highEvents = events.filter(e => e.rule_level >= 7 && e.rule_level < 10).length;
     const mediumEvents = events.filter(e => e.rule_level >= 4 && e.rule_level < 7).length;
 
-    const handleClick = () => {
+    const handleEventsClick = () => {
         router.push('/dashboard2/events');
     };
 
+    const handleNetworkClick = () => {
+        router.push('/dashboard2/network');
+    };
+
+    const handleThreatHuntingClick = () => {
+        router.push('/dashboard2/threat-hunting');
+    };
+
     return (
-        <div
-            className="w-full h-full bg-white rounded-lg shadow-sm p-6 cursor-pointer hover:shadow-md transition-shadow"
-            onClick={handleClick}
-        >
+        <div className="w-full h-full bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Security Events</h2>
             <div className="mb-4">
                 <div className="text-sm text-gray-600">Total Events</div>
                 <div className="text-3xl font-bold text-gray-900">{totalEvents}</div>
             </div>
-            <div className="grid grid-cols-3 gap-3">
+            <div className="grid grid-cols-3 gap-3 mb-4">
                 <div className="p-3 bg-red-50 rounded-lg">
                     <div className="text-sm text-gray-600">Critical</div>
                     <div className="text-xl font-bold text-red-600">
@@ -51,8 +56,25 @@ export default function SecurityEventsCard({ data }: Props) {
                     </div>
                 </div>
             </div>
-            <div className="mt-4 text-center text-sm text-blue-600 hover:text-blue-800">
-                Click to view details →
+            <div className="grid grid-cols-3 gap-3">
+                <button
+                    onClick={handleEventsClick}
+                    className="text-center text-sm text-blue-600 hover:text-blue-800 hover:bg-blue-50 py-2 px-3 rounded-lg transition-colors"
+                >
+                    View Events →
+                </button>
+                <button
+                    onClick={handleNetworkClick}
+                    className="text-center text-sm text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 py-2 px-3 rounded-lg transition-colors"
+                >
+                    View Network →
+                </button>
+                <button
+                    onClick={handleThreatHuntingClick}
+                    className="text-center text-sm text-violet-600 hover:text-violet-800 hover:bg-violet-50 py-2 px-3 rounded-lg transition-colors"
+                >
+                    Threat Hunting →
+                </button>
             </div>
         </div>
     );
