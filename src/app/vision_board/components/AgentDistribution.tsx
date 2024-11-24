@@ -4,10 +4,10 @@ import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React, { useState, useEffect } from 'react';
 import { getAgentDistribution } from '@/features/vision_board/api/getAgentDistribution';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/ui/card";
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/app/ui/chart";
-import ErrorDisplayer from "@/app/ui/Error";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/vision_board/components/card";
+import ErrorDisplayer from "@/app/vision_board/components/Error";
 import { AgentNameChartData } from "@/features/vision_board/types";
+import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/app/vision_board/components/chart";
 
 export default function AgentDistribution() {
     const { dateTimeRange } = useVisionBoardContext();

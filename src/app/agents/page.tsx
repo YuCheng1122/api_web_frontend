@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react'
 import { fetchAgentDetails } from "@/features/agents/api/fetchAgentDetails"
 import AgentsDetailsTable from "./components/AgentsDetailsTable"
-import ErrorDisplayer from '@/app/ui/Error'
-import Loading from '@/app/ui/Loading'
+import ErrorDisplayer from '@/app/vision_board/components/Error'
+import Loading from '@/app/vision_board/components/Loading'
 
 const AgentsInfo = () => {
     const [agentsData, setAgentsData] = useState<any[]>([])

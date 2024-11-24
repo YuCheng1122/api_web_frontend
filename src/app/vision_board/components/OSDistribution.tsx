@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getOSDistribution } from '@/features/vision_board/api/getOSDistribution';
 import PieGraph from './PieGraph';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import ErrorDisplayer from '@/app/ui/Error';
+import ErrorDisplayer from '@/app/vision_board/components/Error';
 import { AgentOSChartData } from '@/features/vision_board/types';
 
 export default function OSDistribution() {

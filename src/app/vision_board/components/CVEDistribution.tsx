@@ -4,9 +4,9 @@ import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React, { useState, useEffect } from 'react';
 import { getCVEDistribution } from '@/features/vision_board/api/getCVEDistribution';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/app/ui/chart";
-import ErrorDisplayer from "@/app/ui/Error";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/ui/card";
+import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/app/vision_board/components/chart";
+import ErrorDisplayer from "@/app/vision_board/components/Error";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/vision_board/components/card";
 import { CVEChartData } from '@/features/vision_board/types';
 
 export default function CVEDistribution() {

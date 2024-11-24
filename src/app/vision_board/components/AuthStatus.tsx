@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getAuthStatus } from '@/features/vision_board/api/getAuthStatus';
 import PieGraph from './PieGraph';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import ErrorDisplayer from '@/app/ui/Error';
+import ErrorDisplayer from '@/app/vision_board/components/Error';
 import { AuthenticationChartData } from '@/features/vision_board/types';
 
 export default function AuthStatus() {
