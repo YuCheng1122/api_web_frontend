@@ -1,17 +1,52 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, Suspense, lazy } from 'react';
 import { DashboardService, CriticalData, ChartData } from '@/features/dashboard2.0/api/dashboardService';
 import type { TimeRange } from '@/features/dashboard2.0/types';
 import type { AgentOS, EventTable as EventTableType } from '@/features/dashboard2.0/types/generated';
-import AgentSummaryChart from './AgentSummaryChart';
-import AgentOSChart from './AgentOSChart';
-import AlertsChart from './AlertsChart';
-import SecurityEventsCard from './SecurityEventsCard';
-import TtpLineChart from './TtpLineChart';
-import MaliciousFileChart from './MaliciousFileChart';
-import AuthenticationChart from './AuthenticationChart';
 import TimeRangeSelector from './TimeRangeSelector';
+import Loading from './Loading';
+
+// 動態導入組件
+const AgentSummaryChart = lazy(() => import('./AgentSummaryChart'));
+const AgentOSChart = lazy(() => import('./AgentOSChart'));
+const AlertsChart = lazy(() => import('./AlertsChart'));
+const SecurityEventsCard = lazy(() => import('./SecurityEventsCard'));
+const TtpLineChart = lazy(() => import('./TtpLineChart'));
+const MaliciousFileChart = lazy(() => import('./MaliciousFileChart'));
+const AuthenticationChart = lazy(() => import('./AuthenticationChart'));
+
+// 實現數據緩存
+const CACHE_TIME = 5 * 60 * 1000; // 5分鐘緩存
+const cache = new Map<string, { data: any; timestamp: number }>();
+
+function getCachedData(key: string) {
+    const cached = cache.get(key);
+    if (cached && Date.now() - cached.timestamp < CACHE_TIME) {
+        return cached.data;
+    }
+    cache.delete(key); // 自動刪除過期數據
+    return null;
+}
+
+function setCachedData(key: string, data: any) {
+    cache.set(key, {
+        data,
+        timestamp: Date.now()
+    });
+}
+
+// 清理過期緩存
+function cleanupCache() {
+    const now = Date.now();
+    const keys = Array.from(cache.keys());
+    keys.forEach(key => {
+        const cached = cache.get(key);
+        if (cached && now - cached.timestamp > CACHE_TIME) {
+            cache.delete(key);
+        }
+    });
+}
 
 export default function DashboardContent() {
     const [criticalData, setCriticalData] = useState<CriticalData | null>(null);
@@ -19,57 +54,76 @@ export default function DashboardContent() {
     const [eventData, setEventData] = useState<EventTableType | null>(null);
     const [chartData, setChartData] = useState<ChartData | null>(null);
     const [error, setError] = useState<string | null>(null);
-    const [isLoadingCritical, setIsLoadingCritical] = useState(true);
-    const [isLoadingOS, setIsLoadingOS] = useState(true);
-    const [isLoadingEvents, setIsLoadingEvents] = useState(true);
-    const [isLoadingCharts, setIsLoadingCharts] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
+
+    // 預加載其他組件
+    useEffect(() => {
+        const preloadComponents = async () => {
+            const components = [
+                './AgentSummaryChart',
+                './AgentOSChart',
+                './AlertsChart',
+                './SecurityEventsCard',
+                './TtpLineChart',
+                './MaliciousFileChart',
+                './AuthenticationChart'
+            ];
+
+            await Promise.all(
+                components.map(component =>
+                    import(component).catch(err =>
+                        console.warn(`Failed to preload component: ${component}`, err)
+                    )
+                )
+            );
+        };
+
+        preloadComponents();
+    }, []);
 
     const fetchData = async (timeRange: TimeRange) => {
         setError(null);
+        setIsLoading(true);
 
-        // Reset loading states
-        setIsLoadingCritical(true);
-        setIsLoadingOS(true);
-        setIsLoadingEvents(true);
-        setIsLoadingCharts(true);
+        const cacheKey = JSON.stringify(timeRange);
+        const cachedResult = getCachedData(cacheKey);
+
+        if (cachedResult) {
+            setCriticalData(cachedResult.critical);
+            setOSData(cachedResult.os);
+            setEventData(cachedResult.events);
+            setChartData(cachedResult.charts);
+            setIsLoading(false);
+            return;
+        }
 
         try {
-            // Fetch critical data first (summary and alerts)
-            const critical = await DashboardService.fetchCriticalData(timeRange);
+            // 使用 Promise.all 並行獲取所有數據
+            const [
+                critical,
+                os,
+                events,
+                charts
+            ] = await Promise.all([
+                DashboardService.fetchCriticalData(timeRange),
+                DashboardService.fetchOSData(timeRange),
+                DashboardService.fetchEventTableData(timeRange),
+                DashboardService.fetchChartData(timeRange)
+            ]);
+
+            // 緩存數據
+            const result = { critical, os, events, charts };
+            setCachedData(cacheKey, result);
+
             setCriticalData(critical);
-            setIsLoadingCritical(false);
-
-            // Fetch OS data
-            DashboardService.fetchOSData(timeRange)
-                .then(data => {
-                    setOSData(data);
-                    setIsLoadingOS(false);
-                })
-                .catch(console.error);
-
-            // Fetch event data for summary
-            DashboardService.fetchEventTableData(timeRange)
-                .then(data => {
-                    setEventData(data);
-                    setIsLoadingEvents(false);
-                })
-                .catch(console.error);
-
-            // Fetch chart data
-            DashboardService.fetchChartData(timeRange)
-                .then(data => {
-                    setChartData(data);
-                    setIsLoadingCharts(false);
-                })
-                .catch(console.error);
-
+            setOSData(os);
+            setEventData(events);
+            setChartData(charts);
         } catch (err: any) {
             console.error('Failed to fetch dashboard data:', err);
             setError(err.message || 'Failed to load dashboard data. Please try again later.');
-            setIsLoadingCritical(false);
-            setIsLoadingOS(false);
-            setIsLoadingEvents(false);
-            setIsLoadingCharts(false);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -79,6 +133,10 @@ export default function DashboardContent() {
             end_time: new Date().toISOString()
         };
         fetchData(initialTimeRange);
+
+        // 定期清理過期緩存
+        const cleanup = setInterval(cleanupCache, CACHE_TIME / 2);
+        return () => clearInterval(cleanup);
     }, []);
 
     const handleTimeRangeChange = (newTimeRange: TimeRange) => {
@@ -94,67 +152,59 @@ export default function DashboardContent() {
         );
     }
 
-    const LoadingCard = () => (
-        <div className="bg-white rounded-lg shadow-sm p-6 min-h-[200px] flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900"></div>
-        </div>
-    );
+    if (isLoading || !criticalData || !osData || !eventData || !chartData) {
+        return <Loading />;
+    }
 
     return (
         <div className="max-w-[1600px] mx-auto px-4 py-6 space-y-6">
             <TimeRangeSelector onChange={handleTimeRangeChange} />
 
-            {/* First Row */}
+            {/* 使用 Suspense 和動態導入的組件 */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {isLoadingCritical ? (
-                    <LoadingCard />
-                ) : criticalData && (
-                    <AgentSummaryChart data={criticalData.agentSummary} />
-                )}
-
-                {isLoadingCritical ? (
-                    <LoadingCard />
-                ) : criticalData && (
-                    <AlertsChart data={criticalData.alerts} />
-                )}
+                <Suspense fallback={<Loading />}>
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                        <AgentSummaryChart data={criticalData.agentSummary} />
+                    </div>
+                </Suspense>
+                <Suspense fallback={<Loading />}>
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                        <AlertsChart data={criticalData.alerts} />
+                    </div>
+                </Suspense>
             </div>
 
-            {/* Second Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {isLoadingOS ? (
-                    <LoadingCard />
-                ) : osData && (
-                    <AgentOSChart data={osData} />
-                )}
-
-                {isLoadingEvents ? (
-                    <LoadingCard />
-                ) : eventData && (
-                    <SecurityEventsCard data={eventData} />
-                )}
+                <Suspense fallback={<Loading />}>
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                        <AgentOSChart data={osData} />
+                    </div>
+                </Suspense>
+                <Suspense fallback={<Loading />}>
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                        <SecurityEventsCard data={eventData} />
+                    </div>
+                </Suspense>
             </div>
 
-            {/* Third Row */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                {isLoadingCharts ? (
-                    <LoadingCard />
-                ) : chartData && (
-                    <MaliciousFileChart data={chartData.maliciousFile} />
-                )}
-
-                {isLoadingCharts ? (
-                    <LoadingCard />
-                ) : chartData && (
-                    <AuthenticationChart data={chartData.authentication} />
-                )}
+                <Suspense fallback={<Loading />}>
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                        <MaliciousFileChart data={chartData.maliciousFile} />
+                    </div>
+                </Suspense>
+                <Suspense fallback={<Loading />}>
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                        <AuthenticationChart data={chartData.authentication} />
+                    </div>
+                </Suspense>
             </div>
 
-            {/* Fourth Row - Full Width */}
-            {isLoadingCharts ? (
-                <LoadingCard />
-            ) : chartData && (
-                <TtpLineChart data={chartData.ttpLinechart} />
-            )}
+            <Suspense fallback={<Loading />}>
+                <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <TtpLineChart data={chartData.ttpLinechart} />
+                </div>
+            </Suspense>
         </div>
     );
 }
