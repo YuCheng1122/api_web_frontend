@@ -15,6 +15,8 @@ const SecurityEventsCard = lazy(() => import('./SecurityEventsCard'));
 const TtpLineChart = lazy(() => import('./TtpLineChart'));
 const MaliciousFileChart = lazy(() => import('./MaliciousFileChart'));
 const AuthenticationChart = lazy(() => import('./AuthenticationChart'));
+const MitreHeatmapChart = lazy(() => import('./MitreHeatmapChart'));
+const EventStream = lazy(() => import('./EventStream'));
 
 // 實現數據緩存
 const CACHE_TIME = 5 * 60 * 1000; // 5分鐘緩存
@@ -66,7 +68,9 @@ export default function DashboardContent() {
                 './SecurityEventsCard',
                 './TtpLineChart',
                 './MaliciousFileChart',
-                './AuthenticationChart'
+                './AuthenticationChart',
+                './MitreHeatmapChart',
+                './EventStream'
             ];
 
             await Promise.all(
@@ -203,6 +207,20 @@ export default function DashboardContent() {
             <Suspense fallback={<Loading />}>
                 <div className="transform transition-transform duration-200 hover:scale-[1.02]">
                     <TtpLineChart data={chartData.ttpLinechart} />
+                </div>
+            </Suspense>
+
+            {/* Add MITRE ATT&CK Matrix */}
+            <Suspense fallback={<Loading />}>
+                <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <MitreHeatmapChart data={eventData} />
+                </div>
+            </Suspense>
+
+            {/* Add Real-time Event Stream */}
+            <Suspense fallback={<Loading />}>
+                <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <EventStream data={eventData.content.event_table} maxEvents={15} />
                 </div>
             </Suspense>
         </div>
