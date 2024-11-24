@@ -26,7 +26,7 @@ const navItems: NavItem[] = [
     { href: '/graph', label: '威脅獵捕圖' },
     { href: '/agents', label: '代理資訊' },
     { href: '/chatbot', label: 'SenseX 聊天機器人' },
-    { href: '/vision_board', label: '視覺化儀表板' },
+    { href: '/dashboard2', label: '視覺化儀表板' },
     { href: '/managecenter', label: '管理中心', adminOnly: true },
     { href: '/ics', label: 'ICS' },
     { href: '/ndr', label: 'NDR' },
