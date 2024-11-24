@@ -31,36 +31,63 @@ export default function TtpLineChart({ data }: Props) {
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">TTP Distribution Over Time</h2>
-            <div className="h-[300px]">
+            <div className="h-[400px]"> {/* 增加圖表高度 */}
                 <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={timePoints}>
+                    <LineChart
+                        data={timePoints}
+                        margin={{
+                            top: 20,
+                            right: 30,
+                            left: 20,
+                            bottom: 70  // 增加底部邊距
+                        }}
+                    >
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis
                             dataKey="time"
-                            tick={{ fontSize: 12 }}
-                            angle={-45}
+                            tick={{
+                                fontSize: 12,
+                                fill: '#666',  // 更清晰的文字顏色
+                            }}
+                            angle={-35}  // 調整角度
                             textAnchor="end"
-                            height={60}
+                            height={70}  // 增加高度
+                            tickMargin={30}  // 增加文字與軸的距離
                         />
                         <YAxis
-                            tick={{ fontSize: 12 }}
-                            width={40}
+                            tick={{
+                                fontSize: 12,
+                                fill: '#666'
+                            }}
+                            width={45}
                         />
-                        <Tooltip />
-                        <Legend />
+                        <Tooltip
+                            contentStyle={{
+                                backgroundColor: 'rgba(255, 255, 255, 0.95)',
+                                border: '1px solid #ccc',
+                                borderRadius: '4px',
+                                padding: '8px'
+                            }}
+                        />
+                        <Legend
+                            verticalAlign="top"
+                            height={36}
+                        />
                         {chartData.datas.map((series, index) => (
                             <Line
                                 key={series.name}
                                 type="monotone"
                                 dataKey={series.name}
                                 stroke={COLORS[index % COLORS.length]}
+                                strokeWidth={2}  // 增加線條寬度
                                 dot={false}
+                                activeDot={{ r: 6, strokeWidth: 0 }}  // 改進活動點的樣式
                             />
                         ))}
                     </LineChart>
                 </ResponsiveContainer>
             </div>
-            <div className="mt-4 text-sm text-gray-500 text-center">
+            <div className="mt-6 text-sm text-gray-500 text-center"> {/* 增加上邊距 */}
                 {chartData.label[0]?.label || 'TTP Distribution Trend'}
             </div>
         </div>

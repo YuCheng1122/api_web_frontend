@@ -21,7 +21,7 @@ export default function MaliciousFileChart({ data }: Props) {
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-6">
             <h2 className="text-lg font-semibold mb-4">Malicious File Distribution</h2>
-            <div className="grid grid-cols-2 gap-3">
+            <div className="space-y-3">
                 {files.map((item, index) => {
                     const color = COLORS[index % COLORS.length];
                     const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : '0';
@@ -29,20 +29,22 @@ export default function MaliciousFileChart({ data }: Props) {
                     return (
                         <div
                             key={item.name}
-                            className="p-3 rounded-lg"
+                            className="flex items-center justify-between p-3 rounded-lg transition-transform hover:scale-[1.02]"
                             style={{ backgroundColor: `${color}10` }}
                         >
-                            <div className="text-sm text-gray-600 truncate" title={item.name}>
-                                {item.name}
+                            <div className="flex-1">
+                                <div className="text-sm text-gray-600 truncate" title={item.name}>
+                                    {item.name}
+                                </div>
+                                <div className="text-sm text-gray-500">
+                                    {percentage}% of total
+                                </div>
                             </div>
                             <div
-                                className="text-xl font-bold"
+                                className="text-xl font-bold ml-4"
                                 style={{ color }}
                             >
                                 {item.count}
-                            </div>
-                            <div className="text-sm text-gray-500">
-                                {percentage}% of total
                             </div>
                         </div>
                     );
