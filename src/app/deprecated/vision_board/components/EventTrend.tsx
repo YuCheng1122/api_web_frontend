@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import ReactECharts from 'echarts-for-react';
 import { getEventTrend, initData } from '@/features/vision_board/api/getEventTrend';
-import Loading from '@/app/vision_board/components/Loading';
-import ErrorDisplayer from '@/app/vision_board/components/Error';
+import Loading from '@/app/deprecated/vision_board/components/Loading';
+import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
 import { EventTrendData } from '@/features/vision_board/types';
 

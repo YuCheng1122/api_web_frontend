@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { getSeverityAlert, initData } from '@/features/vision_board/api/getSeverityAlert';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import ErrorDisplayer from '@/app/vision_board/components/Error';
+import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
 import { SeverityAlertData } from '@/features/vision_board/types';
 
 interface AlertCardProps {

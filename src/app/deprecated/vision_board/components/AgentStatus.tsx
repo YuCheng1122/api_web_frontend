@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { getAgentStatus } from '@/features/vision_board/api/getAgentStatus';
 import PieGraph from './PieGraph';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import ErrorDisplayer from '@/app/vision_board/components/Error';
+import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
 import { AgentStatusChartData } from '@/features/vision_board/types';
 import { formatAgentStatus } from '@/features/vision_board/utils/formatAgentStatus';
 

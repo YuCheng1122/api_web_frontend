@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowUpToLine } from "lucide-react";
 import SideNav from "./SideNav";
-import { ScrollToTop } from "../ui/scroll-to-top";
+import { ScrollToTop } from "@/app/deprecated/ui/scroll-to-top";
 
 export default function DashboardLayout({
     children,

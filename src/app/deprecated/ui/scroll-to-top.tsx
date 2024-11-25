@@ -1,5 +1,5 @@
 'use client'
-import { Button, ButtonProps } from "@/app/ui/button";
+import { Button, ButtonProps } from "@/app/deprecated/ui/button";
 
 import { useEffect, useState } from "react"
 

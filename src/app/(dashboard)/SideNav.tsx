@@ -93,16 +93,6 @@ const SideNav = () => {
                         </li>
                         <li>
                             <Link
-                                href="/vision_board"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Monitor size={20} />
-                                <span>Vision Board</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
                                 href="/ndr"
                                 className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
                                 onClick={() => setIsOpen(false)}
@@ -139,16 +129,6 @@ const SideNav = () => {
                             >
                                 <MessageSquare size={20} />
                                 <span>Chatbot</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/graph"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <BarChart2 size={20} />
-                                <span>Graph</span>
                             </Link>
                         </li>
                         <li>

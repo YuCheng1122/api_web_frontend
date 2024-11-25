@@ -1,4 +1,4 @@
-import { cn } from "@/app/vision_board/components/utils"
+import { cn } from "@/app/deprecated/vision_board/components/utils"
 import React from "react";
 
 const Card = React.forwardRef<

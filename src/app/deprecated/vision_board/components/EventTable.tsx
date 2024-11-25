@@ -4,8 +4,8 @@ import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
 import { getEvents } from '@/features/vision_board/api/getEvents';
 import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import ErrorDisplayer from '@/app/vision_board/components/Error';
-import Loading from '@/app/vision_board/components/Loading';
+import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
+import Loading from '@/app/deprecated/vision_board/components/Loading';
 import { EventTableRow } from '@/features/vision_board/types';
 import { formatTimestamp } from '@/features/vision_board/utils/formatTime';
 

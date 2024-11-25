@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react'
 import { fetchUser } from '@/features/manage_center/managecenter/fetchUser'
 import Card from "@/app/(dashboard)/managecenter/components/Card";
-import Loading from '@/app/vision_board/components/Loading';
+import Loading from '@/app/deprecated/vision_board/components/Loading';
 type UserDataType = {
     username: string
     email: string
