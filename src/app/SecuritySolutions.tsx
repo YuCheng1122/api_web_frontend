@@ -5,7 +5,7 @@ import React, { useEffect, useRef, useState } from 'react';
 const solutions = [
     {
         title: '一站式註冊、申請、安裝與開通',
-        description: 'ThreatCado XDR & SenseX 提供完整的一站式服務，從申請到安裝，無縫整合，快速啟動。簡化流程，讓企業迅速啟用資安防護，縮短部署時間並降低IT負擔。',
+        description: 'ThreatCado XDR & SenseLLM Copilot 提供完整的一站式服務，從申請到安裝，無縫整合，快速啟動。簡化流程，讓企業迅速啟用資安防護，縮短部署時間並降低IT負擔。',
         features: [
             '無須額外硬體成本',
             '威脅情報即時更新',
@@ -23,8 +23,8 @@ const solutions = [
         ],
     },
     {
-        title: '以 SenseX 為核心 AI 威脅獵捕與場域風險評估',
-        description: 'SenseX 作為系統的智慧核心，運用AI語言模型進行威脅獵捕和場域風險評估。SenseX的AI能力能自動檢測潛在威脅，透過學習不斷改進檢測與分析能力，確保企業免受惡意攻擊。此外，風險評估功能能夠根據場域特性提供動態安全建議，有效降低風險，保障營運安全。',
+        title: '以 SenseLLM Copilot 為核心 AI 威脅獵捕與場域風險評估',
+        description: 'SenseLLM Copilot 作為系統的智慧核心，運用AI語言模型進行威脅獵捕和場域風險評估。SenseLLM Copilot 的AI能力能自動檢測潛在威脅，透過學習不斷改進檢測與分析能力，確保企業免受惡意攻擊。此外，風險評估功能能夠根據場域特性提供動態安全建議，有效降低風險，保障營運安全。',
         features: [
             '免費 PoC 試用',
             '優惠價 XDR 服務',

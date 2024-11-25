@@ -23,14 +23,13 @@ interface NavItem {
 
 // 導航項目列表
 const navItems: NavItem[] = [
-    { href: '/graph', label: '威脅獵捕圖' },
     { href: '/agents', label: '代理資訊' },
-    { href: '/chatbot', label: 'SenseX 聊天機器人' },
-    { href: '/hunting_lodge', label: '視覺化儀表板' },
+    { href: '/chatbot', label: 'SenseLLM Copilot' },
+    { href: '/hunting_lodge', label: 'Hunting Lodge' },
     { href: '/managecenter', label: '管理中心', adminOnly: true },
-    { href: '/ics', label: 'ICS' },
-    { href: '/ndr', label: 'NDR' },
-    { href: '/agent-deployment', label: '軟體下載' }
+    { href: '/ics', label: '工業控制系統' },
+    { href: '/ndr', label: '網路威脅偵測與應變系統' },
+    { href: '/agent-deployment', label: '部署代理' }
 ]
 
 // 導航項目組件 - 行動版

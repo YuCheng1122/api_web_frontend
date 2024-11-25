@@ -12,7 +12,7 @@ export async function GET(request: NextRequest) {
         }
 
         const nowtime = new Date();
-        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}api/modbus_events/get-events?start_time=2024-10-10T00:00:00Z&end_time=${nowtime.toISOString()}`;
+        const url = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/modbus_events/get-events?start_time=2024-10-10T00:00:00Z&end_time=${nowtime.toISOString()}`;
 
         console.log('Requesting URL:', url);
 
