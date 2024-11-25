@@ -83,16 +83,6 @@ const SideNav = () => {
                         </li>
                         <li>
                             <Link
-                                href="/hunting_lodge/events"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Shield size={20} />
-                                <span>Events</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
                                 href="/ndr"
                                 className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
                                 onClick={() => setIsOpen(false)}
