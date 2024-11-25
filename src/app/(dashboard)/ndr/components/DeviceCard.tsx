@@ -22,11 +22,10 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
     return (
         <button
             onClick={() => onSelect(device.name)}
-            className={`w-full text-left transition-all duration-200 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${
-                isSelected 
-                    ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-500' 
+            className={`w-full text-left transition-all duration-200 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${isSelected
+                    ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-500'
                     : 'bg-white border-gray-200 hover:border-indigo-300'
-            } border rounded-lg shadow-sm p-4`}
+                } border rounded-lg shadow-sm p-4`}
         >
             <div className="space-y-3">
                 {/* 標題和狀態 */}
@@ -44,6 +43,17 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
                     </span>
                 </div>
 
+                {/* Device Image */}
+                {device.type === 'Flowring_LVR2S' && (
+                    <div className="flex justify-center items-center py-4">
+                        <img
+                            src="/ndr/LVR2S_NBG.png"
+                            alt="LVR2S Device"
+                            className="w-40 h-auto max-h-48 object-contain"
+                        />
+                    </div>
+                )}
+
                 {/* 設備詳情 */}
                 <div className="grid grid-cols-2 gap-4 pt-2">
                     <div>
@@ -59,15 +69,15 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
                 {/* 選擇指示器 */}
                 {isSelected && (
                     <div className="absolute top-2 right-2">
-                        <svg 
-                            className="w-5 h-5 text-indigo-600" 
-                            fill="currentColor" 
+                        <svg
+                            className="w-5 h-5 text-indigo-600"
+                            fill="currentColor"
                             viewBox="0 0 20 20"
                         >
-                            <path 
-                                fillRule="evenodd" 
-                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" 
-                                clipRule="evenodd" 
+                            <path
+                                fillRule="evenodd"
+                                d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                clipRule="evenodd"
                             />
                         </svg>
                     </div>

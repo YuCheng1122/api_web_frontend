@@ -38,14 +38,14 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
         return `${value.toFixed(1)} ${units[unitIndex]}`;
     };
 
-    const UsageIndicator = ({ 
-        label, 
-        value, 
+    const UsageIndicator = ({
+        label,
+        value,
         icon,
         detail
-    }: { 
-        label: string; 
-        value: number; 
+    }: {
+        label: string;
+        value: number;
         icon: React.ReactNode;
         detail?: string;
     }) => (
@@ -70,11 +70,10 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
                 <div className="overflow-hidden h-2 text-xs flex rounded bg-gray-100">
                     <div
                         style={{ width: `${Math.min(value, 100)}%` }}
-                        className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${
-                            value >= 80 ? 'bg-red-500' :
-                            value >= 60 ? 'bg-yellow-500' :
-                            'bg-green-500'
-                        }`}
+                        className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${value >= 80 ? 'bg-red-500' :
+                                value >= 60 ? 'bg-yellow-500' :
+                                    'bg-green-500'
+                            }`}
                     />
                 </div>
             </div>
@@ -91,7 +90,7 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
     // 計算CPU和Memory使用率
     const currentCpuUsage = info.cpu_usage[info.cpu_usage.length - 1] || 0;
     const memoryUsage = calculateMemoryUsage(info.memory_usage);
-    const memoryDetail = info.memory_usage && info.memory_usage.length >= 2 
+    const memoryDetail = info.memory_usage && info.memory_usage.length >= 2
         ? `${formatBytes(info.memory_usage[1])} / ${formatBytes(info.memory_usage[0])}`
         : undefined;
 
@@ -125,7 +124,7 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
                 <div className="pt-6 border-t border-gray-200">
                     <h4 className="text-lg font-medium text-gray-900 mb-4">Version Information</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <VersionInfo label="Device Version" version={info.device_version} />
+                        <VersionInfo label="Firmware Version" version={info.device_version} />
                         <VersionInfo label="NIDS Version" version={info.nids_version} />
                         <VersionInfo label="IOC Version" version={info.ioc_version} />
                     </div>
