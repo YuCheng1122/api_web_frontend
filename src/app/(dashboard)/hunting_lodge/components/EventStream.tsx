@@ -2,6 +2,7 @@
 
 import { useEffect, useState, useCallback, useRef } from 'react';
 import * as d3 from 'd3';
+import { Clock, User, Target, Search } from 'lucide-react';
 import type { EventTableElement } from '@/features/dashboard_v2/types';
 
 interface Props {
@@ -53,7 +54,6 @@ const getSeverityLevel = (level: number): keyof typeof SEVERITY_COLORS => {
     return 'low';
 };
 
-// 生成唯一ID
 let eventCounter = 0;
 const generateEventId = () => {
     eventCounter += 1;
@@ -61,6 +61,7 @@ const generateEventId = () => {
 };
 
 export default function EventStream({ data, maxEvents = 10 }: Props) {
+    const [isMobile, setIsMobile] = useState(false);
     const [events, setEvents] = useState<EventWithId[]>([]);
     const [animatingEvents, setAnimatingEvents] = useState<Set<string>>(new Set());
     const [selectedSeverity, setSelectedSeverity] = useState<string>('all');
@@ -68,12 +69,21 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
     const containerRef = useRef<HTMLDivElement>(null);
     const timelineRef = useRef<SVGSVGElement>(null);
 
-    // Format timestamp to local time
+    useEffect(() => {
+        const checkIfMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIfMobile();
+        window.addEventListener('resize', checkIfMobile);
+
+        return () => window.removeEventListener('resize', checkIfMobile);
+    }, []);
+
     const formatTime = (timestamp: Date) => {
         return new Date(timestamp).toLocaleTimeString();
     };
 
-    // Group events by severity
     const groupEventsBySeverity = useCallback((events: EventWithId[]): EventGroup[] => {
         const groups: Record<string, EventGroup> = {
             critical: { severity: 'critical', count: 0, events: [] },
@@ -91,12 +101,11 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         return Object.values(groups);
     }, []);
 
-    // Update timeline visualization
     const updateTimeline = useCallback(() => {
         if (!timelineRef.current) return;
 
         const width = timelineRef.current.clientWidth;
-        const height = 50;
+        const height = isMobile ? 40 : 50;
         const margin = { top: 8, right: 8, bottom: 8, left: 8 };
 
         const svg = d3.select(timelineRef.current);
@@ -105,7 +114,6 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         const grouped = groupEventsBySeverity(events);
         const total = grouped.reduce((sum, g) => sum + g.count, 0);
 
-        // 如果沒有事件，繪製空的時間軸
         if (total === 0) {
             svg.append('rect')
                 .attr('x', margin.left)
@@ -120,11 +128,10 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
 
         let x = margin.left;
         grouped.forEach(group => {
-            if (group.count === 0) return; // 跳過沒有事件的嚴重程度
+            if (group.count === 0) return;
 
             const barWidth = (group.count / total) * (width - margin.left - margin.right);
 
-            // 確保寬度是有效的數字
             if (!isNaN(barWidth) && barWidth > 0) {
                 svg.append('rect')
                     .attr('x', x)
@@ -142,16 +149,15 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'middle')
                         .attr('fill', 'white')
-                        .attr('font-size', '10px')
+                        .attr('font-size', isMobile ? '8px' : '10px')
                         .text(`${group.count}`);
                 }
 
                 x += barWidth;
             }
         });
-    }, [events, groupEventsBySeverity]);
+    }, [events, groupEventsBySeverity, isMobile]);
 
-    // Add new events with animation
     const addEvent = useCallback((event: EventTableElement) => {
         const eventWithId: EventWithId = {
             ...event,
@@ -205,13 +211,107 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         selectedSeverity === 'all' || getSeverityLevel(event.rule_level) === selectedSeverity
     );
 
+    // 移動端事件卡片
+    const MobileEventCard = ({ event, isAnimating }: { event: EventWithId; isAnimating: boolean }) => {
+        const severity = getSeverityLevel(event.rule_level);
+        const colors = SEVERITY_COLORS[severity];
+
+        return (
+            <div
+                className={`
+                    border-l-4 rounded p-2 transition-all duration-500
+                    ${colors.bg} ${colors.border} ${colors.text}
+                    ${isAnimating ? 'animate-slide-in' : ''}
+                    hover:shadow-md
+                `}
+            >
+                <div className="space-y-1.5">
+                    <div className="flex justify-between items-start gap-2">
+                        <div className="text-xs font-medium line-clamp-2">
+                            {event.rule_description}
+                        </div>
+                        <div className={`
+                            shrink-0 px-1.5 py-0.5 rounded text-xs font-medium
+                            ${colors.bg} ${colors.text}
+                        `}>
+                            {event.rule_level}
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-1.5 text-xs text-gray-600">
+                        <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3" />
+                            {formatTime(event.timestamp)}
+                        </span>
+                        <span className="flex items-center gap-1">
+                            <User className="w-3 h-3" />
+                            {event.agent_name}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
+    // 桌面端事件卡片
+    const DesktopEventCard = ({ event, isAnimating }: { event: EventWithId; isAnimating: boolean }) => {
+        const severity = getSeverityLevel(event.rule_level);
+        const colors = SEVERITY_COLORS[severity];
+
+        return (
+            <div
+                className={`
+                    border-l-4 rounded p-3 transition-all duration-500
+                    ${colors.bg} ${colors.border} ${colors.text}
+                    ${isAnimating ? 'animate-slide-in' : ''}
+                    hover:shadow-md
+                `}
+            >
+                <div className="space-y-2">
+                    <div className="flex justify-between items-start gap-2">
+                        <div className="text-sm font-medium line-clamp-2">
+                            {event.rule_description}
+                        </div>
+                        <div className={`
+                            shrink-0 px-2 py-1 rounded text-sm font-medium
+                            ${colors.bg} ${colors.text}
+                        `}>
+                            Level {event.rule_level}
+                        </div>
+                    </div>
+                    <div className="flex flex-wrap gap-3 text-sm text-gray-600">
+                        <span className="flex items-center gap-1.5">
+                            <Clock className="w-4 h-4" />
+                            {formatTime(event.timestamp)}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                            <User className="w-4 h-4" />
+                            {event.agent_name}
+                        </span>
+                        {event.rule_mitre_tactic && (
+                            <span className="flex items-center gap-1.5">
+                                <Target className="w-4 h-4" />
+                                {event.rule_mitre_tactic}
+                            </span>
+                        )}
+                        {event.rule_mitre_id && (
+                            <span className="flex items-center gap-1.5">
+                                <Search className="w-4 h-4" />
+                                {event.rule_mitre_id}
+                            </span>
+                        )}
+                    </div>
+                </div>
+            </div>
+        );
+    };
+
     return (
         <div className="w-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
             <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Real-time Event Stream</h2>
 
             {/* Timeline Visualization */}
             <div className="mb-3 sm:mb-4">
-                <svg ref={timelineRef} className="w-full" height="50" />
+                <svg ref={timelineRef} className="w-full" height={isMobile ? "40" : "50"} />
             </div>
 
             {/* Severity Filter */}
@@ -219,8 +319,8 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                 <button
                     onClick={() => setSelectedSeverity('all')}
                     className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === 'all'
-                        ? 'bg-gray-200 text-gray-800'
-                        : 'bg-gray-100 text-gray-600'
+                            ? 'bg-gray-200 text-gray-800'
+                            : 'bg-gray-100 text-gray-600'
                         }`}
                 >
                     All
@@ -230,8 +330,8 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                         key={severity}
                         onClick={() => setSelectedSeverity(severity)}
                         className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === severity
-                            ? `${colors.bg} ${colors.text} font-medium`
-                            : 'bg-gray-100 text-gray-600'
+                                ? `${colors.bg} ${colors.text} font-medium`
+                                : 'bg-gray-100 text-gray-600'
                             }`}
                     >
                         {severity.charAt(0).toUpperCase() + severity.slice(1)}
@@ -245,47 +345,21 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                     ref={containerRef}
                     className="h-[300px] sm:h-[400px] overflow-y-auto space-y-2 sm:space-y-3"
                 >
-                    {filteredEvents.map((event) => {
-                        const isAnimating = animatingEvents.has(event._id);
-                        const severity = getSeverityLevel(event.rule_level);
-                        const colors = SEVERITY_COLORS[severity];
-
-                        return (
-                            <div
+                    {filteredEvents.map((event) => (
+                        isMobile ? (
+                            <MobileEventCard
                                 key={event._id}
-                                className={`
-                                    border-l-4 rounded p-2 sm:p-3 transition-all duration-500
-                                    ${colors.bg} ${colors.border} ${colors.text}
-                                    ${isAnimating ? 'animate-slide-in' : ''}
-                                    hover:shadow-md
-                                `}
-                            >
-                                <div className="space-y-2">
-                                    <div className="flex justify-between items-start gap-2">
-                                        <div className="text-sm sm:text-base font-medium line-clamp-2">
-                                            {event.rule_description}
-                                        </div>
-                                        <div className={`
-                                            shrink-0 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-medium
-                                            ${colors.bg} ${colors.text}
-                                        `}>
-                                            Level {event.rule_level}
-                                        </div>
-                                    </div>
-                                    <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-600">
-                                        <span>🕒 {formatTime(event.timestamp)}</span>
-                                        <span>👤 {event.agent_name}</span>
-                                        {event.rule_mitre_tactic && (
-                                            <span>🎯 {event.rule_mitre_tactic}</span>
-                                        )}
-                                        {event.rule_mitre_id && (
-                                            <span>🔍 {event.rule_mitre_id}</span>
-                                        )}
-                                    </div>
-                                </div>
-                            </div>
-                        );
-                    })}
+                                event={event}
+                                isAnimating={animatingEvents.has(event._id)}
+                            />
+                        ) : (
+                            <DesktopEventCard
+                                key={event._id}
+                                event={event}
+                                isAnimating={animatingEvents.has(event._id)}
+                            />
+                        )
+                    ))}
                 </div>
                 <div className="absolute bottom-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-t from-white to-transparent"></div>
             </div>
