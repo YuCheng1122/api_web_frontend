@@ -1,6 +1,7 @@
 'use client'
 
 import ReactECharts from "echarts-for-react";
+import { useEffect, useState } from 'react';
 
 interface PieDataType {
     name: string;
@@ -13,63 +14,87 @@ interface PieGraphProps {
 }
 
 const PieGraph = ({ title, data }: PieGraphProps) => {
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkIfMobile = () => {
+            setIsMobile(window.innerWidth < 768);
+        };
+
+        checkIfMobile();
+        window.addEventListener('resize', checkIfMobile);
+
+        return () => window.removeEventListener('resize', checkIfMobile);
+    }, []);
+
     const processedData = data.map(item => ({
         ...item,
-        name: item.name.length > 5 ? item.name.substring(9, 14) : item.name
+        name: item.name.length > 20 ? `${item.name.substring(0, 17)}...` : item.name
     }));
 
     const option = {
         title: {
-            text: title,
-            left: 'center',
-            top: 'top',
-            textStyle: {
-                fontSize: 16,
-                fontWeight: 'bold'
-            }
+            show: false
         },
         tooltip: {
-            trigger: 'item'
+            trigger: 'item',
+            formatter: (params: any) => {
+                const originalItem = data.find(item => item.value === params.value);
+                return `${originalItem?.name || params.name}: ${params.value}`;
+            }
         },
         legend: {
-            orient: 'vertical',
-            right: 10,
-            top: 'center',
-            width: 100,
-            height: 200,
+            orient: isMobile ? 'horizontal' : 'vertical',
+            right: isMobile ? 'center' : 10,
+            top: isMobile ? 'bottom' : 'center',
+            width: isMobile ? '90%' : 150,
+            height: isMobile ? 'auto' : 200,
+            type: 'scroll',
             textStyle: {
                 fontSize: 12,
                 overflow: 'truncate'
             },
             tooltip: {
-                show: true
+                show: true,
+                formatter: (params: any) => {
+                    const originalItem = data.find(item =>
+                        item.name.includes(params.name)
+                    );
+                    return originalItem?.name || params.name;
+                }
+            },
+            pageTextStyle: {
+                color: '#666'
             }
         },
         series: [
             {
                 type: 'pie',
-                radius: ['40%', '60%'],
+                radius: isMobile ? ['35%', '55%'] : ['40%', '60%'],
+                center: isMobile ? ['50%', '40%'] : ['40%', '50%'],
                 avoidLabelOverlap: true,
+                itemStyle: {
+                    borderRadius: 4,
+                    borderColor: '#fff',
+                    borderWidth: 2
+                },
                 label: {
-                    show: false,
-                    position: 'center'
+                    show: false
                 },
                 emphasis: {
                     label: {
                         show: true,
-                        fontSize: '14',
+                        fontSize: 14,
                         fontWeight: 'bold'
                     },
                     itemStyle: {
                         shadowBlur: 10,
                         shadowOffsetX: 0,
-                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                        shadowColor: 'rgba(0, 0, 0, 0.2)'
                     }
                 },
                 labelLine: {
-                    show: true,
-                    length: 15,
-                    length2: 10
+                    show: false
                 },
                 data: processedData
             }
@@ -77,15 +102,28 @@ const PieGraph = ({ title, data }: PieGraphProps) => {
     };
 
     return (
-        <div className="sm:max-w-[200px] sm:max-h-[300px] md:max-w-[500px] md:max-h-[400px] xl:max-w-[500px] 2xl:max-w-[600px] w-full flex flex-col p-2 bg-white rounded-lg shadow-lg min-h-48">
-            <div className="text-sm font-bold">
-                {title}
+        <div className="bg-white shadow-sm border rounded-lg overflow-hidden">
+            {/* Header */}
+            <div className="border-b px-6 py-4">
+                <h2 className="text-lg font-semibold text-gray-900">{title}</h2>
             </div>
-            <div className="flex-grow">
-                <ReactECharts option={option} style={{ width: "100%", height: "100%" }} />
+
+            {/* Chart */}
+            <div className={`p-4 ${isMobile ? 'h-[300px]' : 'h-[400px]'}`}>
+                {data.length > 0 ? (
+                    <ReactECharts
+                        option={option}
+                        style={{ height: '100%', width: '100%' }}
+                        opts={{ renderer: 'svg' }}
+                    />
+                ) : (
+                    <div className="flex items-center justify-center h-full">
+                        <p className="text-sm text-gray-500">No data available</p>
+                    </div>
+                )}
             </div>
         </div>
-    )
+    );
 }
 
 export default PieGraph;

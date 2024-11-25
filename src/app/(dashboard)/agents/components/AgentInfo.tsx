@@ -1,5 +1,6 @@
 'use client'
 
+import Image from 'next/image';
 import { AgentDashboardDetailType } from '@/features/agents/types/agent';
 
 interface AgentInfoProps {
@@ -20,46 +21,112 @@ export default function AgentInfo({ data }: AgentInfoProps) {
         }
     };
 
+    const getOSIcon = (os: string) => {
+        const osType = determineOS(os);
+        const iconMap = {
+            'linux': '/linux-logo.png',
+            'windows': '/windows-logo.png',
+            'macos': '/mac-logo.png'
+        };
+        return iconMap[osType as keyof typeof iconMap] || null;
+    };
+
+    const getStatusStyle = (status: string) => {
+        const statusLower = status.toLowerCase();
+        if (statusLower === 'active') {
+            return {
+                badge: 'bg-green-100 text-green-800',
+                dot: 'bg-green-400'
+            };
+        } else if (statusLower === 'disconnected') {
+            return {
+                badge: 'bg-red-100 text-red-800',
+                dot: 'bg-red-400'
+            };
+        } else {
+            return {
+                badge: 'bg-gray-100 text-gray-800',
+                dot: 'bg-gray-400'
+            };
+        }
+    };
+
     return (
-        <div className="bg-white shadow rounded-lg p-6 space-x-5 flex flex-row justify-around flex-wrap">
-            <div className="flex justify-between items-center flex-col">
-                <span className=" text-gray-400">ID</span>
-                <span className="font-bold">{data.agent_id}</span>
-            </div>
-            <div className="flex justify-between items-center flex-col">
-                <span className="text-gray-400">Status</span>
-                <span className="text-green-500">{data.agent_status}</span>
-            </div>
-            <div className="flex justify-between flex-no items-center  flex-col">
-                <span className="text-gray-400 whitespace-nowrap">IP Address</span>
-                <span className="font-bold ">{data.ip}</span>
-            </div>
-            <div className="flex justify-between items-center flex-col">
-                <span className="text-gray-400">Version</span>
-                <span className="font-bold">{data.os_version}</span>
-            </div>
-            <div className="flex justify-between items-center flex-col">
-                <span className="text-gray-400">OS</span>
-                <div className="flex items-center">
-                    {determineOS(data.os) === 'linux' && (
-                        <img src="/linux-logo.png" alt="Linux" width={20} height={20} className="mr-2" />
-                    )}
-                    {determineOS(data.os) === 'windows' && (
-                        <img src="/windows-logo.png" alt="Windows" width={20} height={20} className="mr-2" />
-                    )}
-                    {determineOS(data.os) === 'macos' && (
-                        <img src="/mac-logo.png" alt="macOS" width={20} height={20} className="mr-2" />
-                    )}
-                    <span className="font-bold">{data.os}</span>
+        <div className="bg-white shadow-sm border rounded-lg overflow-hidden">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-gray-200">
+                {/* Basic Info */}
+                <div className="p-6">
+                    <h3 className="text-sm font-medium text-gray-500 mb-4">Basic Information</h3>
+                    <div className="space-y-3">
+                        <div>
+                            <label className="text-xs text-gray-500">Agent ID</label>
+                            <p className="text-sm font-medium text-gray-900">{data.agent_id}</p>
+                        </div>
+                        <div>
+                            <label className="text-xs text-gray-500">Status</label>
+                            <div className="mt-1">
+                                <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusStyle(data.agent_status).badge
+                                    }`}>
+                                    <span className={`w-2 h-2 rounded-full mr-1.5 ${getStatusStyle(data.agent_status).dot
+                                        }`}></span>
+                                    {data.agent_status}
+                                </span>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
-            <div className="flex justify-between items-center flex-col">
-                <span className="text-gray-400">Cluster Node</span>
-                <span className="font-bold">{data.agent_name}</span>
-            </div>
-            <div className="flex justify-between items-center flex-col">
-                <span className="text-gray-400">Last Keep Alive</span>
-                <span className="font-bold">{data.last_keep_alive}</span>
+
+                {/* Network Info */}
+                <div className="p-6">
+                    <h3 className="text-sm font-medium text-gray-500 mb-4">Network Information</h3>
+                    <div className="space-y-3">
+                        <div>
+                            <label className="text-xs text-gray-500">IP Address</label>
+                            <p className="text-sm font-medium text-gray-900 font-mono">{data.ip}</p>
+                        </div>
+                        <div>
+                            <label className="text-xs text-gray-500">Agent Name</label>
+                            <p className="text-sm font-medium text-gray-900">{data.agent_name}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* System Info */}
+                <div className="p-6">
+                    <h3 className="text-sm font-medium text-gray-500 mb-4">System Information</h3>
+                    <div className="space-y-3">
+                        <div>
+                            <label className="text-xs text-gray-500">Operating System</label>
+                            <div className="mt-1 flex items-center">
+                                {getOSIcon(data.os) && (
+                                    <Image
+                                        src={getOSIcon(data.os)!}
+                                        alt={data.os}
+                                        width={16}
+                                        height={16}
+                                        className="mr-2"
+                                    />
+                                )}
+                                <span className="text-sm font-medium text-gray-900">{data.os}</span>
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-xs text-gray-500">Version</label>
+                            <p className="text-sm font-medium text-gray-900">{data.os_version}</p>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Activity Info */}
+                <div className="p-6">
+                    <h3 className="text-sm font-medium text-gray-500 mb-4">Activity Information</h3>
+                    <div className="space-y-3">
+                        <div>
+                            <label className="text-xs text-gray-500">Last Keep Alive</label>
+                            <p className="text-sm font-medium text-gray-900">{data.last_keep_alive}</p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     );
