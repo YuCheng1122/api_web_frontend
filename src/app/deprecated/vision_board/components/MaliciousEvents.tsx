@@ -2,12 +2,12 @@
 
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts";
 import React, { useState, useEffect } from 'react';
-import { getMaliciousFiles } from '@/features/vision_board/api/getMaliciousFiles';
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
+import { getMaliciousFiles } from '@/features/deprecated/vision_board/api/getMaliciousFiles';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
 import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/app/deprecated/vision_board/components/chart";
 import ErrorDisplayer from "@/app/deprecated/vision_board/components/Error";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/deprecated/vision_board/components/card";
-import { MaliciousFilesChartData } from '@/features/vision_board/types';
+import { MaliciousFilesChartData } from '@/features/deprecated/vision_board/types';
 
 export default function MaliciousEvents() {
     const { dateTimeRange } = useVisionBoardContext();

@@ -3,7 +3,7 @@
 import React, { useState } from 'react'
 import { ToastContainer, toast } from 'react-toastify';
 import DateTimeFilter from '@/app/deprecated/graph/components/DateTimeFilter'
-import { initData,fetchGraphData } from '@/features/graph/fetchGraphData'
+import { initData,fetchGraphData } from '@/features/deprecated/graph/fetchGraphData'
 
 
 interface GraphDataProps {

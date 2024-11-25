@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { getAgentStatus } from '@/features/vision_board/api/getAgentStatus';
+import { getAgentStatus } from '@/features/deprecated/vision_board/api/getAgentStatus';
 import PieGraph from './PieGraph';
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
 import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
-import { AgentStatusChartData } from '@/features/vision_board/types';
-import { formatAgentStatus } from '@/features/vision_board/utils/formatAgentStatus';
+import { AgentStatusChartData } from '@/features/deprecated/vision_board/types';
+import { formatAgentStatus } from '@/features/deprecated/vision_board/utils/formatAgentStatus';
 
 export default function AgentStatus() {
     const { dateTimeRange } = useVisionBoardContext();

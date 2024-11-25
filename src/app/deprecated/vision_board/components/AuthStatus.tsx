@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { getAuthStatus } from '@/features/vision_board/api/getAuthStatus';
+import { getAuthStatus } from '@/features/deprecated/vision_board/api/getAuthStatus';
 import PieGraph from './PieGraph';
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
 import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
-import { AuthenticationChartData } from '@/features/vision_board/types';
+import { AuthenticationChartData } from '@/features/deprecated/vision_board/types';
 
 export default function AuthStatus() {
     const { dateTimeRange } = useVisionBoardContext();

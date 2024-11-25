@@ -2,11 +2,11 @@
 
 import { Bar, BarChart, CartesianGrid, LabelList, XAxis, YAxis } from "recharts"
 import React, { useState, useEffect } from 'react';
-import { getAgentDistribution } from '@/features/vision_board/api/getAgentDistribution';
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
+import { getAgentDistribution } from '@/features/deprecated/vision_board/api/getAgentDistribution';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/app/deprecated/vision_board/components/card";
 import ErrorDisplayer from "@/app/deprecated/vision_board/components/Error";
-import { AgentNameChartData } from "@/features/vision_board/types";
+import { AgentNameChartData } from "@/features/deprecated/vision_board/types";
 import {ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent} from "@/app/deprecated/vision_board/components/chart";
 
 export default function AgentDistribution() {

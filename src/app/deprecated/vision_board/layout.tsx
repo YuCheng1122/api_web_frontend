@@ -1,6 +1,6 @@
 'use client'
 
-import { VisionBoardProvider } from "@/features/vision_board/contexts/VisionBoardContext";
+import { VisionBoardProvider } from "@/features/deprecated/vision_board/contexts/VisionBoardContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import { useAuthContext } from "@/features/auth/contexts/AuthContext";

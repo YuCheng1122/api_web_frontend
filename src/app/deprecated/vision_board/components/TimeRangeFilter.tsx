@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from 'react';
 import { ToastContainer, toast } from "react-toastify";
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
-import { formatToLocalDateTime } from '@/features/vision_board/utils/dateTime';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
+import { formatToLocalDateTime } from '@/features/deprecated/vision_board/utils/dateTime';
 
 export default function TimeRangeFilter() {
     const { changeDateTimeRange } = useVisionBoardContext();

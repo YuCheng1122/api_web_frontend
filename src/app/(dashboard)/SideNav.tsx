@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useAuthContext } from '@/features/auth/contexts/AuthContext';
 import {
     Home,
     Shield,
@@ -15,15 +16,68 @@ import {
     Activity,
     Cpu,
     Menu,
-    X
+    X,
+    Download
 } from 'lucide-react';
+
+// 定義導航項目類型
+interface NavItem {
+    href: string;
+    label: string;
+    icon: React.ReactNode;
+    adminOnly?: boolean;
+}
 
 const SideNav = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const { isadmin } = useAuthContext();
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
     };
+
+    // 定義導航項目
+    const navItems: NavItem[] = [
+        {
+            href: '/hunting_lodge',
+            label: 'Dashboard',
+            icon: <Home size={20} />
+        },
+        {
+            href: '/ndr',
+            label: 'NDR',
+            icon: <Network size={20} />
+        },
+        {
+            href: '/agents',
+            label: 'Agents',
+            icon: <Database size={20} />
+        },
+        {
+            href: '/ics',
+            label: 'ICS',
+            icon: <Cpu size={20} />
+        },
+        {
+            href: '/chatbot',
+            label: 'Chatbot',
+            icon: <MessageSquare size={20} />
+        },
+        {
+            href: '/agent-deployment',
+            label: 'Agent Deployment',
+            icon: <Download size={20} />
+        },
+        {
+            href: '/managecenter',
+            label: 'Manage Center',
+            icon: <Settings size={20} />,
+            adminOnly: true
+        }
+    ];
+
+    // 過濾導航項目
+    const filteredNavItems = navItems.filter(item => !item.adminOnly || isadmin);
 
     return (
         <>
@@ -71,66 +125,18 @@ const SideNav = () => {
                 {/* Navigation Links */}
                 <nav className="p-4">
                     <ul className="space-y-2">
-                        <li>
-                            <Link
-                                href="/hunting_lodge"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Home size={20} />
-                                <span>Dashboard</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/ndr"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Network size={20} />
-                                <span>NDR</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/agents"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Database size={20} />
-                                <span>Agents</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/ics"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Cpu size={20} />
-                                <span>ICS</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/chatbot"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <MessageSquare size={20} />
-                                <span>Chatbot</span>
-                            </Link>
-                        </li>
-                        <li>
-                            <Link
-                                href="/managecenter"
-                                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
-                                onClick={() => setIsOpen(false)}
-                            >
-                                <Settings size={20} />
-                                <span>Manage Center</span>
-                            </Link>
-                        </li>
+                        {filteredNavItems.map((item) => (
+                            <li key={item.href}>
+                                <Link
+                                    href={item.href}
+                                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                                    onClick={() => setIsOpen(false)}
+                                >
+                                    {item.icon}
+                                    <span>{item.label}</span>
+                                </Link>
+                            </li>
+                        ))}
                     </ul>
                 </nav>
             </div>

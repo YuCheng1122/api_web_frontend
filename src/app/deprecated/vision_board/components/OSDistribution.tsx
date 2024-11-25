@@ -1,11 +1,11 @@
 'use client'
 
 import { useState, useEffect } from 'react';
-import { getOSDistribution } from '@/features/vision_board/api/getOSDistribution';
+import { getOSDistribution } from '@/features/deprecated/vision_board/api/getOSDistribution';
 import PieGraph from './PieGraph';
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
 import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
-import { AgentOSChartData } from '@/features/vision_board/types';
+import { AgentOSChartData } from '@/features/deprecated/vision_board/types';
 
 export default function OSDistribution() {
     const { dateTimeRange } = useVisionBoardContext();

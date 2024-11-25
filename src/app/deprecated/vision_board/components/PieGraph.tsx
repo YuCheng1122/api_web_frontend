@@ -1,7 +1,7 @@
 'use client'
 
 import ReactECharts from "echarts-for-react";
-import { ChartDataPoint } from "@/features/vision_board/types";
+import { ChartDataPoint } from "@/features/deprecated/vision_board/types";
 
 interface PieGraphProps {
     title: string;

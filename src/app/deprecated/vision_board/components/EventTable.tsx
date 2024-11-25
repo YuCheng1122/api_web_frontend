@@ -2,12 +2,12 @@
 
 import { useState, useEffect } from 'react';
 import DataTable, { TableColumn } from 'react-data-table-component';
-import { getEvents } from '@/features/vision_board/api/getEvents';
-import { useVisionBoardContext } from '@/features/vision_board/contexts/VisionBoardContext';
+import { getEvents } from '@/features/deprecated/vision_board/api/getEvents';
+import { useVisionBoardContext } from '@/features/deprecated/vision_board/contexts/VisionBoardContext';
 import ErrorDisplayer from '@/app/deprecated/vision_board/components/Error';
 import Loading from '@/app/deprecated/vision_board/components/Loading';
-import { EventTableRow } from '@/features/vision_board/types';
-import { formatTimestamp } from '@/features/vision_board/utils/formatTime';
+import { EventTableRow } from '@/features/deprecated/vision_board/types';
+import { formatTimestamp } from '@/features/deprecated/vision_board/utils/formatTime';
 
 export default function EventTable() {
     const { dateTimeRange } = useVisionBoardContext();
