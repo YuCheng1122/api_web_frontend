@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
-import NDRDashboard from '@/app/ndr/components/NDRDashboard';
+import NDRDashboard from '@/app/(dashboard)/ndr/components/NDRDashboard';
 import { useRouter } from 'next/navigation';
 
 const NDRDashboardPage = () => {

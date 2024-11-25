@@ -1,8 +1,8 @@
 'use client'
 
 import React from 'react';
-import NDRDashboard from '@/app/ndr/components/NDRDashboard';
-import NDRLoginForm from '@/app/ndr/components/NDRLoginForm';
+import NDRDashboard from '@/app/(dashboard)/ndr/components/NDRDashboard';
+import NDRLoginForm from '@/app/(dashboard)/ndr/components/NDRLoginForm';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
 
 const NDRPage = () => {

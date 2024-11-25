@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { DashboardService } from '@/features/dashboard_v2/api/dashboardService';
 import type { EventTable } from '@/features/dashboard_v2/types';
-import EventTableComponent from '@/app/hunting_lodge/components/EventTable';
-import TimeRangeSelector from '@/app/hunting_lodge/components/TimeRangeSelector';
+import EventTableComponent from '@/app/(dashboard)/hunting_lodge/components/EventTable';
+import TimeRangeSelector from '@/app/(dashboard)/hunting_lodge/components/TimeRangeSelector';
 import type { TimeRange } from '@/features/dashboard_v2';
 
 export default function EventsPage() {

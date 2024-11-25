@@ -3,7 +3,7 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Loading from '@/app/hunting_lodge/components/Loading';
+import Loading from '@/app/(dashboard)/hunting_lodge/components/Loading';
 import { DashboardService } from '@/features/dashboard_v2/api/dashboardService';
 import type { EventTable } from '@/features/dashboard_v2/types';
 

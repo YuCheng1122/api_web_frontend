@@ -31,7 +31,7 @@ const LoginPage = () => {
         try {
             const response = await login(username, password)
             if (response.success) {
-                toast.success(`${response.message} 😊 \n Redirecting to Hunting Lodge...`)
+                toast.success(`${response.message} 😊 \n Redirecting to Dashboard...`)
                 const token = `${response.content.token_type} ${response.content.access_token}`
                 updateLoginState(true, username, token)
 

@@ -97,7 +97,7 @@ const AgentsDetailsTable = ({ agentsData }: AgentsDetailsTableProps) => {
                     {currentItems.map((item, index) => (
                         <tr key={index} className="text-gray-600 border-b border-gray-300">
                             <td className="p-2 text-sm">
-                                <Link href={`/agents/${item.agent_name}`}>
+                                <Link href={`/src/app/(dashboard)/agents/${item.agent_name}`}>
                                     <p className="hover:underline" title="點擊以查看更多資訊">{item.agent_name}</p>
                                 </Link>
                             </td>

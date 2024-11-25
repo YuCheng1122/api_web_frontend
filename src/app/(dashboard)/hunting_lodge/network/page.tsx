@@ -3,8 +3,8 @@
 import { useEffect, useState } from 'react';
 import { DashboardService } from '@/features/dashboard_v2/api/dashboardService';
 import type { EventTable as EventTableType } from '@/features/dashboard_v2/types';
-import NetworkTopologyChart from '@/app/hunting_lodge/components/NetworkTopologyChart';
-import Loading from '@/app/hunting_lodge/components/Loading';
+import NetworkTopologyChart from '@/app/(dashboard)/hunting_lodge/components/NetworkTopologyChart';
+import Loading from '@/app/(dashboard)/hunting_lodge/components/Loading';
 import Link from 'next/link';
 
 export default function NetworkPage() {
