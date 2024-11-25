@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar } from 'recharts';
 import { TrendingUp, AlertTriangle } from 'lucide-react';
-import type { TtpLinechart } from '@/features/dashboard_v2/types';
+import type { TtpLinechart, TtpLinechartTypes } from '@/features/dashboard_v2/types';
 
 interface Props {
     data: TtpLinechart;
@@ -20,11 +20,20 @@ interface TimePoint {
     [key: string]: string | number;
 }
 
-const COLORS = {
-    critical: '#DC2626', // red-600
-    high: '#F97316',    // orange-500
-    medium: '#F59E0B',  // amber-500
-    low: '#10B981',     // emerald-500
+// New color palette for different TTP types
+const TTP_COLORS: { [key: string]: string } = {
+    'Initial Access': '#2563EB',      // Blue
+    'Execution': '#DC2626',           // Red
+    'Persistence': '#9333EA',         // Purple
+    'Privilege Escalation': '#EA580C', // Orange
+    'Defense Evasion': '#059669',     // Green
+    'Credential Access': '#CA8A04',    // Yellow
+    'Discovery': '#0891B2',           // Cyan
+    'Lateral Movement': '#BE185D',    // Pink
+    'Collection': '#4F46E5',          // Indigo
+    'Command and Control': '#7C3AED', // Violet
+    'Exfiltration': '#B91C1C',        // Dark Red
+    'Impact': '#15803D',              // Dark Green
 };
 
 const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
@@ -34,28 +43,20 @@ const CustomTooltip = ({ active, payload, label }: CustomTooltipProps) => {
         <div className="bg-white p-2 sm:p-3 rounded-lg shadow-lg border border-gray-200 max-w-[280px] sm:max-w-none">
             <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">{new Date(label || '').toLocaleString()}</p>
             <div className="space-y-1 sm:space-y-2">
-                {payload.map((entry: any, index: number) => {
-                    let color = COLORS.low;
-                    const value = entry.value;
-                    if (value >= 10) color = COLORS.critical;
-                    else if (value >= 7) color = COLORS.high;
-                    else if (value >= 4) color = COLORS.medium;
-
-                    return (
-                        <div key={index} className="flex items-center justify-between gap-2 sm:gap-4">
-                            <div className="flex items-center gap-1 sm:gap-2">
-                                <div
-                                    className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
-                                    style={{ backgroundColor: color }}
-                                />
-                                <span className="text-xs sm:text-sm text-gray-700">{entry.name}</span>
-                            </div>
-                            <span className="text-xs sm:text-sm font-medium" style={{ color }}>
-                                {value}
-                            </span>
+                {payload.map((entry: any, index: number) => (
+                    <div key={index} className="flex items-center justify-between gap-2 sm:gap-4">
+                        <div className="flex items-center gap-1 sm:gap-2">
+                            <div
+                                className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                                style={{ backgroundColor: TTP_COLORS[entry.name] || '#6B7280' }}
+                            />
+                            <span className="text-xs sm:text-sm text-gray-700">{entry.name}</span>
                         </div>
-                    );
-                })}
+                        <span className="text-xs sm:text-sm font-medium" style={{ color: TTP_COLORS[entry.name] || '#6B7280' }}>
+                            {entry.value}
+                        </span>
+                    </div>
+                ))}
             </div>
         </div>
     );
@@ -79,30 +80,18 @@ export default function TtpLineChart({ data }: Props) {
     if (!chartData) return null;
 
     // Transform data for Recharts
-    const timePoints: TimePoint[] = chartData.datas[0]?.data.map(point => ({
+    const timePoints: TimePoint[] = chartData.datas[0]?.data.map((point: TtpLinechartTypes.Datum) => ({
         time: new Date(point.time).toLocaleString(),
-        ...chartData.datas.reduce((acc, series) => ({
+        ...chartData.datas.reduce((acc: Record<string, number>, series: TtpLinechartTypes.Data) => ({
             ...acc,
-            [series.name]: series.data.find(d => d.time === point.time)?.value || 0
+            [series.name]: series.data.find((d: TtpLinechartTypes.Datum) => d.time === point.time)?.value || 0
         }), {} as Record<string, number>)
     })) || [];
 
-    // Calculate max value for each series
-    const seriesMaxValues = chartData.datas.reduce((acc, series) => ({
-        ...acc,
-        [series.name]: Math.max(...series.data.map(d => d.value))
-    }), {} as Record<string, number>);
-
     // Get color for a series
-    const getSeriesColor = (seriesName: string) => {
-        const maxValue = seriesMaxValues[seriesName] || 0;
-        if (maxValue >= 10) return COLORS.critical;
-        if (maxValue >= 7) return COLORS.high;
-        if (maxValue >= 4) return COLORS.medium;
-        return COLORS.low;
-    };
+    const getSeriesColor = (seriesName: string) => TTP_COLORS[seriesName] || '#6B7280';
 
-    // 計算趨勢摘要
+    // Calculate trend summary
     const calculateTrendSummary = () => {
         const lastPoint = timePoints[timePoints.length - 1];
         const prevPoint = timePoints[timePoints.length - 2];
@@ -122,14 +111,14 @@ export default function TtpLineChart({ data }: Props) {
 
     const { criticalCount, increasingTrends } = calculateTrendSummary();
 
-    // 移動端視圖
+    // Mobile view
     const MobileView = () => {
-        // 獲取最後5個時間點的數據
+        // Get last 5 time points
         const recentTimePoints = timePoints.slice(-5);
 
         return (
             <div className="space-y-4">
-                {/* 趨勢摘要卡片 */}
+                {/* Trend summary cards */}
                 <div className="grid grid-cols-2 gap-3">
                     <div className="bg-orange-50 p-3 rounded-lg">
                         <div className="flex items-center gap-2 mb-1">
@@ -147,7 +136,7 @@ export default function TtpLineChart({ data }: Props) {
                     </div>
                 </div>
 
-                {/* 簡化的圖表 */}
+                {/* Simplified chart */}
                 <div className="h-[200px]">
                     <ResponsiveContainer width="100%" height="100%">
                         <BarChart
@@ -167,7 +156,7 @@ export default function TtpLineChart({ data }: Props) {
                                 width={25}
                             />
                             <Tooltip content={<CustomTooltip />} />
-                            {chartData.datas.map((series) => (
+                            {chartData.datas.map((series: TtpLinechartTypes.Data) => (
                                 <Bar
                                     key={series.name}
                                     dataKey={series.name}
@@ -179,9 +168,9 @@ export default function TtpLineChart({ data }: Props) {
                     </ResponsiveContainer>
                 </div>
 
-                {/* 圖例 */}
+                {/* Legend */}
                 <div className="grid grid-cols-2 gap-2">
-                    {chartData.datas.map((series) => (
+                    {chartData.datas.map((series: TtpLinechartTypes.Data) => (
                         <div
                             key={series.name}
                             className="flex items-center gap-2 p-2 rounded-lg"
@@ -199,7 +188,7 @@ export default function TtpLineChart({ data }: Props) {
         );
     };
 
-    // 桌面端視圖
+    // Desktop view
     const DesktopView = () => (
         <div className="space-y-6">
             <div className="h-[400px]">
@@ -230,11 +219,8 @@ export default function TtpLineChart({ data }: Props) {
                             height={36}
                             iconSize={8}
                             wrapperStyle={{ fontSize: '12px' }}
-                            formatter={(value) => (
-                                <span style={{ color: getSeriesColor(value) }}>{value}</span>
-                            )}
                         />
-                        {chartData.datas.map((series) => (
+                        {chartData.datas.map((series: TtpLinechartTypes.Data) => (
                             <Line
                                 key={series.name}
                                 type="monotone"
@@ -253,7 +239,7 @@ export default function TtpLineChart({ data }: Props) {
                 </ResponsiveContainer>
             </div>
 
-            {/* 趨勢摘要 */}
+            {/* Trend summary */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-orange-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
@@ -283,9 +269,6 @@ export default function TtpLineChart({ data }: Props) {
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
             <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">TTP Distribution Over Time</h2>
             {isMobile ? <MobileView /> : <DesktopView />}
-            <div className="mt-3 sm:mt-4 text-[10px] sm:text-xs text-gray-400 text-center">
-                Colors indicate severity: Red (Critical), Orange (High), Amber (Medium), Green (Low)
-            </div>
         </div>
     );
 }
