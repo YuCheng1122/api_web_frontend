@@ -1,9 +1,8 @@
 @import 'react-toastify/dist/ReactToastify.css';
-@import './custom.css';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
     :root {
         --background: 0 0% 100%;
@@ -59,15 +58,141 @@
         --chart-4: 280 65% 60%;
         --chart-5: 340 75% 55%
     }
+}
 
-    @keyframes slideIn {
-        0% {
-            opacity: 0;
-            transform: translateY(-20px);
-        }
-        100% {
-            opacity: 1;
-            transform: translateY(0);
-        }
+/* 隱藏滾動條但保持功能 */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* 動畫效果 */
+@keyframes slideIn {
+    0% {
+        opacity: 0;
+        transform: translateY(-20px);
     }
+    100% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Event Stream 動畫 */
+@keyframes slide-in {
+    0% {
+        opacity: 0;
+        transform: translateX(-100%);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.animate-slide-in {
+    animation: slide-in 0.5s ease-out forwards;
+}
+
+/* 導航項目hover效果 */
+.nav-item {
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+.nav-item::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -2px;
+    left: 50%;
+    background-color: #97932D;
+    transition: all 0.3s ease;
+    transform: translateX(-50%);
+}
+
+.nav-item:hover::after {
+    width: 100%;
+}
+
+/* Header動畫 */
+.header-animation {
+    animation: slideIn 0.3s ease-out;
+}
+
+/* Header 字體特效樣式 */
+
+.hover-underline-animation {
+    position: relative;
+    color: black;
+    transition: color 0.3s ease;
+}
+
+.hover-underline-animation::after {
+    content: '';
+    position: absolute;
+    width: 100%;
+    height: 2px;
+    bottom: 0;
+    left: 0;
+    background-color: #1e40af; /* 深藍色 */
+    transform: scaleX(0);
+    transform-origin: center;
+    transition: transform 0.3s ease;
+}
+
+.hover-underline-animation:hover {
+    color: #1e40af; /* 深藍色 */
+}
+
+.hover-underline-animation:hover::after {
+    transform: scaleX(1);
+}
+
+/*核取方塊風格樣式*/
+.custom-checkbox {
+    appearance: none;  /* 移除瀏覽器默認樣式 */
+    border-radius: 50%;  /* 使核取方塊變成圓形 */
+    width: 16px;  /* 調整核取方塊的寬度 */
+    height: 16px;  /* 調整核取方塊的高度 */
+    border: 2px solid #666;  /* 調整邊框顏色和粗細 */
+    position: relative;
+    cursor: pointer;  /* 鼠標移動上去顯示手型 */
+    transition: background-color 0.3s ease, border-color 0.3s ease;  /* 背景和邊框顏色的過渡效果 */
+}
+
+.custom-checkbox:checked {
+    background-color: #4A90E2;  /* 調整選中後的背景顏色 */
+    border-color: #4A90E2;  /* 調整選中後邊框的顏色 */
+}
+
+.custom-checkbox:checked::after {
+    content: '';
+    position: absolute;
+    top: 50%;  /* 設置頂部為50% */
+    left: 50%;  /* 設置左側為50% */
+    width: 8px;  /* 調整內圓的寬度 */
+    height: 8px;  /* 調整內圓的高度 */
+    background-color: white;  /* 調整內圓的顏色 */
+    border-radius: 50%;
+    transform: translate(-50%, -50%);  /* 確保內圓在正中央 */
+    transition: width 0.3s ease, height 0.3s ease;  /* 內圓大小的過渡效果 */
+}
+
+/* 為未選中狀態的內圓大小設置為 0，這樣選中時會有內圓變大的效果 */
+.custom-checkbox::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 0;
+    height: 0;
+    background-color: white;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);  /* 確保未選中時內圓依然在正中央 */
+    transition: width 0.3s ease, height 0.3s ease;  /* 內圓淡入淡出的效果 */
 }
