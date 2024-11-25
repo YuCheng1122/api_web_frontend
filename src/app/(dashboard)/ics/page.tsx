@@ -1,6 +1,6 @@
 'use client';
 
-import { EventTable } from "./components/EventTable";
+import { EventTable } from "./components/ModbusEventDetails";
 import { Clock, AlertTriangle, Activity } from 'lucide-react';
 
 export default function ICSPage() {

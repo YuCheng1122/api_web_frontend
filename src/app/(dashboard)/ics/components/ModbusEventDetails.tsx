@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { EventDetailsDialog } from '../EventDetailsDialog';
+import { EventDetailsDialog } from './ModbusEventList';
 import { EventRow } from '@/features/ics/types';
 import { fetchModbusEvents } from '@/features/ics/services/modbusApi';
 import { useAuthContext } from '@/features/auth/contexts/AuthContext';
