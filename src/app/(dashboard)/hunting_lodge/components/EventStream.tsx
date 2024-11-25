@@ -15,6 +15,10 @@ interface EventGroup {
     events: EventTableElement[];
 }
 
+interface EventWithId extends EventTableElement {
+    _id: string;
+}
+
 const SEVERITY_COLORS = {
     critical: {
         bg: 'bg-red-100',
@@ -49,8 +53,15 @@ const getSeverityLevel = (level: number): keyof typeof SEVERITY_COLORS => {
     return 'low';
 };
 
+// 生成唯一ID
+let eventCounter = 0;
+const generateEventId = () => {
+    eventCounter += 1;
+    return `event-${Date.now()}-${eventCounter}`;
+};
+
 export default function EventStream({ data, maxEvents = 10 }: Props) {
-    const [events, setEvents] = useState<EventTableElement[]>([]);
+    const [events, setEvents] = useState<EventWithId[]>([]);
     const [animatingEvents, setAnimatingEvents] = useState<Set<string>>(new Set());
     const [selectedSeverity, setSelectedSeverity] = useState<string>('all');
     const [timelineData, setTimelineData] = useState<EventGroup[]>([]);
@@ -63,7 +74,7 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
     };
 
     // Group events by severity
-    const groupEventsBySeverity = useCallback((events: EventTableElement[]): EventGroup[] => {
+    const groupEventsBySeverity = useCallback((events: EventWithId[]): EventGroup[] => {
         const groups: Record<string, EventGroup> = {
             critical: { severity: 'critical', count: 0, events: [] },
             high: { severity: 'high', count: 0, events: [] },
@@ -85,8 +96,8 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         if (!timelineRef.current) return;
 
         const width = timelineRef.current.clientWidth;
-        const height = 60;
-        const margin = { top: 10, right: 30, bottom: 20, left: 30 };
+        const height = 50;
+        const margin = { top: 8, right: 8, bottom: 8, left: 8 };
 
         const svg = d3.select(timelineRef.current);
         svg.selectAll('*').remove();
@@ -94,55 +105,74 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         const grouped = groupEventsBySeverity(events);
         const total = grouped.reduce((sum, g) => sum + g.count, 0);
 
+        // 如果沒有事件，繪製空的時間軸
+        if (total === 0) {
+            svg.append('rect')
+                .attr('x', margin.left)
+                .attr('y', margin.top)
+                .attr('width', width - margin.left - margin.right)
+                .attr('height', height - margin.top - margin.bottom)
+                .attr('fill', '#E5E7EB')
+                .attr('opacity', 0.5)
+                .attr('rx', 3);
+            return;
+        }
+
         let x = margin.left;
         grouped.forEach(group => {
-            const width = (group.count / total) * (timelineRef.current!.clientWidth - margin.left - margin.right);
+            if (group.count === 0) return; // 跳過沒有事件的嚴重程度
 
-            svg.append('rect')
-                .attr('x', x)
-                .attr('y', margin.top)
-                .attr('width', width)
-                .attr('height', height - margin.top - margin.bottom)
-                .attr('fill', SEVERITY_COLORS[group.severity].fill)
-                .attr('opacity', 0.7)
-                .attr('rx', 4);
+            const barWidth = (group.count / total) * (width - margin.left - margin.right);
 
-            if (width > 40) {
-                svg.append('text')
-                    .attr('x', x + width / 2)
-                    .attr('y', height / 2)
-                    .attr('text-anchor', 'middle')
-                    .attr('dominant-baseline', 'middle')
-                    .attr('fill', 'white')
-                    .attr('font-size', '12px')
-                    .text(`${group.count}`);
+            // 確保寬度是有效的數字
+            if (!isNaN(barWidth) && barWidth > 0) {
+                svg.append('rect')
+                    .attr('x', x)
+                    .attr('y', margin.top)
+                    .attr('width', barWidth)
+                    .attr('height', height - margin.top - margin.bottom)
+                    .attr('fill', SEVERITY_COLORS[group.severity].fill)
+                    .attr('opacity', 0.7)
+                    .attr('rx', 3);
+
+                if (barWidth > 30) {
+                    svg.append('text')
+                        .attr('x', x + barWidth / 2)
+                        .attr('y', height / 2)
+                        .attr('text-anchor', 'middle')
+                        .attr('dominant-baseline', 'middle')
+                        .attr('fill', 'white')
+                        .attr('font-size', '10px')
+                        .text(`${group.count}`);
+                }
+
+                x += barWidth;
             }
-
-            x += width;
         });
     }, [events, groupEventsBySeverity]);
 
     // Add new events with animation
     const addEvent = useCallback((event: EventTableElement) => {
-        const eventKey = `${event.timestamp}-${event.agent_name}-${event.rule_description}`;
+        const eventWithId: EventWithId = {
+            ...event,
+            _id: generateEventId()
+        };
 
-        setAnimatingEvents(prev => new Set(prev).add(eventKey));
+        setAnimatingEvents(prev => new Set(prev).add(eventWithId._id));
         setEvents(prev => {
-            const newEvents = [event, ...prev].slice(0, maxEvents);
+            const newEvents = [eventWithId, ...prev].slice(0, maxEvents);
             setTimelineData(groupEventsBySeverity(newEvents));
             return newEvents;
         });
 
-        // Remove animation class after animation completes
         setTimeout(() => {
             setAnimatingEvents(prev => {
                 const newSet = new Set(prev);
-                newSet.delete(eventKey);
+                newSet.delete(eventWithId._id);
                 return newSet;
             });
         }, 500);
 
-        // Scroll the container to the top with smooth animation
         if (containerRef.current) {
             containerRef.current.scrollTo({
                 top: 0,
@@ -151,7 +181,6 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
         }
     }, [maxEvents, groupEventsBySeverity]);
 
-    // Simulate real-time updates using the provided data
     useEffect(() => {
         if (!data.length) return;
 
@@ -161,14 +190,13 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                 addEvent(data[currentIndex]);
                 currentIndex++;
             } else {
-                currentIndex = 0; // Loop back to start
+                currentIndex = 0;
             }
-        }, 3000); // Add new event every 3 seconds
+        }, 3000);
 
         return () => clearInterval(interval);
     }, [data, addEvent]);
 
-    // Update timeline when events change
     useEffect(() => {
         updateTimeline();
     }, [events, updateTimeline]);
@@ -178,21 +206,21 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
     );
 
     return (
-        <div className="w-full bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">Real-time Event Stream</h2>
+        <div className="w-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Real-time Event Stream</h2>
 
             {/* Timeline Visualization */}
-            <div className="mb-4">
-                <svg ref={timelineRef} className="w-full" height="60" />
+            <div className="mb-3 sm:mb-4">
+                <svg ref={timelineRef} className="w-full" height="50" />
             </div>
 
             {/* Severity Filter */}
-            <div className="flex gap-2 mb-4">
+            <div className="flex flex-wrap gap-1.5 sm:gap-2 mb-3 sm:mb-4">
                 <button
                     onClick={() => setSelectedSeverity('all')}
-                    className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === 'all'
-                            ? 'bg-gray-200 text-gray-800'
-                            : 'bg-gray-100 text-gray-600'
+                    className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === 'all'
+                        ? 'bg-gray-200 text-gray-800'
+                        : 'bg-gray-100 text-gray-600'
                         }`}
                 >
                     All
@@ -201,9 +229,9 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
                     <button
                         key={severity}
                         onClick={() => setSelectedSeverity(severity)}
-                        className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === severity
-                                ? `${colors.bg} ${colors.text} font-medium`
-                                : 'bg-gray-100 text-gray-600'
+                        className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === severity
+                            ? `${colors.bg} ${colors.text} font-medium`
+                            : 'bg-gray-100 text-gray-600'
                             }`}
                     >
                         {severity.charAt(0).toUpperCase() + severity.slice(1)}
@@ -212,63 +240,54 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
             </div>
 
             <div className="relative">
-                <div className="absolute top-0 left-0 w-full h-8 bg-gradient-to-b from-white to-transparent z-10"></div>
+                <div className="absolute top-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-b from-white to-transparent z-10"></div>
                 <div
                     ref={containerRef}
-                    className="h-[400px] overflow-y-auto space-y-3 scrollbar-hide"
+                    className="h-[300px] sm:h-[400px] overflow-y-auto space-y-2 sm:space-y-3"
                 >
                     {filteredEvents.map((event) => {
-                        const eventKey = `${event.timestamp}-${event.agent_name}-${event.rule_description}`;
-                        const isAnimating = animatingEvents.has(eventKey);
+                        const isAnimating = animatingEvents.has(event._id);
                         const severity = getSeverityLevel(event.rule_level);
                         const colors = SEVERITY_COLORS[severity];
 
                         return (
                             <div
-                                key={eventKey}
+                                key={event._id}
                                 className={`
-                                    border-l-4 rounded p-3 transition-all duration-500
+                                    border-l-4 rounded p-2 sm:p-3 transition-all duration-500
                                     ${colors.bg} ${colors.border} ${colors.text}
                                     ${isAnimating ? 'animate-slide-in' : ''}
                                     hover:shadow-md
                                 `}
                             >
-                                <div className="flex justify-between items-start">
-                                    <div className="flex-1">
-                                        <div className="font-medium">
+                                <div className="space-y-2">
+                                    <div className="flex justify-between items-start gap-2">
+                                        <div className="text-sm sm:text-base font-medium line-clamp-2">
                                             {event.rule_description}
                                         </div>
-                                        <div className="text-sm mt-1 space-x-2">
-                                            <span className="inline-block">
-                                                🕒 {formatTime(event.timestamp)}
-                                            </span>
-                                            <span className="inline-block">
-                                                👤 {event.agent_name}
-                                            </span>
-                                            {event.rule_mitre_tactic && (
-                                                <span className="inline-block">
-                                                    🎯 {event.rule_mitre_tactic}
-                                                </span>
-                                            )}
-                                            {event.rule_mitre_id && (
-                                                <span className="inline-block">
-                                                    🔍 {event.rule_mitre_id}
-                                                </span>
-                                            )}
+                                        <div className={`
+                                            shrink-0 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-medium
+                                            ${colors.bg} ${colors.text}
+                                        `}>
+                                            Level {event.rule_level}
                                         </div>
                                     </div>
-                                    <div className={`
-                                        ml-4 px-2 py-1 rounded text-sm font-medium
-                                        ${colors.bg} ${colors.text}
-                                    `}>
-                                        Level {event.rule_level}
+                                    <div className="flex flex-wrap gap-2 text-xs sm:text-sm text-gray-600">
+                                        <span>🕒 {formatTime(event.timestamp)}</span>
+                                        <span>👤 {event.agent_name}</span>
+                                        {event.rule_mitre_tactic && (
+                                            <span>🎯 {event.rule_mitre_tactic}</span>
+                                        )}
+                                        {event.rule_mitre_id && (
+                                            <span>🔍 {event.rule_mitre_id}</span>
+                                        )}
                                     </div>
                                 </div>
                             </div>
                         );
                     })}
                 </div>
-                <div className="absolute bottom-0 left-0 w-full h-8 bg-gradient-to-t from-white to-transparent"></div>
+                <div className="absolute bottom-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-t from-white to-transparent"></div>
             </div>
         </div>
     );

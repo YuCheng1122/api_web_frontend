@@ -161,66 +161,74 @@ export default function DashboardContent() {
     }
 
     return (
-        <div className="max-w-[1600px] mx-auto px-4 py-6 space-y-6">
-            <TimeRangeSelector onChange={handleTimeRangeChange} />
+        <div className="max-w-[1600px] mx-auto px-2 sm:px-4 py-3 sm:py-6 space-y-3 sm:space-y-6">
+            {/* Time Range Selector with better mobile padding */}
+            <div className="px-2 sm:px-0">
+                <TimeRangeSelector onChange={handleTimeRangeChange} />
+            </div>
 
-            {/* 使用 Suspense 和動態導入的組件 */}
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Summary Charts - Single column on mobile, two columns on larger screens */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
                 <Suspense fallback={<Loading />}>
-                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[300px] sm:min-h-[400px]">
                         <AgentSummaryChart data={criticalData.agentSummary} />
                     </div>
                 </Suspense>
                 <Suspense fallback={<Loading />}>
-                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[300px] sm:min-h-[400px]">
                         <AlertsChart data={criticalData.alerts} />
                     </div>
                 </Suspense>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* OS and Security Events - Stacked on mobile */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
                 <Suspense fallback={<Loading />}>
-                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[250px] sm:min-h-[350px]">
                         <AgentOSChart data={osData} />
                     </div>
                 </Suspense>
                 <Suspense fallback={<Loading />}>
-                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[250px] sm:min-h-[350px]">
                         <SecurityEventsCard data={eventData} />
                     </div>
                 </Suspense>
             </div>
 
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            {/* Malicious Files and Authentication - Stacked on mobile */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-6">
                 <Suspense fallback={<Loading />}>
-                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[250px] sm:min-h-[350px]">
                         <MaliciousFileChart data={chartData.maliciousFile} />
                     </div>
                 </Suspense>
                 <Suspense fallback={<Loading />}>
-                    <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                    <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[250px] sm:min-h-[350px]">
                         <AuthenticationChart data={chartData.authentication} />
                     </div>
                 </Suspense>
             </div>
 
+            {/* Full width charts - Better spacing on mobile */}
             <Suspense fallback={<Loading />}>
-                <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[300px] sm:min-h-[400px]">
                     <TtpLineChart data={chartData.ttpLinechart} />
                 </div>
             </Suspense>
 
-            {/* Add MITRE ATT&CK Matrix */}
             <Suspense fallback={<Loading />}>
-                <div className="transform transition-transform duration-200 hover:scale-[1.02]">
+                <div className="transform transition-transform duration-200 hover:scale-[1.02] overflow-x-auto">
                     <MitreHeatmapChart data={eventData} />
                 </div>
             </Suspense>
 
-            {/* Add Event Stream */}
+            {/* Event Stream with better mobile padding */}
             <Suspense fallback={<Loading />}>
-                <div className="transform transition-transform duration-200 hover:scale-[1.02]">
-                    <EventStream data={eventData.content.event_table} maxEvents={15} />
+                <div className="transform transition-transform duration-200 hover:scale-[1.02] overflow-x-auto">
+                    <EventStream
+                        data={eventData.content.event_table}
+                        maxEvents={10} // 減少移動端顯示的事件數量
+                    />
                 </div>
             </Suspense>
         </div>

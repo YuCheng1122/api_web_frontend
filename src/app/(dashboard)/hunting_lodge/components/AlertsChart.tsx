@@ -37,9 +37,9 @@ export default function AlertsChart({ data }: Props) {
     const total = SEVERITY_CONFIG.reduce((sum, config) => sum + config.getValue(data), 0);
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-sm p-6">
-            <h2 className="text-lg font-semibold mb-4">Alert Severity Distribution</h2>
-            <div className="grid grid-cols-4 gap-3">
+        <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Alert Severity Distribution</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 {SEVERITY_CONFIG.map((config) => {
                     const value = config.getValue(data);
                     const percentage = total > 0 ? (value / total * 100).toFixed(1) : '0';
@@ -47,17 +47,17 @@ export default function AlertsChart({ data }: Props) {
                     return (
                         <div
                             key={config.name}
-                            className="p-3 rounded-lg"
+                            className="p-2 sm:p-3 rounded-lg"
                             style={{ backgroundColor: config.bgColor }}
                         >
-                            <div className="text-sm text-gray-600 mb-1">{config.name}</div>
+                            <div className="text-xs sm:text-sm text-gray-600 mb-1">{config.name}</div>
                             <div
-                                className="text-2xl font-bold"
+                                className="text-xl sm:text-2xl font-bold"
                                 style={{ color: config.color }}
                             >
                                 {value}
                             </div>
-                            <div className="text-sm text-gray-500">
+                            <div className="text-xs sm:text-sm text-gray-500 mt-0.5 sm:mt-1">
                                 {percentage}% of total
                             </div>
                         </div>
