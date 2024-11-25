@@ -57,6 +57,7 @@ export default function DashboardContent() {
     const [chartData, setChartData] = useState<ChartData | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
+    const [currentTimeRange, setCurrentTimeRange] = useState<string>('24h');
 
     // 預加載其他組件
     useEffect(() => {
@@ -144,6 +145,19 @@ export default function DashboardContent() {
     }, []);
 
     const handleTimeRangeChange = (newTimeRange: TimeRange) => {
+        // Extract the range type from the time difference
+        const diffInHours = (new Date(newTimeRange.end_time).getTime() - new Date(newTimeRange.start_time).getTime()) / (1000 * 60 * 60);
+        let rangeType = 'custom';
+
+        if (diffInHours === 24) {
+            rangeType = '24h';
+        } else if (diffInHours === 24 * 7) {
+            rangeType = '7d';
+        } else if (diffInHours === 24 * 30) {
+            rangeType = '30d';
+        }
+
+        setCurrentTimeRange(rangeType);
         fetchData(newTimeRange);
     };
 
@@ -164,7 +178,10 @@ export default function DashboardContent() {
         <div className="max-w-[1600px] mx-auto px-2 sm:px-4 py-3 sm:py-6 space-y-3 sm:space-y-6">
             {/* Time Range Selector with better mobile padding */}
             <div className="px-2 sm:px-0">
-                <TimeRangeSelector onChange={handleTimeRangeChange} />
+                <TimeRangeSelector
+                    onChange={handleTimeRangeChange}
+                    initialRange={currentTimeRange}
+                />
             </div>
 
             {/* Summary Charts - Single column on mobile, two columns on larger screens */}

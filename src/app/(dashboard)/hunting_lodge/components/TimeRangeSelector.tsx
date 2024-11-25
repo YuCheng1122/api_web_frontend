@@ -10,6 +10,7 @@ interface TimeRange {
 
 interface Props {
     onChange: (range: TimeRange) => void;
+    initialRange?: string;
 }
 
 const PRESET_RANGES = [
@@ -19,8 +20,8 @@ const PRESET_RANGES = [
     { label: 'Custom', value: 'custom', shortLabel: 'Custom' }
 ] as const;
 
-export default function TimeRangeSelector({ onChange }: Props) {
-    const [selectedRange, setSelectedRange] = useState<string>('24h');
+export default function TimeRangeSelector({ onChange, initialRange = '24h' }: Props) {
+    const [selectedRange, setSelectedRange] = useState<string>(initialRange);
     const [customStart, setCustomStart] = useState<string>('');
     const [customEnd, setCustomEnd] = useState<string>('');
     const [isOpen, setIsOpen] = useState(false);
@@ -38,6 +39,8 @@ export default function TimeRangeSelector({ onChange }: Props) {
     }, []);
 
     const handleRangeChange = (range: string) => {
+        if (range === selectedRange) return; // Don't update if the same range is selected
+
         setSelectedRange(range);
         setIsOpen(false);
 
@@ -66,6 +69,7 @@ export default function TimeRangeSelector({ onChange }: Props) {
 
     const handleCustomRangeChange = () => {
         if (customStart && customEnd) {
+            setSelectedRange('custom');
             onChange({
                 start_time: new Date(customStart).toISOString(),
                 end_time: new Date(customEnd).toISOString()
@@ -102,8 +106,8 @@ export default function TimeRangeSelector({ onChange }: Props) {
                                     key={value}
                                     onClick={() => handleRangeChange(value)}
                                     className={`w-full text-left px-4 py-2 rounded-lg transition-colors ${selectedRange === value
-                                            ? 'bg-blue-500 text-white'
-                                            : 'hover:bg-gray-100 text-gray-700'
+                                        ? 'bg-blue-500 text-white'
+                                        : 'hover:bg-gray-100 text-gray-700'
                                         }`}
                                 >
                                     {label}
@@ -155,8 +159,8 @@ export default function TimeRangeSelector({ onChange }: Props) {
                             key={value}
                             onClick={() => handleRangeChange(value)}
                             className={`px-4 py-2 rounded-lg transition-colors ${selectedRange === value
-                                    ? 'bg-blue-500 text-white'
-                                    : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
+                                ? 'bg-blue-500 text-white'
+                                : 'bg-gray-100 hover:bg-gray-200 text-gray-700'
                                 }`}
                         >
                             {label}
