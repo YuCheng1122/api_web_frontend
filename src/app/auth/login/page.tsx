@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import { login } from "@/features/auth/api/login";
 import { useAuthContext } from "@/features/auth/contexts/AuthContext";
+import { encrypt } from "@/features/auth/utils/crypto";
 
 const LoginPage = () => {
     const [isMaintenanceMode, setIsMaintenanceMode] = useState(false)
@@ -35,6 +36,11 @@ const LoginPage = () => {
                 const token = `${response.content.token_type} ${response.content.access_token}`
                 updateLoginState(true, username, token)
 
+                // 加密並存儲憑證
+                const credentials = JSON.stringify({ username, password });
+                const encryptedCredentials = await encrypt(credentials);
+                sessionStorage.setItem('auth_credentials', encryptedCredentials);
+
                 setTimeout(() => {
                     router.push('/hunting_lodge')
                 }, 3000)
@@ -42,8 +48,10 @@ const LoginPage = () => {
                 throw new Error(response.message)
             }
         } catch (error) {
-            console.log(error);
+            console.error('Login failed:', error);
             toast.error('Login failed 😢')
+            // 確保清除任何可能的舊憑證
+            sessionStorage.removeItem('auth_credentials');
         } finally {
             setIsLoading(false)
         }
