@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useNDR } from '@/features/ndr/hooks/useNDR';
 import { ndrService } from '@/features/ndr/services/ndrService';
 import { NDRDeviceListItem, NDRDeviceInfo, NDREvent, NDRTopBlocking } from '@/features/ndr/types/ndr';
+import { LogOut } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
 import QueryControls from './QueryControls';
@@ -43,7 +44,7 @@ const savePreferences = (preferences: UserPreferences) => {
 };
 
 const NDRDashboard = () => {
-    const { token } = useNDR();
+    const { token, decodedToken, logout: ndrLogout } = useNDR();
     const [devices, setDevices] = useState<NDRDeviceListItem[]>([]);
     const [deviceInfo, setDeviceInfo] = useState<NDRDeviceInfo | null>(null);
     const [allEvents, setAllEvents] = useState<NDREvent[]>([]);
@@ -64,6 +65,10 @@ const NDRDashboard = () => {
     const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
     const [isFilterVisible, setIsFilterVisible] = useState(false);
 
+    const handleNDRLogout = () => {
+        ndrLogout();
+    };
+
     const getPaginatedEvents = () => {
         const start = currentPage * preferences.pageSize;
         const end = start + preferences.pageSize;
@@ -77,11 +82,11 @@ const NDRDashboard = () => {
     };
 
     const handleSort = (field: keyof NDREvent) => {
-        const newDirection = 
+        const newDirection =
             preferences.sortField === field && preferences.sortDirection === 'asc'
                 ? 'desc'
                 : 'asc';
-        
+
         updatePreferences({
             sortField: field,
             sortDirection: newDirection
@@ -91,7 +96,7 @@ const NDRDashboard = () => {
             const aValue = a[field];
             const bValue = b[field];
             const direction = newDirection === 'asc' ? 1 : -1;
-            
+
             if (typeof aValue === 'string' && typeof bValue === 'string') {
                 return aValue.localeCompare(bValue) * direction;
             }
@@ -110,12 +115,12 @@ const NDRDashboard = () => {
     };
 
     const fetchData = async () => {
-        if (token) {
+        if (token && decodedToken?.customerId) {
             try {
                 setLoading(true);
                 setError(null);
 
-                const deviceListResponse = await ndrService.listDeviceInfos(token, '98f1ea80-ea48-11ee-bafb-c3b20c389cc4');
+                const deviceListResponse = await ndrService.listDeviceInfos(token, decodedToken.customerId);
                 setDevices(deviceListResponse.data);
 
                 if (deviceListResponse.data.length > 0) {
@@ -129,7 +134,7 @@ const NDRDashboard = () => {
 
                     const fromTimestamp = new Date(fromDate).getTime();
                     const toTimestamp = new Date(toDate).getTime();
-                    
+
                     const [eventsResponse, topBlockingResponse] = await Promise.all([
                         ndrService.getEvents(
                             token,
@@ -153,7 +158,7 @@ const NDRDashboard = () => {
                         const aValue = a[preferences.sortField];
                         const bValue = b[preferences.sortField];
                         const direction = preferences.sortDirection === 'asc' ? 1 : -1;
-                        
+
                         if (typeof aValue === 'string' && typeof bValue === 'string') {
                             return aValue.localeCompare(bValue) * direction;
                         }
@@ -178,7 +183,7 @@ const NDRDashboard = () => {
 
     useEffect(() => {
         fetchData();
-    }, [token, selectedDevice, preferences.severity, fromDate, toDate]);
+    }, [token, decodedToken, selectedDevice, preferences.severity, fromDate, toDate]);
 
     const handleDeviceSelect = (deviceName: string) => {
         setSelectedDevice(deviceName);
@@ -205,11 +210,20 @@ const NDRDashboard = () => {
                 <div className="bg-white p-4 rounded-lg shadow-sm mb-6">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                         <h1 className="text-2xl font-bold text-gray-900">NDR Dashboard</h1>
-                        <div className="text-sm text-gray-500 flex items-center">
-                            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                            Last updated: {new Date().toLocaleString()}
+                        <div className="flex items-center gap-4">
+                            <div className="text-sm text-gray-500 flex items-center">
+                                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Last updated: {new Date().toLocaleString()}
+                            </div>
+                            <button
+                                onClick={handleNDRLogout}
+                                className="flex items-center space-x-2 px-3 py-2 text-sm text-red-600 hover:text-red-800 transition-colors"
+                            >
+                                <LogOut size={16} />
+                                <span>NDR登出</span>
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -220,17 +234,17 @@ const NDRDashboard = () => {
                         onClick={() => setIsFilterVisible(!isFilterVisible)}
                         className="w-full bg-white p-3 rounded-lg shadow-sm text-gray-700 font-medium flex items-center justify-center"
                     >
-                        <svg 
-                            className="w-5 h-5 mr-2" 
-                            fill="none" 
-                            stroke="currentColor" 
+                        <svg
+                            className="w-5 h-5 mr-2"
+                            fill="none"
+                            stroke="currentColor"
                             viewBox="0 0 24 24"
                         >
-                            <path 
-                                strokeLinecap="round" 
-                                strokeLinejoin="round" 
-                                strokeWidth="2" 
-                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" 
+                            <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth="2"
+                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
                             />
                         </svg>
                         {isFilterVisible ? '隱藏篩選器' : '顯示篩選器'}
@@ -321,7 +335,7 @@ const NDRDashboard = () => {
                         </div>
                         {allEvents.length > 0 ? (
                             <>
-                                <EventList 
+                                <EventList
                                     events={getPaginatedEvents()}
                                     sortField={preferences.sortField}
                                     sortDirection={preferences.sortDirection}

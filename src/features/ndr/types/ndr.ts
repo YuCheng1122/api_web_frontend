@@ -11,6 +11,10 @@ export interface NDRLoginCredentials {
 
 export interface NDRAuthState {
     token: string | null;
+    decodedToken: {
+        customerId: string;
+        [key: string]: any;
+    } | null;
     isAuthenticated: boolean;
     isLoading: boolean;
     error: string | null;
