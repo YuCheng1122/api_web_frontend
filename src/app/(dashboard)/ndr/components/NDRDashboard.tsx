@@ -44,7 +44,7 @@ const savePreferences = (preferences: UserPreferences) => {
 };
 
 const NDRDashboard = () => {
-    const { token, logout: ndrLogout } = useNDR();
+    const { token, decodedToken, logout: ndrLogout } = useNDR();
     const [devices, setDevices] = useState<NDRDeviceListItem[]>([]);
     const [deviceInfo, setDeviceInfo] = useState<NDRDeviceInfo | null>(null);
     const [allEvents, setAllEvents] = useState<NDREvent[]>([]);
@@ -66,7 +66,6 @@ const NDRDashboard = () => {
     const [isFilterVisible, setIsFilterVisible] = useState(false);
 
     const handleNDRLogout = () => {
-        // Only logout from NDR
         ndrLogout();
     };
 
@@ -116,12 +115,12 @@ const NDRDashboard = () => {
     };
 
     const fetchData = async () => {
-        if (token) {
+        if (token && decodedToken?.customerId) {
             try {
                 setLoading(true);
                 setError(null);
 
-                const deviceListResponse = await ndrService.listDeviceInfos(token, '98f1ea80-ea48-11ee-bafb-c3b20c389cc4');
+                const deviceListResponse = await ndrService.listDeviceInfos(token, decodedToken.customerId);
                 setDevices(deviceListResponse.data);
 
                 if (deviceListResponse.data.length > 0) {
@@ -184,7 +183,7 @@ const NDRDashboard = () => {
 
     useEffect(() => {
         fetchData();
-    }, [token, selectedDevice, preferences.severity, fromDate, toDate]);
+    }, [token, decodedToken, selectedDevice, preferences.severity, fromDate, toDate]);
 
     const handleDeviceSelect = (deviceName: string) => {
         setSelectedDevice(deviceName);
