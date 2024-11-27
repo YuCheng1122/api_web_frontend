@@ -33,9 +33,9 @@ export const DesktopView: FC<DesktopViewProps> = ({
                 <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-lg p-6 text-white">
                     <Activity className="w-8 h-8 mb-4" />
                     <div className="text-3xl font-bold mb-2">{totalEvents}</div>
-                    <div className="text-blue-100">Total Security Events</div>
+                    <div className="text-blue-100">安全事件總數</div>
                     <div className="mt-4 text-sm text-blue-100">
-                        Last updated: {new Date().toLocaleTimeString()}
+                        最後更新：{new Date().toLocaleTimeString()}
                     </div>
                 </div>
 
@@ -43,25 +43,25 @@ export const DesktopView: FC<DesktopViewProps> = ({
                     <div className="bg-red-50 rounded-lg p-4">
                         <AlertTriangle className="w-6 h-6 text-red-600 mb-2" />
                         <div className="text-2xl font-bold text-red-600">{criticalEvents}</div>
-                        <div className="text-sm text-gray-600">Critical Events</div>
+                        <div className="text-sm text-gray-600">嚴重事件</div>
                     </div>
                     <div className="bg-orange-50 rounded-lg p-4">
                         <Shield className="w-6 h-6 text-orange-600 mb-2" />
                         <div className="text-2xl font-bold text-orange-600">{highEvents}</div>
-                        <div className="text-sm text-gray-600">High Severity</div>
+                        <div className="text-sm text-gray-600">高風險事件</div>
                     </div>
                 </div>
             </div>
 
             {/* 嚴重程度分佈 */}
             <div className="bg-gray-50 rounded-lg p-6">
-                <h3 className="text-sm font-medium text-gray-700 mb-4">Severity Distribution</h3>
+                <h3 className="text-sm font-medium text-gray-700 mb-4">嚴重程度分佈</h3>
                 <div className="space-y-3">
                     {[
-                        { label: 'Critical', count: criticalEvents, color: '#DC2626' },
-                        { label: 'High', count: highEvents, color: '#F97316' },
-                        { label: 'Medium', count: mediumEvents, color: '#FBBF24' },
-                        { label: 'Low', count: lowEvents, color: '#22C55E' }
+                        { label: '嚴重', count: criticalEvents, color: '#DC2626' },
+                        { label: '高風險', count: highEvents, color: '#F97316' },
+                        { label: '中風險', count: mediumEvents, color: '#FBBF24' },
+                        { label: '低風險', count: lowEvents, color: '#22C55E' }
                     ].map(item => (
                         <div key={item.label}>
                             <div className="flex justify-between text-sm mb-1">
@@ -89,7 +89,7 @@ export const DesktopView: FC<DesktopViewProps> = ({
                     className="flex items-center justify-center gap-2 p-4 bg-blue-50 rounded-lg hover:bg-blue-100 transition-colors group"
                 >
                     <Clock className="w-5 h-5 text-blue-600" />
-                    <span className="text-sm font-medium text-blue-700">View Events</span>
+                    <span className="text-sm font-medium text-blue-700">查看事件</span>
                 </button>
                 {isadmin && (
                     <>
@@ -98,14 +98,14 @@ export const DesktopView: FC<DesktopViewProps> = ({
                             className="flex items-center justify-center gap-2 p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors group"
                         >
                             <Network className="w-5 h-5 text-emerald-600" />
-                            <span className="text-sm font-medium text-emerald-700">View Network</span>
+                            <span className="text-sm font-medium text-emerald-700">查看網路</span>
                         </button>
                         <button
                             onClick={handleThreatHuntingClick}
                             className="flex items-center justify-center gap-2 p-4 bg-violet-50 rounded-lg hover:bg-violet-100 transition-colors group"
                         >
                             <Crosshair className="w-5 h-5 text-violet-600" />
-                            <span className="text-sm font-medium text-violet-700">Threat Hunting</span>
+                            <span className="text-sm font-medium text-violet-700">威脅獵捕</span>
                         </button>
                     </>
                 )}

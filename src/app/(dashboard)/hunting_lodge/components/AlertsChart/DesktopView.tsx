@@ -50,11 +50,11 @@ export const DesktopView: FC<DesktopViewProps> = ({ data, total }) => {
             <div className="bg-gray-50 rounded-lg p-4">
                 <div className="grid grid-cols-2 gap-4">
                     <div>
-                        <div className="text-sm text-gray-500">Total Alerts</div>
+                        <div className="text-sm text-gray-500">警報總數</div>
                         <div className="text-2xl font-bold text-gray-900">{total}</div>
                     </div>
                     <div>
-                        <div className="text-sm text-gray-500">Critical + High</div>
+                        <div className="text-sm text-gray-500">嚴重 + 高風險</div>
                         <div className="text-2xl font-bold text-red-600">
                             {SEVERITY_CONFIG[0].getValue(data) + SEVERITY_CONFIG[1].getValue(data)}
                         </div>
@@ -63,7 +63,7 @@ export const DesktopView: FC<DesktopViewProps> = ({ data, total }) => {
                 <div className="mt-4 text-sm text-gray-500">
                     {SEVERITY_CONFIG[0].getValue(data) > 0 && (
                         <div className="text-red-600">
-                            ⚠️ {SEVERITY_CONFIG[0].getValue(data)} critical alerts require immediate attention
+                            ⚠️ {SEVERITY_CONFIG[0].getValue(data)} 個嚴重警報需要立即處理
                         </div>
                     )}
                 </div>

@@ -32,7 +32,7 @@ export default function MaliciousFileChart({ data }: Props) {
 
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Malicious File Distribution</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">惡意檔案分佈</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

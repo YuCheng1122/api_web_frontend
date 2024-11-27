@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '@/features/auth/contexts/AuthContext';
-import type { EventTable } from '@/features/dashboard_v2/types';
+import { useAuthContext } from '../../../../../features/auth/contexts/AuthContext';
+import type { EventTable } from '../../../../../features/dashboard_v2/types';
 import { MobileView } from './MobileView';
 import { DesktopView } from './DesktopView';
 
@@ -73,7 +73,7 @@ export default function SecurityEventsCard({ data }: Props) {
 
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Security Events</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">安全事件</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

@@ -49,9 +49,9 @@ export const DesktopView: FC<DesktopViewProps> = ({ osData, total }) => {
                 <table className="w-full">
                     <thead>
                         <tr>
-                            <th className="text-left text-sm font-medium text-gray-500 pb-3">Operating System</th>
-                            <th className="text-right text-sm font-medium text-gray-500 pb-3">Count</th>
-                            <th className="text-right text-sm font-medium text-gray-500 pb-3">Percentage</th>
+                            <th className="text-left text-sm font-medium text-gray-500 pb-3">作業系統</th>
+                            <th className="text-right text-sm font-medium text-gray-500 pb-3">數量</th>
+                            <th className="text-right text-sm font-medium text-gray-500 pb-3">百分比</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
@@ -83,7 +83,7 @@ export const DesktopView: FC<DesktopViewProps> = ({ osData, total }) => {
                     </tbody>
                     <tfoot className="border-t border-gray-200">
                         <tr>
-                            <td className="py-3 text-sm font-medium text-gray-700">Total</td>
+                            <td className="py-3 text-sm font-medium text-gray-700">總計</td>
                             <td className="text-right text-sm font-medium text-gray-700">{total}</td>
                             <td className="text-right text-sm text-gray-700">100%</td>
                         </tr>

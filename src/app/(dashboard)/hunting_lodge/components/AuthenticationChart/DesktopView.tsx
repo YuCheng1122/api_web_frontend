@@ -59,26 +59,26 @@ export const DesktopView: FC<DesktopViewProps> = ({ tactics, total }) => {
                 <div className="bg-blue-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                         <UserCheck className="w-5 h-5 text-blue-600" />
-                        <span className="text-sm font-medium text-gray-700">Total Events</span>
+                        <span className="text-sm font-medium text-gray-700">事件總數</span>
                     </div>
                     <div className="text-2xl font-bold text-blue-600">
                         {total}
                     </div>
                     <div className="mt-2 text-sm text-blue-600">
-                        Authentication attempts
+                        驗證嘗試次數
                     </div>
                 </div>
 
                 <div className="bg-amber-50 rounded-lg p-4">
                     <div className="flex items-center gap-2 mb-2">
                         <ShieldAlert className="w-5 h-5 text-amber-600" />
-                        <span className="text-sm font-medium text-gray-700">Top Tactic</span>
+                        <span className="text-sm font-medium text-gray-700">主要策略</span>
                     </div>
                     <div className="text-lg font-bold text-amber-600 line-clamp-1" title={tactics[0]?.tactic}>
-                        {tactics[0]?.tactic || 'N/A'}
+                        {tactics[0]?.tactic || '無資料'}
                     </div>
                     <div className="mt-2 text-sm text-amber-600">
-                        {tactics[0]?.count || 0} events
+                        {tactics[0]?.count || 0} 個事件
                     </div>
                 </div>
             </div>

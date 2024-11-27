@@ -45,7 +45,7 @@ export default function MitreHeatmapChart({ data }: Props) {
 
     return (
         <div className="w-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">MITRE ATT&CK Matrix</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">MITRE ATT&CK 矩陣</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

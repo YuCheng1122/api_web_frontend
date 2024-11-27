@@ -32,7 +32,7 @@ export default function AuthenticationChart({ data }: Props) {
 
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Authentication Tactics Distribution</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">身份驗證策略分佈</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

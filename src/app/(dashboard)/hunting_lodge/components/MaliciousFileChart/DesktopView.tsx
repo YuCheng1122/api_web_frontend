@@ -18,21 +18,21 @@ export const DesktopView: FC<DesktopViewProps> = ({ files, total }) => {
                 <div className="bg-blue-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                         <FileText className="w-5 h-5 text-blue-600" />
-                        <span className="text-sm font-medium text-gray-700">Total Files</span>
+                        <span className="text-sm font-medium text-gray-700">檔案總數</span>
                     </div>
                     <div className="text-2xl font-bold text-blue-600">{total}</div>
                     <div className="mt-2 text-sm text-blue-600">
-                        Malicious files detected
+                        已偵測到的惡意檔案
                     </div>
                 </div>
                 <div className="bg-amber-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                         <AlertTriangle className="w-5 h-5 text-amber-600" />
-                        <span className="text-sm font-medium text-gray-700">File Types</span>
+                        <span className="text-sm font-medium text-gray-700">檔案類型</span>
                     </div>
                     <div className="text-2xl font-bold text-amber-600">{files.length}</div>
                     <div className="mt-2 text-sm text-amber-600">
-                        Unique file categories
+                        獨特檔案類別
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@ export const DesktopView: FC<DesktopViewProps> = ({ files, total }) => {
                                 </div>
                                 <div className="mt-2 flex items-center gap-4">
                                     <div className="flex-shrink-0 text-sm text-gray-500 min-w-[100px]">
-                                        Count: {item.count}
+                                        數量：{item.count}
                                     </div>
                                     <div className="flex-1 h-1.5 bg-gray-100 rounded-full overflow-hidden">
                                         <div

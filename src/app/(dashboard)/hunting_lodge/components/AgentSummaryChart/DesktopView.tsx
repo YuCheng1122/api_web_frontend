@@ -58,7 +58,7 @@ export const DesktopView: FC<DesktopViewProps> = ({
                             className="text-sm"
                             fill="#6B7280"
                         >
-                            Total
+                            總計
                         </text>
                     </svg>
                 </div>
@@ -69,32 +69,32 @@ export const DesktopView: FC<DesktopViewProps> = ({
                 <div className="bg-green-50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <Shield className="w-5 h-5 text-green-600" />
-                        <span className="text-sm font-medium text-gray-700">Connected Agents</span>
+                        <span className="text-sm font-medium text-gray-700">已連接代理</span>
                     </div>
                     <div className="text-2xl font-bold text-green-600 mb-1">
                         {connected_agents}
                     </div>
                     <div className="text-sm text-gray-500">
-                        {((connected_agents / total) * 100).toFixed(1)}% of total
+                        佔總數的 {((connected_agents / total) * 100).toFixed(1)}%
                     </div>
                     <div className="mt-2 text-sm text-green-600">
-                        Active and reporting
+                        運作中並回報中
                     </div>
                 </div>
 
                 <div className="bg-red-50 rounded-lg p-4">
                     <div className="flex items-center gap-3 mb-2">
                         <AlertTriangle className="w-5 h-5 text-red-600" />
-                        <span className="text-sm font-medium text-gray-700">Disconnected Agents</span>
+                        <span className="text-sm font-medium text-gray-700">已斷開代理</span>
                     </div>
                     <div className="text-2xl font-bold text-red-600 mb-1">
                         {disconnected_agents}
                     </div>
                     <div className="text-sm text-gray-500">
-                        {((disconnected_agents / total) * 100).toFixed(1)}% of total
+                        佔總數的 {((disconnected_agents / total) * 100).toFixed(1)}%
                     </div>
                     <div className="mt-2 text-sm text-red-600">
-                        Requires attention
+                        需要注意
                     </div>
                 </div>
             </div>

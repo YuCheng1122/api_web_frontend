@@ -43,7 +43,7 @@ export default function TtpLineChart({ data }: Props) {
 
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">MITRE Tactics Distribution Over Time</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">MITRE 戰術時間分佈</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

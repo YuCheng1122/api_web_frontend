@@ -63,26 +63,26 @@ export const DesktopView: FC<ViewProps> = ({
                 </ResponsiveContainer>
             </div>
 
-            {/* Trend summary */}
+            {/* 趨勢摘要 */}
             <div className="grid grid-cols-2 gap-4">
                 <div className="bg-orange-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                         <AlertTriangle className="w-5 h-5 text-orange-600" />
-                        <span className="text-sm font-medium text-gray-700">Critical Tactics</span>
+                        <span className="text-sm font-medium text-gray-700">嚴重戰術</span>
                     </div>
                     <div className="text-2xl font-bold text-orange-600">{criticalCount}</div>
                     <div className="mt-2 text-sm text-orange-600">
-                        Tactics with critical severity
+                        具有嚴重程度的戰術
                     </div>
                 </div>
                 <div className="bg-blue-50 p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-2">
                         <TrendingUp className="w-5 h-5 text-blue-600" />
-                        <span className="text-sm font-medium text-gray-700">Increasing Trends</span>
+                        <span className="text-sm font-medium text-gray-700">上升趨勢</span>
                     </div>
                     <div className="text-2xl font-bold text-blue-600">{increasingTrends}</div>
                     <div className="mt-2 text-sm text-blue-600">
-                        Tactics showing upward trend
+                        顯示上升趨勢的戰術
                     </div>
                 </div>
             </div>

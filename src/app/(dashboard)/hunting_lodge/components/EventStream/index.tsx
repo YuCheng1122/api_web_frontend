@@ -92,7 +92,7 @@ export default function EventStream({ data, maxEvents = 10 }: Props) {
 
     return (
         <div className="w-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Real-time Event Stream</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">即時事件流</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

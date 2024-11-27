@@ -32,7 +32,7 @@ export default function AlertsChart({ data }: Props) {
 
     return (
         <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">Alert Severity Distribution</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">警報嚴重程度分佈</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (
