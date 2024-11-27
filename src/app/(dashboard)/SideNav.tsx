@@ -49,37 +49,42 @@ const SideNav = () => {
     const navItems: NavItem[] = [
         {
             href: '/hunting_lodge',
-            label: 'Dashboard',
+            label: '安全總覽',
             icon: <Home size={20} />
         },
         {
             href: '/ndr',
-            label: 'NDR',
+            label: '網路偵測',
             icon: <Network size={20} />
         },
         {
             href: '/agents',
-            label: 'Agents',
+            label: '端點防護',
             icon: <Database size={20} />
         },
         {
             href: '/ics',
-            label: 'ICS',
+            label: '威脅獵捕',
             icon: <Cpu size={20} />
         },
         {
             href: '/chatbot',
-            label: 'Chatbot',
+            label: 'SenseL Copilot',
             icon: <MessageSquare size={20} />
         },
         {
+            href: '/sensel-report',
+            label: 'SenseL 分析報告',
+            icon: <BarChart2 size={20} />
+        },
+        {
             href: '/agent-deployment',
-            label: 'Agent Deployment',
+            label: '代理部署',
             icon: <Download size={20} />
         },
         {
             href: '/managecenter',
-            label: 'Manage Center',
+            label: '管理中心',
             icon: <Settings size={20} />,
             adminOnly: true
         }

@@ -6,8 +6,9 @@ import { useRouter } from 'next/navigation';
 import Loading from '@/app/(dashboard)/hunting_lodge/components/Loading';
 import { DashboardService } from '@/features/dashboard_v2/api/dashboardService';
 import type { EventTable } from '@/features/dashboard_v2/types';
+import { withAdminAuth } from '../../middleware/withAdminAuth';
 
-export default function ThreatHuntingPage() {
+function ThreatHuntingPage() {
     const router = useRouter();
     const [data, setData] = useState<EventTable | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -98,3 +99,5 @@ export default function ThreatHuntingPage() {
         </div>
     );
 }
+
+export default withAdminAuth(ThreatHuntingPage);

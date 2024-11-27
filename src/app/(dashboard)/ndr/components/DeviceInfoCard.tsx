@@ -1,6 +1,6 @@
 'use client'
 
-import { NDRDeviceInfo } from '@/features/ndr/types/ndr';
+import { NDRDeviceInfo } from '../../../../features/ndr/types/ndr';
 
 interface DeviceInfoCardProps {
     info: NDRDeviceInfo;
@@ -71,8 +71,8 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
                     <div
                         style={{ width: `${Math.min(value, 100)}%` }}
                         className={`shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center ${value >= 80 ? 'bg-red-500' :
-                                value >= 60 ? 'bg-yellow-500' :
-                                    'bg-green-500'
+                            value >= 60 ? 'bg-yellow-500' :
+                                'bg-green-500'
                             }`}
                     />
                 </div>
@@ -100,7 +100,7 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
                 {/* 使用率指標 */}
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <UsageIndicator
-                        label="CPU Usage"
+                        label="CPU 使用率"
                         value={currentCpuUsage}
                         icon={
                             <svg className="w-5 h-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -109,7 +109,7 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
                         }
                     />
                     <UsageIndicator
-                        label="Memory Usage"
+                        label="記憶體使用率"
                         value={memoryUsage}
                         detail={memoryDetail}
                         icon={
@@ -122,17 +122,17 @@ const DeviceInfoCard = ({ info }: DeviceInfoCardProps) => {
 
                 {/* 版本資訊 */}
                 <div className="pt-6 border-t border-gray-200">
-                    <h4 className="text-lg font-medium text-gray-900 mb-4">Version Information</h4>
+                    <h4 className="text-lg font-medium text-gray-900 mb-4">版本資訊</h4>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                        <VersionInfo label="Firmware Version" version={info.device_version} />
-                        <VersionInfo label="NIDS Version" version={info.nids_version} />
-                        <VersionInfo label="IOC Version" version={info.ioc_version} />
+                        <VersionInfo label="韌體版本" version={info.device_version} />
+                        <VersionInfo label="NIDS 版本" version={info.nids_version} />
+                        <VersionInfo label="IOC 版本" version={info.ioc_version} />
                     </div>
                 </div>
 
                 {/* 行動版提示 */}
                 <div className="md:hidden text-xs text-gray-400 text-center pt-4">
-                    Swipe left/right to see more details
+                    左右滑動查看更多詳情
                 </div>
             </div>
         </div>

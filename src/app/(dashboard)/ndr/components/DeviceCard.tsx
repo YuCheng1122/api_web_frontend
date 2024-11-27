@@ -1,6 +1,6 @@
 'use client'
 
-import { NDRDeviceListItem } from '@/features/ndr/types/ndr';
+import { NDRDeviceListItem } from '../../../../features/ndr/types/ndr';
 
 interface DeviceCardProps {
     device: NDRDeviceListItem;
@@ -16,15 +16,15 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
     };
 
     const getStatusText = (active: boolean) => {
-        return active ? 'Active' : 'Inactive';
+        return active ? '運作中' : '未運作';
     };
 
     return (
         <button
             onClick={() => onSelect(device.name)}
             className={`w-full text-left transition-all duration-200 ease-in-out transform hover:scale-[1.02] focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${isSelected
-                    ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-500'
-                    : 'bg-white border-gray-200 hover:border-indigo-300'
+                ? 'bg-indigo-50 border-indigo-500 ring-2 ring-indigo-500'
+                : 'bg-white border-gray-200 hover:border-indigo-300'
                 } border rounded-lg shadow-sm p-4`}
         >
             <div className="space-y-3">
@@ -35,7 +35,7 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
                             {device.label || device.name}
                         </h3>
                         <p className="text-sm text-gray-500 line-clamp-2">
-                            {device.additionalInfo?.description || 'No description available'}
+                            {device.additionalInfo?.description || '暫無描述'}
                         </p>
                     </div>
                     <span className={`px-2 py-1 text-xs font-medium rounded-full ${getStatusColor(device.active)}`}>
@@ -43,12 +43,12 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
                     </span>
                 </div>
 
-                {/* Device Image */}
+                {/* 設備圖片 */}
                 {device.type === 'Flowring_LVR2S' && (
                     <div className="flex justify-center items-center py-4">
                         <img
                             src="/ndr/LVR2S_NBG.png"
-                            alt="LVR2S Device"
+                            alt="LVR2S 設備"
                             className="w-40 h-auto max-h-48 object-contain"
                         />
                     </div>
@@ -57,11 +57,11 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
                 {/* 設備詳情 */}
                 <div className="grid grid-cols-2 gap-4 pt-2">
                     <div>
-                        <p className="text-xs font-medium text-gray-500">Device Type</p>
+                        <p className="text-xs font-medium text-gray-500">設備類型</p>
                         <p className="text-sm text-gray-900 truncate">{device.type}</p>
                     </div>
                     <div>
-                        <p className="text-xs font-medium text-gray-500">Profile</p>
+                        <p className="text-xs font-medium text-gray-500">設定檔</p>
                         <p className="text-sm text-gray-900 truncate">{device.deviceProfileName}</p>
                     </div>
                 </div>
@@ -85,7 +85,7 @@ const DeviceCard = ({ device, isSelected, onSelect }: DeviceCardProps) => {
 
                 {/* 觸控提示（僅在行動裝置顯示） */}
                 <div className="md:hidden mt-2 text-xs text-gray-400 text-center">
-                    Tap to select
+                    點擊選擇
                 </div>
             </div>
         </button>
