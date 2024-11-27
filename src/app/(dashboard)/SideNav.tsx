@@ -73,6 +73,11 @@ const SideNav = () => {
             icon: <MessageSquare size={20} />
         },
         {
+            href: '/sensel-report',
+            label: 'SenseL 分析報告',
+            icon: <BarChart2 size={20} />
+        },
+        {
             href: '/agent-deployment',
             label: '代理部署',
             icon: <Download size={20} />
