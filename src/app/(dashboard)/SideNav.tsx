@@ -49,27 +49,27 @@ const SideNav = () => {
     const navItems: NavItem[] = [
         {
             href: '/hunting_lodge',
-            label: 'Dashboard',
+            label: 'Security Overview',
             icon: <Home size={20} />
         },
         {
             href: '/ndr',
-            label: 'NDR',
+            label: 'Network Detection',
             icon: <Network size={20} />
         },
         {
             href: '/agents',
-            label: 'Agents',
+            label: 'Endpoint Protection',
             icon: <Database size={20} />
         },
         {
             href: '/ics',
-            label: 'ICS',
+            label: 'Threat Hunting',
             icon: <Cpu size={20} />
         },
         {
             href: '/chatbot',
-            label: 'Chatbot',
+            label: 'SenseL Copilot',
             icon: <MessageSquare size={20} />
         },
         {
