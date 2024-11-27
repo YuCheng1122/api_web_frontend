@@ -1,6 +1,6 @@
 'use client'
 
-import { NDREvent } from '@/features/ndr/types/ndr';
+import { NDREvent } from '../../../../features/ndr/types/ndr';
 
 interface EventListProps {
     events: NDREvent[];
@@ -25,10 +25,10 @@ const EventList = ({ events, sortField, sortDirection, onSort }: EventListProps)
 
     const getSeverityText = (severity: number) => {
         switch (severity) {
-            case 1: return 'High';
-            case 2: return 'Medium';
-            case 3: return 'Low';
-            default: return 'Unknown';
+            case 1: return '高';
+            case 2: return '中';
+            case 3: return '低';
+            default: return '未知';
         }
     };
 
@@ -69,19 +69,19 @@ const EventList = ({ events, sortField, sortDirection, onSort }: EventListProps)
                     <thead className="bg-gray-50">
                         <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <SortButton field="@timestamp" label="Timestamp" />
+                                <SortButton field="@timestamp" label="時間戳記" />
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <SortButton field="severity" label="Severity" />
+                                <SortButton field="severity" label="嚴重程度" />
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <SortButton field="event_type" label="Event Type" />
+                                <SortButton field="event_type" label="事件類型" />
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <SortButton field="src_ip" label="Source IP" />
+                                <SortButton field="src_ip" label="來源 IP" />
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <SortButton field="dest_ip" label="Destination IP" />
+                                <SortButton field="dest_ip" label="目標 IP" />
                             </th>
                         </tr>
                     </thead>
@@ -126,16 +126,16 @@ const EventList = ({ events, sortField, sortDirection, onSort }: EventListProps)
                             </div>
                             <div className="space-y-2">
                                 <div>
-                                    <span className="text-xs font-medium text-gray-500">Event Type</span>
+                                    <span className="text-xs font-medium text-gray-500">事件類型</span>
                                     <p className="text-sm text-gray-900">{event.event_type}</p>
                                 </div>
                                 <div className="grid grid-cols-2 gap-2">
                                     <div>
-                                        <span className="text-xs font-medium text-gray-500">Source IP</span>
+                                        <span className="text-xs font-medium text-gray-500">來源 IP</span>
                                         <p className="text-sm text-gray-900">{event.src_ip}</p>
                                     </div>
                                     <div>
-                                        <span className="text-xs font-medium text-gray-500">Destination IP</span>
+                                        <span className="text-xs font-medium text-gray-500">目標 IP</span>
                                         <p className="text-sm text-gray-900">{event.dest_ip}</p>
                                     </div>
                                 </div>
