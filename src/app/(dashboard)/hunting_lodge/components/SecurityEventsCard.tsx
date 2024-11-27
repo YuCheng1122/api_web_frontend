@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Activity, AlertTriangle, Shield, Clock, Network, Crosshair } from 'lucide-react';
+import { useAuthContext } from '@/features/auth/contexts/AuthContext';
 import type { EventTable } from '@/features/dashboard_v2/types';
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 export default function SecurityEventsCard({ data }: Props) {
     const [isMobile, setIsMobile] = useState(false);
     const router = useRouter();
+    const { isadmin } = useAuthContext();
     const events = data.content.event_table;
     const totalEvents = events.length;
 
@@ -37,10 +39,18 @@ export default function SecurityEventsCard({ data }: Props) {
     };
 
     const handleNetworkClick = () => {
+        if (!isadmin) {
+            alert('This feature is only available for administrators');
+            return;
+        }
         router.push('/hunting_lodge/network');
     };
 
     const handleThreatHuntingClick = () => {
+        if (!isadmin) {
+            alert('This feature is only available for administrators');
+            return;
+        }
         router.push('/hunting_lodge/threat-hunting');
     };
 
@@ -79,20 +89,24 @@ export default function SecurityEventsCard({ data }: Props) {
                     <span>View Events</span>
                     <span className="ml-1">→</span>
                 </button>
-                <button
-                    onClick={handleNetworkClick}
-                    className="text-center text-xs text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
-                >
-                    <span>View Network</span>
-                    <span className="ml-1">→</span>
-                </button>
-                <button
-                    onClick={handleThreatHuntingClick}
-                    className="text-center text-xs text-violet-600 hover:text-violet-800 hover:bg-violet-50 py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
-                >
-                    <span>Threat Hunting</span>
-                    <span className="ml-1">→</span>
-                </button>
+                {isadmin && (
+                    <>
+                        <button
+                            onClick={handleNetworkClick}
+                            className="text-center text-xs text-emerald-600 hover:text-emerald-800 hover:bg-emerald-50 py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
+                        >
+                            <span>View Network</span>
+                            <span className="ml-1">→</span>
+                        </button>
+                        <button
+                            onClick={handleThreatHuntingClick}
+                            className="text-center text-xs text-violet-600 hover:text-violet-800 hover:bg-violet-50 py-2 px-3 rounded-lg transition-colors flex items-center justify-center"
+                        >
+                            <span>Threat Hunting</span>
+                            <span className="ml-1">→</span>
+                        </button>
+                    </>
+                )}
             </div>
         </>
     );
@@ -163,20 +177,24 @@ export default function SecurityEventsCard({ data }: Props) {
                     <Clock className="w-5 h-5 text-blue-600" />
                     <span className="text-sm font-medium text-blue-700">View Events</span>
                 </button>
-                <button
-                    onClick={handleNetworkClick}
-                    className="flex items-center justify-center gap-2 p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors group"
-                >
-                    <Network className="w-5 h-5 text-emerald-600" />
-                    <span className="text-sm font-medium text-emerald-700">View Network</span>
-                </button>
-                <button
-                    onClick={handleThreatHuntingClick}
-                    className="flex items-center justify-center gap-2 p-4 bg-violet-50 rounded-lg hover:bg-violet-100 transition-colors group"
-                >
-                    <Crosshair className="w-5 h-5 text-violet-600" />
-                    <span className="text-sm font-medium text-violet-700">Threat Hunting</span>
-                </button>
+                {isadmin && (
+                    <>
+                        <button
+                            onClick={handleNetworkClick}
+                            className="flex items-center justify-center gap-2 p-4 bg-emerald-50 rounded-lg hover:bg-emerald-100 transition-colors group"
+                        >
+                            <Network className="w-5 h-5 text-emerald-600" />
+                            <span className="text-sm font-medium text-emerald-700">View Network</span>
+                        </button>
+                        <button
+                            onClick={handleThreatHuntingClick}
+                            className="flex items-center justify-center gap-2 p-4 bg-violet-50 rounded-lg hover:bg-violet-100 transition-colors group"
+                        >
+                            <Crosshair className="w-5 h-5 text-violet-600" />
+                            <span className="text-sm font-medium text-violet-700">Threat Hunting</span>
+                        </button>
+                    </>
+                )}
             </div>
         </div>
     );
