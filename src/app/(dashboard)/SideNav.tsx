@@ -49,22 +49,22 @@ const SideNav = () => {
     const navItems: NavItem[] = [
         {
             href: '/hunting_lodge',
-            label: 'Security Overview',
+            label: '安全總覽',
             icon: <Home size={20} />
         },
         {
             href: '/ndr',
-            label: 'Network Detection',
+            label: '網路偵測',
             icon: <Network size={20} />
         },
         {
             href: '/agents',
-            label: 'Endpoint Protection',
+            label: '端點防護',
             icon: <Database size={20} />
         },
         {
             href: '/ics',
-            label: 'Threat Hunting',
+            label: '威脅獵捕',
             icon: <Cpu size={20} />
         },
         {
@@ -74,12 +74,12 @@ const SideNav = () => {
         },
         {
             href: '/agent-deployment',
-            label: 'Agent Deployment',
+            label: '代理部署',
             icon: <Download size={20} />
         },
         {
             href: '/managecenter',
-            label: 'Manage Center',
+            label: '管理中心',
             icon: <Settings size={20} />,
             adminOnly: true
         }
