@@ -5,7 +5,7 @@ import { EventDetailsDialog } from './ModbusEventList';
 import { EventRow } from '@/features/ics/types';
 import { fetchModbusEvents } from '@/features/ics/services/modbusApi';
 import { useAuthContext } from '@/features/auth/contexts/AuthContext';
-import { Loader2, AlertCircle, ChevronLeft, ChevronRight, Search, Filter, AlertTriangle } from 'lucide-react';
+import { Loader2, AlertCircle, ChevronLeft, ChevronRight, Search, Filter, AlertTriangle, Info } from 'lucide-react';
 
 export const EventTable: React.FC = () => {
     const [events, setEvents] = useState<EventRow[] | null>(null);
@@ -33,7 +33,7 @@ export const EventTable: React.FC = () => {
     useEffect(() => {
         const loadEvents = async () => {
             if (!isLogin) {
-                setError(new Error('Please login to view events'));
+                setError(new Error('請先登入以查看事件'));
                 setLoading(false);
                 return;
             }
@@ -50,10 +50,10 @@ export const EventTable: React.FC = () => {
                         document.getElementById('eventRate')!.textContent = Math.round(response.content.length / 5).toString();
                     }
                 } else {
-                    setError(new Error('Failed to fetch events'));
+                    throw new Error('可能未開通服務、或者是裝置未連接，請聯繫系統管理員');
                 }
             } catch (err) {
-                setError(err instanceof Error ? err : new Error('Failed to fetch events'));
+                setError(new Error('可能未開通服務、或者是裝置未連接，請聯繫系統管理員'));
             } finally {
                 setLoading(false);
             }
@@ -94,8 +94,8 @@ export const EventTable: React.FC = () => {
             <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
                 <div className="text-center">
                     <AlertCircle className="mx-auto h-8 w-8 text-gray-400" />
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">Authentication Required</h3>
-                    <p className="mt-1 text-sm text-gray-500">Please login to view events</p>
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">需要登入</h3>
+                    <p className="mt-1 text-sm text-gray-500">請先登入以查看事件</p>
                 </div>
             </div>
         );
@@ -106,7 +106,7 @@ export const EventTable: React.FC = () => {
             <div className="flex items-center justify-center h-64">
                 <div className="flex flex-col items-center gap-2">
                     <Loader2 className="h-8 w-8 animate-spin text-blue-500" />
-                    <p className="text-sm text-gray-500">Loading events...</p>
+                    <p className="text-sm text-gray-500">載入中...</p>
                 </div>
             </div>
         );
@@ -114,11 +114,11 @@ export const EventTable: React.FC = () => {
 
     if (error) {
         return (
-            <div className="flex items-center justify-center h-64 bg-red-50 rounded-lg">
-                <div className="text-center">
-                    <AlertCircle className="mx-auto h-8 w-8 text-red-400" />
-                    <h3 className="mt-2 text-sm font-medium text-red-800">Error</h3>
-                    <p className="mt-1 text-sm text-red-500">{error.message}</p>
+            <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
+                <div className="text-center max-w-md mx-auto p-6">
+                    <Info className="mx-auto h-8 w-8 text-blue-400" />
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">無法取得事件資料</h3>
+                    <p className="mt-1 text-sm text-gray-500">{error.message}</p>
                 </div>
             </div>
         );
@@ -129,24 +129,24 @@ export const EventTable: React.FC = () => {
             <div className="flex items-center justify-center h-64 bg-gray-50 rounded-lg">
                 <div className="text-center">
                     <AlertCircle className="mx-auto h-8 w-8 text-gray-400" />
-                    <h3 className="mt-2 text-sm font-medium text-gray-900">No Events</h3>
-                    <p className="mt-1 text-sm text-gray-500">No events have been recorded yet</p>
+                    <h3 className="mt-2 text-sm font-medium text-gray-900">無事件資料</h3>
+                    <p className="mt-1 text-sm text-gray-500">目前尚未記錄任何事件</p>
                 </div>
             </div>
         );
     }
 
-    // Mobile Card View
+    // 手機版卡片視圖
     if (isMobile) {
         return (
             <>
-                {/* Mobile Filters */}
+                {/* 手機版篩選器 */}
                 <div className="sticky top-0 bg-white border-b p-4 space-y-3 z-10">
                     <div className="relative">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                         <input
                             type="text"
-                            placeholder="Search events..."
+                            placeholder="搜尋事件..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -159,17 +159,17 @@ export const EventTable: React.FC = () => {
                             onChange={(e) => setFilterType(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                            <option value="all">All Events</option>
-                            <option value="alerts">Alerts Only</option>
-                            <option value="normal">Normal Events</option>
+                            <option value="all">所有事件</option>
+                            <option value="alerts">僅警告</option>
+                            <option value="normal">一般事件</option>
                         </select>
                     </div>
                     <div className="text-sm text-gray-500 text-center">
-                        Showing {filteredEvents.length} events
+                        顯示 {filteredEvents.length} 個事件
                     </div>
                 </div>
 
-                {/* Event Cards */}
+                {/* 事件卡片 */}
                 <div className="space-y-4 p-4">
                     {currentEvents.map((event) => (
                         <div
@@ -184,25 +184,25 @@ export const EventTable: React.FC = () => {
                                 {event.alert && (
                                     <span className="inline-flex items-center gap-1 px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
                                         <AlertTriangle className="w-3 h-3" />
-                                        Alert
+                                        警告
                                     </span>
                                 )}
                             </div>
 
                             <div className="grid grid-cols-2 gap-2 text-sm">
                                 <div>
-                                    <p className="text-gray-500">Device</p>
+                                    <p className="text-gray-500">裝置</p>
                                     <p className="font-medium">{event.device_id}</p>
                                 </div>
                                 <div>
-                                    <p className="text-gray-500">Type</p>
+                                    <p className="text-gray-500">類型</p>
                                     <p className="font-medium">{event.event_type}</p>
                                 </div>
                             </div>
 
                             <div className="text-xs text-gray-500">
-                                <p>From: {event.source_ip}:{event.source_port}</p>
-                                <p>To: {event.destination_ip}:{event.destination_port}</p>
+                                <p>來源: {event.source_ip}:{event.source_port}</p>
+                                <p>目標: {event.destination_ip}:{event.destination_port}</p>
                             </div>
 
                             <div className="text-xs text-gray-400">
@@ -212,7 +212,7 @@ export const EventTable: React.FC = () => {
                     ))}
                 </div>
 
-                {/* Mobile Pagination */}
+                {/* 手機版分頁 */}
                 <div className="sticky bottom-0 bg-white border-t p-4 flex flex-col gap-3">
                     <select
                         value={itemsPerPage}
@@ -222,9 +222,9 @@ export const EventTable: React.FC = () => {
                         }}
                         className="w-full border rounded-md px-2 py-1.5 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value={5}>5 per page</option>
-                        <option value={10}>10 per page</option>
-                        <option value={25}>25 per page</option>
+                        <option value={5}>每頁 5 筆</option>
+                        <option value={10}>每頁 10 筆</option>
+                        <option value={25}>每頁 25 筆</option>
                     </select>
 
                     <div className="flex items-center justify-between">
@@ -236,7 +236,7 @@ export const EventTable: React.FC = () => {
                             <ChevronLeft className="w-5 h-5" />
                         </button>
                         <span className="text-sm text-gray-600">
-                            Page {currentPage} of {totalPages}
+                            第 {currentPage} 頁，共 {totalPages} 頁
                         </span>
                         <button
                             onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
@@ -256,17 +256,17 @@ export const EventTable: React.FC = () => {
         );
     }
 
-    // Desktop Table View
+    // 桌面版表格視圖
     return (
         <>
-            {/* Desktop Filters */}
+            {/* 桌面版篩選器 */}
             <div className="p-4 border-b space-y-4">
                 <div className="flex gap-4">
                     <div className="relative flex-1">
                         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                         <input
                             type="text"
-                            placeholder="Search by ID, device, or IP..."
+                            placeholder="搜尋 ID、裝置或 IP..."
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -279,45 +279,45 @@ export const EventTable: React.FC = () => {
                             onChange={(e) => setFilterType(e.target.value)}
                             className="w-full pl-10 pr-4 py-2 border rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500"
                         >
-                            <option value="all">All Events</option>
-                            <option value="alerts">Alerts Only</option>
-                            <option value="normal">Normal Events</option>
+                            <option value="all">所有事件</option>
+                            <option value="alerts">僅警告</option>
+                            <option value="normal">一般事件</option>
                         </select>
                     </div>
                 </div>
                 <div className="text-sm text-gray-500">
-                    Showing {filteredEvents.length} events
+                    顯示 {filteredEvents.length} 個事件
                 </div>
             </div>
 
-            {/* Table */}
+            {/* 表格 */}
             <div className="overflow-x-auto">
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Event ID
+                                事件 ID
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Device ID
+                                裝置 ID
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Timestamp
+                                時間戳記
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Event Type
+                                事件類型
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Source
+                                來源
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Destination
+                                目標
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Function
+                                功能
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                Status
+                                狀態
                             </th>
                         </tr>
                     </thead>
@@ -351,10 +351,10 @@ export const EventTable: React.FC = () => {
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${event.alert
-                                            ? 'bg-red-100 text-red-800'
-                                            : 'bg-green-100 text-green-800'
+                                        ? 'bg-red-100 text-red-800'
+                                        : 'bg-green-100 text-green-800'
                                         }`}>
-                                        {event.alert ? 'Alert' : 'Normal'}
+                                        {event.alert ? '警告' : '正常'}
                                     </span>
                                 </td>
                             </tr>
@@ -363,7 +363,7 @@ export const EventTable: React.FC = () => {
                 </table>
             </div>
 
-            {/* Desktop Pagination */}
+            {/* 桌面版分頁 */}
             <div className="border-t border-gray-200 px-4 py-3 flex items-center justify-between">
                 <div className="flex items-center gap-2">
                     <select
@@ -374,12 +374,12 @@ export const EventTable: React.FC = () => {
                         }}
                         className="border rounded-md px-2 py-1 text-sm text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
                     >
-                        <option value={10}>10 per page</option>
-                        <option value={25}>25 per page</option>
-                        <option value={50}>50 per page</option>
+                        <option value={10}>每頁 10 筆</option>
+                        <option value={25}>每頁 25 筆</option>
+                        <option value={50}>每頁 50 筆</option>
                     </select>
                     <span className="text-sm text-gray-500">
-                        Showing {startIndex + 1} to {Math.min(endIndex, filteredEvents.length)} of {filteredEvents.length} events
+                        顯示第 {startIndex + 1} 至 {Math.min(endIndex, filteredEvents.length)} 筆，共 {filteredEvents.length} 筆
                     </span>
                 </div>
                 <div className="flex items-center gap-2">
@@ -388,17 +388,17 @@ export const EventTable: React.FC = () => {
                         disabled={currentPage === 1}
                         className="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Previous
+                        上一頁
                     </button>
                     <span className="text-sm text-gray-600">
-                        Page {currentPage} of {totalPages}
+                        第 {currentPage} 頁，共 {totalPages} 頁
                     </span>
                     <button
                         onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                         disabled={currentPage === totalPages}
                         className="px-3 py-1 rounded-md text-gray-600 hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Next
+                        下一頁
                     </button>
                 </div>
             </div>
