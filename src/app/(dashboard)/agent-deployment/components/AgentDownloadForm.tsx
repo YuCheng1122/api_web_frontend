@@ -96,7 +96,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
             setRemainingAgents(remainingAgents - 1);
         } else {
             // 如果取消勾選，將數量加回 remainingAgents
-            setRemainingAgents(remainingAgents + totalAgents);
+            setRemainingAgents(remainingAgents + newQuantities[arch]);
             newQuantities[arch] = 1; // 將數量設為 1
         }
 
