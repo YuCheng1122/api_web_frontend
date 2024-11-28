@@ -286,6 +286,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         </div>
                     </div>
 
+
                     {/* Windows 部分 */}
                     <div className="border p-4 rounded-lg">
                         <h3 className="text-md font-bold mb-2 flex items-center">
@@ -359,6 +360,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         </div>
                     </div>
 
+
                     {/* macOS 部分 */}
                     <div className="border p-4 rounded-lg">
                         <h3 className="text-md font-bold mb-2 flex items-center">
@@ -377,7 +379,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                                 <span className="ml-2">Intel</span>
                                 <input
                                     type="number"
-                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊選中時顯數字
+                                    value={formData.macos.intel ? formData.quantities.intel : ''}  // 只有核取方塊選中時顯示數字
                                     onChange={(e) => handleQuantityChange('intel', e.target.value)}
                                     className="ml-4 w-16 border rounded p-1"
                                     min="1"
@@ -412,9 +414,7 @@ const ScriptDownloadForm = ({ className }: { className?: string }) => {
                         type="submit"
                         className="bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition duration-300"
                     >
-                        下載<br />
-                        windows 11 請執行&quot;Set-ExecutionPolicy Bypass -Scope Process&quot;<br />
-                        詳情請檢視安裝說明
+                        下載
                     </button>
                 </form>
             </div>
