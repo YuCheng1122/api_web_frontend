@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useAuthContext } from '@/features/auth/contexts/AuthContext';
+import { useAuthContext } from '@/core/contexts/AuthContext';
 import { Card, CardContent } from '@/app/(dashboard)/sensel-report/components/ui/card';
 import { ReportCard } from './components/ReportCard';
 import { ReportHeader } from './components/ReportHeader';

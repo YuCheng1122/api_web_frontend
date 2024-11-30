@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { EventDetailsDialog } from './ModbusEventList';
 import { EventRow } from '@/features/ics/types';
 import { fetchModbusEvents } from '@/features/ics/services/modbusApi';
-import { useAuthContext } from '@/features/auth/contexts/AuthContext';
+import { useAuthContext } from '@/core/contexts/AuthContext';
 import { Loader2, AlertCircle, ChevronLeft, ChevronRight, Search, Filter, AlertTriangle, Info } from 'lucide-react';
 
 export const EventTable: React.FC = () => {

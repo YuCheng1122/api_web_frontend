@@ -1,4 +1,4 @@
-import { avocadoClient } from '@/features/api/AvocadoClient';
+import { avocadoClient } from '@/core/https/AvocadoClient';
 import { FetchRansomwareDataResponse, FetchAgentInfoParams } from '../types/agent';
 
 export const fetchRansomwareData = async ({ id }: FetchAgentInfoParams): Promise<FetchRansomwareDataResponse> => {

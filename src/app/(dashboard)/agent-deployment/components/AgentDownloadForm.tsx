@@ -4,10 +4,8 @@ import React, { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { generateScripts } from '@/features/agent-deployment/Script';
 import { getTotalAgentsAndLicense } from '@/features/agent-deployment/api/totalLicenseAgent';
-import { fetchNextAgentName } from '@/features/agent-deployment/api/fetchCountingAgent'; // 導入 fetchNextAgentName
-
-// context
-import { useAuthContext } from '@/features/auth/contexts/AuthContext'
+import { fetchNextAgentName } from '@/features/agent-deployment/api/fetchCountingAgent';
+import {useAuthContext} from "@/core/contexts/AuthContext"; // 導入 fetchNextAgentName
 
 const ScriptDownloadForm = ({ className }: { className?: string }) => {
     const [formData, setFormData] = useState<Record<string, any>>({
