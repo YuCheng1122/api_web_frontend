@@ -7,8 +7,13 @@ import AgentInfo from "../components/AgentInfo";
 import { fetchAgentInfo } from "@/features/agents/api/fetchAgentInfo";
 import { fetchMitreData } from "@/features/agents/api/fetchMitreData";
 import { AgentDashboardDetailType, MitreDisplayData } from "@/features/agents/types/agent";
+import { fetchAgentList } from "@/features/agents/api/fetchAgentList";
+import { useAuthContext } from '@/features/auth/contexts/AuthContext';
 
 export default function AgentDashboardPage() {
+    const { isadmin } = useAuthContext();
+
+
     const pathname = usePathname();
     const [agentData, setAgentData] = useState<AgentDashboardDetailType | null>(null);
     const [error, setError] = useState<any>(null);
@@ -55,10 +60,53 @@ export default function AgentDashboardPage() {
 
         if (pathname) {
             const agentId = pathname.split('/').pop();
-            if (agentId) {
-                fetchData(agentId);
-            }
+            // Fetch agent list data
+            const fetchAgentListData = async () => {
+                try {
+                    const response = await fetchAgentList();
+                    if (response.success) {
+                        return response.content;
+                    } else {
+                        throw new Error('Failed to fetch agent list');
+                    }
+                } catch (error) {
+                    console.error('Error fetching agent list:', error);
+                    return [];  // Return an empty array in case of error to prevent further issues
+                }
+            };
+            (async () => {
+                const filteredAgents = await fetchAgentListData();
+                if (isadmin) {
+                    if (agentId) {
+                        await fetchData(agentId);
+                    }
+                }
+                else {
+
+                    if (Array.isArray(filteredAgents)) {
+                        // Filter the agents based on agent_name
+
+                        const filteredAgent = filteredAgents.find((agent: { agent_name: string }) => agent.agent_name === agentId);
+
+
+                        if (filteredAgent) {
+                            if (agentId) {
+                                await fetchData(agentId);
+                            } else {
+                                console.error('Agent ID is not provided.');
+                                setLoading(false);
+                                setError('Agent not found.');
+                            }
+                        } else {
+                            setLoading(false);
+                            setError(' Forbidden U don\'t have permission to access this agent');
+                        }
+                    }
+                }
+
+            })();
         }
+
     }, [pathname]);
 
     if (loading) {
@@ -109,8 +157,8 @@ export default function AgentDashboardPage() {
 
             {/* Security Overview Section */}
             <div className={`grid gap-6 ${isMobile
-                    ? 'grid-cols-1'
-                    : 'grid-cols-1 lg:grid-cols-2'
+                ? 'grid-cols-1'
+                : 'grid-cols-1 lg:grid-cols-2'
                 }`}>
                 {/* MITRE ATT&CK Overview */}
                 {mitreData && mitreData.length > 0 && (
@@ -158,8 +206,8 @@ export default function AgentDashboardPage() {
                                     <p className="text-xs text-gray-500">{agentData.last_keep_alive}</p>
                                 </div>
                                 <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${agentData.agent_status.toLowerCase() === 'active'
-                                        ? 'bg-green-100 text-green-800'
-                                        : 'bg-red-100 text-red-800'
+                                    ? 'bg-green-100 text-green-800'
+                                    : 'bg-red-100 text-red-800'
                                     }`}>
                                     {agentData.agent_status}
                                 </span>
