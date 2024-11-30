@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuthContext } from '@/features/auth/contexts/AuthContext';
+import { useRouter } from 'next/navigation';
 import {
     Home,
     Shield,
@@ -17,7 +18,9 @@ import {
     Cpu,
     Menu,
     X,
-    Download
+    Download,
+    LogOut,
+    User
 } from 'lucide-react';
 
 // 定義導航項目類型
@@ -30,47 +33,58 @@ interface NavItem {
 
 const SideNav = () => {
     const [isOpen, setIsOpen] = useState(false);
-    const { isadmin } = useAuthContext();
+    const { isadmin, username, updateLoginState } = useAuthContext();
+    const router = useRouter();
 
     const toggleMenu = () => {
         setIsOpen(!isOpen);
+    };
+
+    const handleLogout = async () => {
+        updateLoginState(false, '', null);
+        router.replace('/auth/login');
     };
 
     // 定義導航項目
     const navItems: NavItem[] = [
         {
             href: '/hunting_lodge',
-            label: 'Dashboard',
+            label: '安全總覽',
             icon: <Home size={20} />
         },
         {
             href: '/ndr',
-            label: 'NDR',
+            label: '網路偵測',
             icon: <Network size={20} />
         },
         {
             href: '/agents',
-            label: 'Agents',
+            label: '端點防護',
             icon: <Database size={20} />
         },
         {
             href: '/ics',
-            label: 'ICS',
+            label: '威脅獵捕',
             icon: <Cpu size={20} />
         },
         {
             href: '/chatbot',
-            label: 'Chatbot',
+            label: 'SenseL Copilot',
             icon: <MessageSquare size={20} />
         },
         {
+            href: '/sensel-report',
+            label: 'SenseL 分析報告',
+            icon: <BarChart2 size={20} />
+        },
+        {
             href: '/agent-deployment',
-            label: 'Agent Deployment',
+            label: '代理部署',
             icon: <Download size={20} />
         },
         {
             href: '/managecenter',
-            label: 'Manage Center',
+            label: '管理中心',
             icon: <Settings size={20} />,
             adminOnly: true
         }
@@ -105,6 +119,7 @@ const SideNav = () => {
                 transform transition-transform duration-300 ease-in-out
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
                 sm:translate-x-0
+                flex flex-col
             `}>
                 {/* Logo Section */}
                 <div className="p-4 border-b border-gray-800">
@@ -123,7 +138,7 @@ const SideNav = () => {
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="p-4">
+                <nav className="p-4 flex-grow">
                     <ul className="space-y-2">
                         {filteredNavItems.map((item) => (
                             <li key={item.href}>
@@ -139,6 +154,21 @@ const SideNav = () => {
                         ))}
                     </ul>
                 </nav>
+
+                {/* User Section */}
+                <div className="p-4 border-t border-gray-800">
+                    <div className="flex items-center space-x-3 p-2 text-gray-300">
+                        <User size={20} />
+                        <span>{username}</span>
+                    </div>
+                    <button
+                        onClick={handleLogout}
+                        className="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors text-red-400"
+                    >
+                        <LogOut size={20} />
+                        <span>登出</span>
+                    </button>
+                </div>
             </div>
         </>
     );

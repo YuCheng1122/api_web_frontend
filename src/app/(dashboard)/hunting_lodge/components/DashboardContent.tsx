@@ -7,7 +7,7 @@ import type { AgentOS, EventTable as EventTableType } from '@/features/dashboard
 import TimeRangeSelector from './TimeRangeSelector';
 import Loading from './Loading';
 
-// 動態導入組件
+// 動態導入重構後的組件
 const AgentSummaryChart = lazy(() => import('./AgentSummaryChart'));
 const AgentOSChart = lazy(() => import('./AgentOSChart'));
 const AlertsChart = lazy(() => import('./AlertsChart'));

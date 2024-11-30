@@ -36,6 +36,9 @@ const TopBlockingList = ({ data }: TopBlockingListProps) => {
                     <thead className="bg-gray-50">
                         <tr>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                IP Address
+                            </th>
+                            <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                                 Event
                             </th>
                             <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -56,10 +59,13 @@ const TopBlockingList = ({ data }: TopBlockingListProps) => {
                         {data.map((item, index) => (
                             <tr key={index} className="hover:bg-gray-50">
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                                    {item.black_list}
+                                </td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                                     {item.event}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                                    {item.category}
+                                    {item.category || '-'}
                                 </td>
                                 <td className="px-6 py-4 whitespace-nowrap">
                                     <span className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${getSeverityColor(item.severity)}`}>
@@ -71,8 +77,8 @@ const TopBlockingList = ({ data }: TopBlockingListProps) => {
                                 </td>
                                 <td className="px-6 py-4">
                                     <div className="w-full bg-gray-200 rounded-full h-2.5">
-                                        <div 
-                                            className="bg-blue-600 h-2.5 rounded-full" 
+                                        <div
+                                            className="bg-blue-600 h-2.5 rounded-full"
                                             style={{ width: `${(item.doc_count / maxCount) * 100}%` }}
                                         ></div>
                                     </div>
@@ -98,18 +104,22 @@ const TopBlockingList = ({ data }: TopBlockingListProps) => {
                             </div>
                             <div className="space-y-2">
                                 <div>
+                                    <span className="text-xs font-medium text-gray-500">IP Address</span>
+                                    <p className="text-sm text-gray-900">{item.black_list}</p>
+                                </div>
+                                <div>
                                     <span className="text-xs font-medium text-gray-500">Event</span>
                                     <p className="text-sm text-gray-900 break-words">{item.event}</p>
                                 </div>
                                 <div>
                                     <span className="text-xs font-medium text-gray-500">Category</span>
-                                    <p className="text-sm text-gray-900">{item.category}</p>
+                                    <p className="text-sm text-gray-900">{item.category || '-'}</p>
                                 </div>
                                 <div>
                                     <span className="text-xs font-medium text-gray-500">Distribution</span>
                                     <div className="mt-1 w-full bg-gray-200 rounded-full h-2">
-                                        <div 
-                                            className="bg-blue-600 h-2 rounded-full transition-all duration-300" 
+                                        <div
+                                            className="bg-blue-600 h-2 rounded-full transition-all duration-300"
                                             style={{ width: `${(item.doc_count / maxCount) * 100}%` }}
                                         ></div>
                                     </div>

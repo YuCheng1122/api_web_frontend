@@ -38,7 +38,22 @@ class AvocadoClient {
 
     private async refreshToken(): Promise<boolean> {
         try {
-            // 從 sessionStorage 獲取加密的憑證
+            // 使用 refresh-token endpoint 獲取新的 token
+            const response = await axios.post(
+                this.getFullUrl('/api/auth/refresh-token'),
+                {},
+                {
+                    headers: this.getHeaders()
+                }
+            );
+
+            if (response.data.success) {
+                const token = `${response.data.content.token_type} ${response.data.content.access_token}`;
+                Cookies.set('token', token);
+                return true;
+            }
+
+            // 如果 refresh token 失敗，嘗試使用儲存的憑證重新登入
             const encryptedCredentials = sessionStorage.getItem('auth_credentials');
             if (!encryptedCredentials) {
                 return false;
@@ -49,9 +64,9 @@ class AvocadoClient {
             const { username, password } = credentials;
 
             // 使用憑證重新登入
-            const response = await login(username, password);
-            if (response.success) {
-                const token = `${response.content.token_type} ${response.content.access_token}`;
+            const loginResponse = await login(username, password);
+            if (loginResponse.success) {
+                const token = `${loginResponse.content.token_type} ${loginResponse.content.access_token}`;
                 Cookies.set('token', token);
                 return true;
             }

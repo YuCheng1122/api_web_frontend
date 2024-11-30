@@ -6,8 +6,9 @@ import type { EventTable as EventTableType } from '@/features/dashboard_v2/types
 import NetworkTopologyChart from '@/app/(dashboard)/hunting_lodge/components/NetworkTopologyChart';
 import Loading from '@/app/(dashboard)/hunting_lodge/components/Loading';
 import Link from 'next/link';
+import { withAdminAuth } from '../../middleware/withAdminAuth';
 
-export default function NetworkPage() {
+function NetworkPage() {
     const [eventData, setEventData] = useState<EventTableType | null>(null);
     const [error, setError] = useState<string | null>(null);
     const [isLoading, setIsLoading] = useState(true);
@@ -96,3 +97,5 @@ export default function NetworkPage() {
         </div>
     );
 }
+
+export default withAdminAuth(NetworkPage);

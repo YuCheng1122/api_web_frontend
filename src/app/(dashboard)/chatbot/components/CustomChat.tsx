@@ -7,7 +7,7 @@ import { MessageFormatter } from "./MessageFormatter";
 import { DynamicQuestions } from "./DynamicQuestions";
 
 const INITIAL_MESSAGE = {
-    text: "您好！👋 我是 SenseLLM Copilot 助手。今天我能為您提供什麼幫助？",
+    text: "您好！👋 我是 SenseL Copilot 助手。今天我能為您提供什麼幫助？",
     isUser: false,
     timestamp: new Date()
 };
