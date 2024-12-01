@@ -36,6 +36,13 @@ export interface RansomwareData {
   };
 }
 
+export interface AgentListData {
+  agent_name: {
+    agent_name: string;
+    event_count: number;
+  }[];
+}
+
 export interface FetchAgentDetailsResponse {
   success: boolean;
   content: AgentDetailType[];
@@ -58,4 +65,9 @@ export interface FetchRansomwareDataResponse {
 
 export interface FetchAgentInfoParams {
   id: string;
+}
+
+export interface FetchAgentListParams {
+  success: boolean;
+  content: AgentListData;
 }
