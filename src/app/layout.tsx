@@ -1,16 +1,12 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-
-import Header from "@/components/Header";
-import { AuthProvider } from "@/contexts/AuthContext";
-import { ScrollToTop } from "@/components/ui/scroll-to-top";
-import { ArrowUpToLine } from "lucide-react";
+import { AuthProvider } from "@/features/auth/contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "AVOCADO Dashboard",
+  title: "ThreatCado XDR",
   description: "Advanced Threat Hunting System",
   icons: {
     icon: '/logo.webp',
@@ -20,22 +16,18 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
-      <body className={`${inter.className} min-h-screen bg-gray-200`}>
+      <head>
+        <link
+          rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossOrigin="anonymous"
+          referrerPolicy="no-referrer"
+        />
+      </head>
+      <body className={`${inter.className} bg-gray-100`}>
         <AuthProvider>
-          <div className="flex flex-col min-h-screen ">
-            <Header />
-            <hr className="border-gray-900" />
-            <main className="flex-grow relative">
-              {children}
-              <div className="relative">
-                {/* Some content */}
-                <ScrollToTop minHeight={20} scrollTo={10} className="absolute right-4 bottom-4">
-                  <ArrowUpToLine />
-                </ScrollToTop>
-              </div>
-            </main>
-
-          </div>
+          {children}
         </AuthProvider>
       </body>
     </html>
