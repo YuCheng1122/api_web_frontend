@@ -1,4 +1,4 @@
-import { avocadoClient } from '@/features/api/AvocadoClient';
+import { avocadoClient } from '@/core/https/AvocadoClient';
 import { FetchMitreDataResponse, FetchAgentInfoParams } from '../types/agent';
 
 export const fetchMitreData = async ({ id }: FetchAgentInfoParams): Promise<FetchMitreDataResponse> => {

@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '@/features/auth/contexts/AuthContext';
+import { useAuthContext } from '@/core/contexts/AuthContext';
 
 export function withAdminAuth(WrappedComponent: React.ComponentType<any>) {
     return function AdminProtectedRoute(props: any) {

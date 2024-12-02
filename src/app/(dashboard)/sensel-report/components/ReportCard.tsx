@@ -1,5 +1,5 @@
-import { FileText, Download, Calendar, Clock, FileIcon, Eye } from 'lucide-react';
-import { Card, CardContent } from '@/app/(dashboard)/sensel-report/components/ui/card';
+import { FileText, Download, Calendar, Clock, FileIcon, Eye, Loader2 } from 'lucide-react';
+import { Card, CardContent } from './ui/card';
 import { useState } from 'react';
 import { PreviewModal } from './PreviewModal';
 
@@ -8,8 +8,7 @@ interface ReportCardProps {
     description: string;
     lastUpdate?: string;
     frequency: string;
-    downloadUrl: string;
-    fileSize?: string;
+    username: string;
     type: 'daily' | 'weekly' | 'monthly';
 }
 
@@ -39,13 +38,72 @@ export function ReportCard({
     description,
     lastUpdate,
     frequency,
-    downloadUrl,
-    fileSize,
+    username,
     type
 }: ReportCardProps) {
     const [isHovered, setIsHovered] = useState(false);
     const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+    const [isGenerating, setIsGenerating] = useState(false);
     const colors = typeColors[type];
+
+    const generateAndDownloadReport = async () => {
+        try {
+            setIsGenerating(true);
+            const response = await fetch(`/api/generate-report?username=${username}&report_type=${type}`, {
+                method: 'POST',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate report');
+            }
+
+            // Get the blob from the response
+            const blob = await response.blob();
+
+            // Create a URL for the blob
+            const url = window.URL.createObjectURL(blob);
+
+            // Create a temporary link and click it to download
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${username}_${type}.pdf`;
+            document.body.appendChild(a);
+            a.click();
+
+            // Clean up
+            window.URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        } catch (error) {
+            console.error('Error generating report:', error);
+            alert('報告生成失敗，請稍後再試');
+        } finally {
+            setIsGenerating(false);
+        }
+    };
+
+    const handlePreview = async () => {
+        try {
+            setIsGenerating(true);
+            const response = await fetch(`/api/generate-report?username=${username}&report_type=${type}`, {
+                method: 'POST',
+            });
+
+            if (!response.ok) {
+                throw new Error('Failed to generate report');
+            }
+
+            const blob = await response.blob();
+            const url = window.URL.createObjectURL(blob);
+            setIsPreviewOpen(true);
+            return url;
+        } catch (error) {
+            console.error('Error generating report for preview:', error);
+            alert('報告預覽生成失敗，請稍後再試');
+            return null;
+        } finally {
+            setIsGenerating(false);
+        }
+    };
 
     return (
         <>
@@ -76,33 +134,45 @@ export function ReportCard({
                                         <Calendar className="w-4 h-4" />
                                         <span>{frequency}</span>
                                     </div>
-                                    {fileSize && (
-                                        <div className="flex items-center space-x-2">
-                                            <FileIcon className="w-4 h-4" />
-                                            <span>{fileSize}</span>
-                                        </div>
-                                    )}
                                 </div>
                             </div>
                         </div>
                         <div className="flex items-center space-x-3">
                             <button
                                 onClick={() => setIsPreviewOpen(true)}
-                                className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-600`}
+                                disabled={isGenerating}
+                                className={`flex items-center space-x-2 px-4 py-2.5 rounded-lg bg-gray-100 hover:bg-gray-200 transition-colors text-gray-600 disabled:opacity-50 disabled:cursor-not-allowed`}
                                 title="預覽報告"
                             >
-                                <Eye className="w-4 h-4" />
-                                <span>預覽</span>
+                                {isGenerating ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span>生成中...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Eye className="w-4 h-4" />
+                                        <span>預覽</span>
+                                    </>
+                                )}
                             </button>
-                            <a
-                                href={downloadUrl}
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className={`flex items-center space-x-2 px-4 py-2.5 ${colors.bg} ${colors.text} rounded-lg ${colors.hover} hover:text-white transition-all duration-300`}
+                            <button
+                                onClick={generateAndDownloadReport}
+                                disabled={isGenerating}
+                                className={`flex items-center space-x-2 px-4 py-2.5 ${colors.bg} ${colors.text} rounded-lg ${colors.hover} hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed`}
                             >
-                                <Download className={`w-4 h-4 ${isHovered ? 'animate-bounce' : ''}`} />
-                                <span>下載報告</span>
-                            </a>
+                                {isGenerating ? (
+                                    <>
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                        <span>生成中...</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Download className={`w-4 h-4 ${isHovered ? 'animate-bounce' : ''}`} />
+                                        <span>生成報告</span>
+                                    </>
+                                )}
+                            </button>
                         </div>
                     </div>
                 </CardContent>
@@ -111,8 +181,8 @@ export function ReportCard({
             <PreviewModal
                 isOpen={isPreviewOpen}
                 onClose={() => setIsPreviewOpen(false)}
-                pdfUrl={downloadUrl}
                 title={title}
+                generatePdf={handlePreview}
             />
         </>
     );

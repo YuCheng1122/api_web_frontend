@@ -1,4 +1,4 @@
-import { avocadoClient } from '@/features/api/AvocadoClient';
+import { avocadoClient } from '@/core/https/AvocadoClient';
 import type { TimeRange } from '@/features/dashboard_v2';
 import type {
     AgentSummary,

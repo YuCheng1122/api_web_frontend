@@ -1,4 +1,4 @@
-import { avocadoClient } from '@/features/api/AvocadoClient';
+import { avocadoClient } from '@/core/https/AvocadoClient';
 import {createSystemPrompt} from './prompts';
 import {DashboardInfo, Message} from '../types/chat';
 

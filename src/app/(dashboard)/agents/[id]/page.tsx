@@ -8,7 +8,7 @@ import { fetchAgentInfo } from "@/features/agents/api/fetchAgentInfo";
 import { fetchMitreData } from "@/features/agents/api/fetchMitreData";
 import { AgentDashboardDetailType, MitreDisplayData } from "@/features/agents/types/agent";
 import { fetchAgentList } from "@/features/agents/api/fetchAgentList";
-import { useAuthContext } from '@/features/auth/contexts/AuthContext';
+import { useAuthContext } from '@/core/contexts/AuthContext';
 
 export default function AgentDashboardPage() {
     const { isadmin } = useAuthContext();
