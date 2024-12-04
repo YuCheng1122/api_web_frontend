@@ -17,6 +17,7 @@ const MaliciousFileChart = lazy(() => import('./MaliciousFileChart'));
 const AuthenticationChart = lazy(() => import('./AuthenticationChart'));
 const MitreHeatmapChart = lazy(() => import('./MitreHeatmapChart'));
 const EventStream = lazy(() => import('./EventStream'));
+const CveChart = lazy(() => import('./CveChart'));
 
 // 實現數據緩存
 const CACHE_TIME = 5 * 60 * 1000; // 5分鐘緩存
@@ -71,7 +72,8 @@ export default function DashboardContent() {
                 './MaliciousFileChart',
                 './AuthenticationChart',
                 './MitreHeatmapChart',
-                './EventStream'
+                './EventStream',
+                './CveChart'
             ];
 
             await Promise.all(
@@ -225,6 +227,13 @@ export default function DashboardContent() {
                     </div>
                 </Suspense>
             </div>
+
+            {/* CVE Chart - Full width */}
+            <Suspense fallback={<Loading />}>
+                <div className="transform transition-transform duration-200 hover:scale-[1.02] min-h-[250px] sm:min-h-[350px]">
+                    <CveChart data={chartData.cveBarchart} />
+                </div>
+            </Suspense>
 
             {/* Full width charts - Better spacing on mobile */}
             <Suspense fallback={<Loading />}>
