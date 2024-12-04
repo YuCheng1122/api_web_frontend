@@ -2,8 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import type { CveBarchart } from '../../../../../features/dashboard_v2/types';
-import { MobileView } from './MobileView';
-import { DesktopView } from './DesktopView';
+import { MobileView } from '@/app/(dashboard)/hunting_lodge/components/CveChart/MobileView';
+import { DesktopView } from '@/app/(dashboard)/hunting_lodge/components/CveChart/DesktopView';
 
 interface Props {
     data: CveBarchart[];
@@ -30,8 +30,8 @@ export default function CveChart({ data }: Props) {
     };
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-sm p-4 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">CVE 分析</h2>
+        <div className="w-full bg-white rounded-lg shadow-sm p-3">
+            <h2 className="text-base font-semibold mb-3">CVE 分析</h2>
             {isMobile ? (
                 <MobileView {...sharedProps} />
             ) : (

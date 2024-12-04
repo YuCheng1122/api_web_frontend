@@ -13,42 +13,46 @@ interface MobileViewProps {
 export const MobileView: FC<MobileViewProps> = ({ cveData, total }) => {
     return (
         <div className="space-y-2">
-            {cveData.map((item, index) => {
-                const color = COLORS[index % COLORS.length];
-                const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : '0';
+            {/* 摘要統計 - 行內顯示 */}
+            <div className="flex gap-2 mb-2">
+                <div className="flex-1 bg-blue-50 p-2 rounded-lg">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-700">漏洞總數</span>
+                        <span className="text-lg font-bold text-blue-600">{total}</span>
+                    </div>
+                </div>
+                <div className="flex-1 bg-amber-50 p-2 rounded-lg">
+                    <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-700">類型</span>
+                        <span className="text-lg font-bold text-amber-600">{cveData.length}</span>
+                    </div>
+                </div>
+            </div>
 
-                return (
-                    <div
-                        key={item.cve_name}
-                        className="flex items-center p-2 rounded-lg transition-transform hover:scale-[1.02]"
-                        style={{ backgroundColor: `${color}10` }}
-                    >
-                        <div className="flex-shrink-0 mr-3">
+            {/* CVE列表 */}
+            <div className="grid grid-cols-1 gap-1">
+                {cveData.map((item, index) => {
+                    const color = COLORS[index % COLORS.length];
+                    return (
+                        <div
+                            key={item.cve_name}
+                            className="flex items-center p-2 rounded-lg"
+                            style={{ backgroundColor: `${color}10` }}
+                        >
                             <ShieldAlert
-                                className="w-5 h-5"
+                                className="w-4 h-4 mr-2"
                                 style={{ color }}
                             />
-                        </div>
-                        <div className="flex-1 min-w-0">
-                            <div
-                                className="text-xs text-gray-600 line-clamp-1"
-                                title={item.cve_name}
-                            >
+                            <span className="flex-1 text-xs text-gray-600 truncate">
                                 {item.cve_name}
-                            </div>
-                            <div className="text-xs text-gray-500 mt-0.5">
-                                {percentage}% of total
-                            </div>
+                            </span>
+                            <span className="text-sm font-medium ml-2" style={{ color }}>
+                                {item.count}
+                            </span>
                         </div>
-                        <div
-                            className="flex-shrink-0 text-lg font-bold ml-3"
-                            style={{ color }}
-                        >
-                            {item.count}
-                        </div>
-                    </div>
-                );
-            })}
+                    );
+                })}
+            </div>
         </div>
     );
 };
