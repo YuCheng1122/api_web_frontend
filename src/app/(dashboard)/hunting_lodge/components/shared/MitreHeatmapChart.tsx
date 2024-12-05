@@ -147,9 +147,7 @@ const MitreHeatmapChart: FC<Props> = ({ data }) => {
                 <div className="bg-accent/50 backdrop-blur-sm p-3 sm:p-4 rounded-lg hover:bg-accent/70 transition-colors">
                     <div className="flex items-center gap-2 mb-2">
                         <Shield className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: CELL_COLORS.low.base }} />
-                        <span className="text-sm font-medium text-card-foreground">
-                            {window.innerWidth >= 640 ? '活躍戰術' : 'Tactics'}
-                        </span>
+                        <span className="text-sm font-medium text-card-foreground">活躍戰術</span>
                     </div>
                     <div className="text-xl sm:text-2xl font-bold" style={{ color: CELL_COLORS.low.base }}>
                         {summary.activeTactics}
@@ -161,9 +159,7 @@ const MitreHeatmapChart: FC<Props> = ({ data }) => {
                 <div className="bg-accent/50 backdrop-blur-sm p-3 sm:p-4 rounded-lg hover:bg-accent/70 transition-colors">
                     <div className="flex items-center gap-2 mb-2">
                         <Activity className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: CELL_COLORS.medium.base }} />
-                        <span className="text-sm font-medium text-card-foreground">
-                            {window.innerWidth >= 640 ? '技術總數' : 'Tech.'}
-                        </span>
+                        <span className="text-sm font-medium text-card-foreground">技術總數</span>
                     </div>
                     <div className="text-xl sm:text-2xl font-bold" style={{ color: CELL_COLORS.medium.base }}>
                         {summary.totalTechniques}
@@ -175,9 +171,7 @@ const MitreHeatmapChart: FC<Props> = ({ data }) => {
                 <div className="bg-accent/50 backdrop-blur-sm p-3 sm:p-4 rounded-lg hover:bg-accent/70 transition-colors">
                     <div className="flex items-center gap-2 mb-2">
                         <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: CELL_COLORS.high.base }} />
-                        <span className="text-sm font-medium text-card-foreground">
-                            {window.innerWidth >= 640 ? '高風險' : 'High'}
-                        </span>
+                        <span className="text-sm font-medium text-card-foreground">高風險</span>
                     </div>
                     <div className="text-xl sm:text-2xl font-bold" style={{ color: CELL_COLORS.high.base }}>
                         {summary.highRiskTechniques}
@@ -198,8 +192,7 @@ const MitreHeatmapChart: FC<Props> = ({ data }) => {
                                     {tactic}
                                 </div>
                                 <div className="text-xs text-muted-foreground mt-1">
-                                    {techniques.length} {window.innerWidth >= 640 ? '個技術，' : ' tech, '}
-                                    {total} {window.innerWidth >= 640 ? '個事件' : ' events'}
+                                    {techniques.length} 個技術，{total} 個事件
                                 </div>
                             </div>
                         </div>
@@ -218,7 +211,7 @@ const MitreHeatmapChart: FC<Props> = ({ data }) => {
                                                 boxShadow: `0 0 10px ${color.base}40`
                                             }}
                                         >
-                                            {technique.id} {window.innerWidth >= 640 && `(${technique.count})`}
+                                            {technique.id} ({technique.count})
                                         </div>
                                         {/* 提示框 */}
                                         <div className="absolute z-10 invisible group-hover:visible bg-popover/95 backdrop-blur-sm text-popover-foreground text-xs rounded-lg py-3 px-4 w-72 bottom-full left-0 mb-2 hidden sm:block border border-border shadow-lg">
@@ -230,11 +223,6 @@ const MitreHeatmapChart: FC<Props> = ({ data }) => {
                                     </div>
                                 );
                             })}
-                            {window.innerWidth < 640 && techniques.length > 3 && (
-                                <div className="px-3 py-1.5 rounded bg-muted text-muted-foreground text-sm">
-                                    +{techniques.length - 3}
-                                </div>
-                            )}
                         </div>
                     </div>
                 ))}

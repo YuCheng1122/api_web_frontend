@@ -35,6 +35,7 @@ interface Props {
 const MaliciousFileChart: FC<Props> = ({ data }) => {
     const files = data.content.malicious_file_barchart;
     const total = files.reduce((sum, item) => sum + item.count, 0);
+    const maxCount = Math.max(...files.map(item => item.count));
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
@@ -68,7 +69,7 @@ const MaliciousFileChart: FC<Props> = ({ data }) => {
             <div className="space-y-3 sm:space-y-4">
                 {files.map((item, index) => {
                     const color = COLORS[index % COLORS.length];
-                    const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : '0';
+                    const relativeWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
 
                     return (
                         <div
@@ -81,7 +82,7 @@ const MaliciousFileChart: FC<Props> = ({ data }) => {
                                 className="absolute inset-0 opacity-10 transition-all duration-300 group-hover:opacity-20"
                                 style={{
                                     background: color.gradient,
-                                    width: `${percentage}%`
+                                    width: `${Math.max(relativeWidth, 5)}%`
                                 }}
                             />
 
@@ -101,27 +102,22 @@ const MaliciousFileChart: FC<Props> = ({ data }) => {
                                         </div>
                                     </div>
                                     <div
-                                        className="text-sm font-bold flex-shrink-0 ml-2"
+                                        className="text-lg font-bold flex-shrink-0 ml-2"
                                         style={{ color: color.base }}
                                     >
-                                        {percentage}%
+                                        {item.count}
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-4">
-                                    <div className="text-sm text-muted-foreground flex-shrink-0">
-                                        數量：{item.count}
-                                    </div>
-                                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
-                                        <div
-                                            className="h-full rounded-full transition-all duration-500"
-                                            style={{
-                                                background: color.gradient,
-                                                width: `${Math.max(parseFloat(percentage), 2)}%`,
-                                                boxShadow: `0 0 8px ${color.base}40`
-                                            }}
-                                        />
-                                    </div>
+                                <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
+                                    <div
+                                        className="h-full rounded-full transition-all duration-500"
+                                        style={{
+                                            background: color.gradient,
+                                            width: `${Math.max(relativeWidth, 5)}%`,
+                                            boxShadow: `0 0 8px ${color.base}40`
+                                        }}
+                                    />
                                 </div>
                             </div>
                         </div>

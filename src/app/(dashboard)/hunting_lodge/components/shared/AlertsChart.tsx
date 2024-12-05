@@ -43,6 +43,7 @@ interface Props {
 const AlertsChart: FC<Props> = ({ data }) => {
     const total = SEVERITY_CONFIG.reduce((sum, config) => sum + config.getValue(data), 0);
     const criticalPlusHigh = SEVERITY_CONFIG[0].getValue(data) + SEVERITY_CONFIG[1].getValue(data);
+    const maxValue = Math.max(...SEVERITY_CONFIG.map(config => config.getValue(data)));
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
@@ -50,11 +51,10 @@ const AlertsChart: FC<Props> = ({ data }) => {
 
             {/* 主要內容區域 */}
             <div className="space-y-4 sm:space-y-6">
-                {/* 移動端卡片 / 桌面端條形圖 */}
+                {/* 移動端卡片 */}
                 <div className="grid grid-cols-2 gap-2 sm:hidden">
                     {SEVERITY_CONFIG.map((config) => {
                         const value = config.getValue(data);
-                        const percentage = total > 0 ? (value / total * 100).toFixed(1) : '0';
                         const Icon = config.icon;
 
                         return (
@@ -73,9 +73,6 @@ const AlertsChart: FC<Props> = ({ data }) => {
                                 >
                                     {value}
                                 </div>
-                                <div className="text-xs text-muted-foreground">
-                                    {percentage}% of total
-                                </div>
                             </div>
                         );
                     })}
@@ -85,8 +82,8 @@ const AlertsChart: FC<Props> = ({ data }) => {
                 <div className="hidden sm:block space-y-4">
                     {SEVERITY_CONFIG.map((config) => {
                         const value = config.getValue(data);
-                        const percentage = total > 0 ? (value / total * 100) : 0;
                         const Icon = config.icon;
+                        const relativeWidth = maxValue > 0 ? (value / maxValue) * 100 : 0;
 
                         return (
                             <div key={config.name} className="space-y-2">
@@ -97,8 +94,8 @@ const AlertsChart: FC<Props> = ({ data }) => {
                                             {config.name}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {value} ({percentage.toFixed(1)}%)
+                                    <div className="text-sm font-medium" style={{ color: config.color }}>
+                                        {value}
                                     </div>
                                 </div>
                                 <div className="h-2.5 bg-muted rounded-full overflow-hidden">
@@ -106,7 +103,7 @@ const AlertsChart: FC<Props> = ({ data }) => {
                                         className="h-full rounded-full transition-all duration-500 ease-out"
                                         style={{
                                             backgroundColor: config.color,
-                                            width: `${Math.max(percentage, 2)}%`,
+                                            width: `${Math.max(relativeWidth, 2)}%`,
                                             boxShadow: `0 0 8px ${config.bgColor}`
                                         }}
                                     />
@@ -121,13 +118,13 @@ const AlertsChart: FC<Props> = ({ data }) => {
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <div>
                             <div className="text-xs sm:text-sm text-muted-foreground">
-                                {window.innerWidth >= 640 ? '警報總數' : 'Total Alerts'}
+                                警報總數
                             </div>
                             <div className="text-lg sm:text-2xl font-bold text-card-foreground">{total}</div>
                         </div>
                         <div>
                             <div className="text-xs sm:text-sm text-muted-foreground">
-                                {window.innerWidth >= 640 ? '嚴重 + 高風險' : 'Critical + High'}
+                                嚴重 + 高風險
                             </div>
                             <div className="text-lg sm:text-2xl font-bold" style={{ color: SEVERITY_CONFIG[0].color }}>
                                 {criticalPlusHigh}
@@ -136,7 +133,7 @@ const AlertsChart: FC<Props> = ({ data }) => {
                     </div>
                     {SEVERITY_CONFIG[0].getValue(data) > 0 && (
                         <div className="mt-3 sm:mt-4 text-xs sm:text-sm" style={{ color: SEVERITY_CONFIG[0].color }}>
-                            ⚠️ {SEVERITY_CONFIG[0].getValue(data)} {window.innerWidth >= 640 ? '個嚴重警報需要立即處理' : 'critical alerts need attention'}
+                            ⚠️ {SEVERITY_CONFIG[0].getValue(data)} 個嚴重警報需要立即處理
                         </div>
                     )}
                 </div>

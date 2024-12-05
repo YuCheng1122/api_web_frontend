@@ -3,7 +3,7 @@
 import { FC } from 'react';
 import type { AgentOS } from '../../../../../features/dashboard_v2/types';
 
-// 原 utils.ts 中的常數和函數
+// Enhanced color configuration
 const COLORS = {
     'Microsoft Windows 10': 'var(--chart-1)',
     'Microsoft Windows 11': 'var(--chart-2)',
@@ -32,6 +32,7 @@ interface Props {
 const AgentOSChart: FC<Props> = ({ data }) => {
     const osData = data.content.agent_os;
     const total = osData.reduce((sum, item) => sum + item.count, 0);
+    const maxCount = Math.max(...osData.map(item => item.count));
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
@@ -41,7 +42,6 @@ const AgentOSChart: FC<Props> = ({ data }) => {
             <div className="grid grid-cols-1 gap-2 sm:hidden">
                 {osData.map((item) => {
                     const color = COLORS[item.os as keyof typeof COLORS] || COLORS.default;
-                    const percentage = ((item.count / total) * 100).toFixed(1);
                     const iconClass = getOSIcon(item.os);
 
                     return (
@@ -57,13 +57,10 @@ const AgentOSChart: FC<Props> = ({ data }) => {
                             </div>
                             <div className="flex-1 min-w-0">
                                 <div
-                                    className="text-xs text-muted-foreground line-clamp-2"
+                                    className="text-xs text-card-foreground line-clamp-2"
                                     title={item.os}
                                 >
                                     {item.os}
-                                </div>
-                                <div className="text-xs text-muted-foreground mt-0.5">
-                                    {percentage}% of total
                                 </div>
                             </div>
                             <div
@@ -83,7 +80,7 @@ const AgentOSChart: FC<Props> = ({ data }) => {
                 <div className="flex h-[200px] items-end gap-4 px-4">
                     {osData.map((item) => {
                         const color = COLORS[item.os as keyof typeof COLORS] || COLORS.default;
-                        const percentage = (item.count / total) * 100;
+                        const height = (item.count / maxCount) * 100;
                         const iconClass = getOSIcon(item.os);
 
                         return (
@@ -98,7 +95,7 @@ const AgentOSChart: FC<Props> = ({ data }) => {
                                     className="w-full rounded-t-lg transition-all duration-500 ease-in-out"
                                     style={{
                                         backgroundColor: `hsl(${color})`,
-                                        height: `${Math.max(percentage, 5)}%`,
+                                        height: `${Math.max(height, 5)}%`,
                                         opacity: 0.8
                                     }}
                                 />
@@ -118,13 +115,11 @@ const AgentOSChart: FC<Props> = ({ data }) => {
                             <tr>
                                 <th className="text-left text-sm font-medium text-muted-foreground pb-3">作業系統</th>
                                 <th className="text-right text-sm font-medium text-muted-foreground pb-3">數量</th>
-                                <th className="text-right text-sm font-medium text-muted-foreground pb-3">百分比</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-border">
                             {osData.map((item) => {
                                 const color = COLORS[item.os as keyof typeof COLORS] || COLORS.default;
-                                const percentage = ((item.count / total) * 100).toFixed(1);
                                 const iconClass = getOSIcon(item.os);
 
                                 return (
@@ -141,9 +136,6 @@ const AgentOSChart: FC<Props> = ({ data }) => {
                                         <td className="text-right text-sm font-medium" style={{ color: `hsl(${color})` }}>
                                             {item.count}
                                         </td>
-                                        <td className="text-right text-sm text-muted-foreground">
-                                            {percentage}%
-                                        </td>
                                     </tr>
                                 );
                             })}
@@ -152,7 +144,6 @@ const AgentOSChart: FC<Props> = ({ data }) => {
                             <tr>
                                 <td className="py-3 text-sm font-medium text-card-foreground">總計</td>
                                 <td className="text-right text-sm font-medium text-card-foreground">{total}</td>
-                                <td className="text-right text-sm text-card-foreground">100%</td>
                             </tr>
                         </tfoot>
                     </table>

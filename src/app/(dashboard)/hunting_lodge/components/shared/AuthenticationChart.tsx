@@ -47,7 +47,7 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                     <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                         <UserCheck className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: COLORS[0].base }} />
                         <span className="text-xs sm:text-sm font-medium text-card-foreground">
-                            {window.innerWidth >= 640 ? '事件總數' : 'Total'}
+                            事件總數
                         </span>
                     </div>
                     <div className="text-lg sm:text-2xl font-bold" style={{ color: COLORS[0].base }}>
@@ -62,7 +62,7 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                     <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
                         <ShieldAlert className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: COLORS[1].base }} />
                         <span className="text-xs sm:text-sm font-medium text-card-foreground">
-                            {window.innerWidth >= 640 ? '主要策略' : 'Main'}
+                            主要策略
                         </span>
                     </div>
                     <div className="text-sm sm:text-lg font-bold line-clamp-1"
@@ -80,8 +80,7 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
             <div className="space-y-2 sm:space-y-4 order-2 sm:order-1 mt-3 sm:mt-6">
                 {tactics.map((item, index) => {
                     const color = COLORS[index % COLORS.length];
-                    const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : '0';
-                    const barWidth = (item.count / maxCount) * 100;
+                    const relativeWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
 
                     return (
                         <div
@@ -98,11 +97,8 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-xs text-muted-foreground line-clamp-1" title={item.tactic}>
+                                    <div className="text-xs text-card-foreground line-clamp-1" title={item.tactic}>
                                         {item.tactic}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground mt-0.5">
-                                        {percentage}% of total
                                     </div>
                                 </div>
                                 <div className="text-lg font-bold ml-3 whitespace-nowrap" style={{ color: color.base }}>
@@ -119,8 +115,8 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                                             {item.tactic}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-muted-foreground">
-                                        {item.count} ({percentage}%)
+                                    <div className="text-sm font-medium" style={{ color: color.base }}>
+                                        {item.count}
                                     </div>
                                 </div>
                                 <div className="h-8 bg-muted rounded-lg overflow-hidden">
@@ -128,7 +124,7 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                                         className="h-full rounded-lg transition-all duration-500 flex items-center px-3 hover:brightness-110"
                                         style={{
                                             background: color.gradient,
-                                            width: `${Math.max(barWidth, 5)}%`,
+                                            width: `${Math.max(relativeWidth, 5)}%`,
                                             minWidth: '40px',
                                             boxShadow: `0 0 10px ${color.base}40`
                                         }}

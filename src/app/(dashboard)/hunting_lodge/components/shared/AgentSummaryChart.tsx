@@ -70,15 +70,10 @@ const AgentSummaryChart: FC<Props> = ({ data }) => {
                     <div className="bg-accent rounded-lg p-2 sm:p-4">
                         <div className="flex items-center gap-1.5 sm:gap-3 mb-1 sm:mb-2">
                             <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-chart-2" />
-                            <span className="text-xs sm:text-sm font-medium text-card-foreground">
-                                {window.innerWidth >= 640 ? '已連接代理' : 'Connected'}
-                            </span>
+                            <span className="text-xs sm:text-sm font-medium text-card-foreground">已連接代理</span>
                         </div>
                         <div className="text-lg sm:text-2xl font-bold text-chart-2 mb-0.5 sm:mb-1">
                             {connected_agents}
-                        </div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">
-                            {((connected_agents / total) * 100).toFixed(1)}% of total
                         </div>
                         <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-2 hidden sm:block">
                             運作中並回報中
@@ -88,15 +83,10 @@ const AgentSummaryChart: FC<Props> = ({ data }) => {
                     <div className="bg-accent rounded-lg p-2 sm:p-4">
                         <div className="flex items-center gap-1.5 sm:gap-3 mb-1 sm:mb-2">
                             <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-destructive" />
-                            <span className="text-xs sm:text-sm font-medium text-card-foreground">
-                                {window.innerWidth >= 640 ? '已斷開代理' : 'Disconnected'}
-                            </span>
+                            <span className="text-xs sm:text-sm font-medium text-card-foreground">已斷開代理</span>
                         </div>
                         <div className="text-lg sm:text-2xl font-bold text-destructive mb-0.5 sm:mb-1">
                             {disconnected_agents}
-                        </div>
-                        <div className="text-xs sm:text-sm text-muted-foreground">
-                            {((disconnected_agents / total) * 100).toFixed(1)}% of total
                         </div>
                         <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-destructive hidden sm:block">
                             需要注意

@@ -66,7 +66,7 @@ const CveChart: FC<Props> = ({ data }) => {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.map((item, index) => {
                     const color = COLORS[index % COLORS.length];
-                    const percentage = (item.count / maxCount) * 100;
+                    const relativeWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
 
                     return (
                         <div
@@ -79,7 +79,7 @@ const CveChart: FC<Props> = ({ data }) => {
                                 className="absolute inset-0 opacity-10 transition-all duration-300 group-hover:opacity-20"
                                 style={{
                                     background: color.gradient,
-                                    width: `${percentage}%`
+                                    width: `${Math.max(relativeWidth, 5)}%`
                                 }}
                             />
 
@@ -92,9 +92,6 @@ const CveChart: FC<Props> = ({ data }) => {
                                 <div className="flex-1 min-w-0">
                                     <div className="text-sm font-medium text-card-foreground truncate" title={item.cve_name}>
                                         {item.cve_name}
-                                    </div>
-                                    <div className="text-xs text-muted-foreground mt-0.5">
-                                        {((item.count / total) * 100).toFixed(1)}% of total
                                     </div>
                                 </div>
                                 <div className="text-lg font-bold" style={{ color: color.base }}>
