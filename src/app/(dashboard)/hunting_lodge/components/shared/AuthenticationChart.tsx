@@ -6,11 +6,11 @@ import type { Authentication } from '../../../../../features/dashboard_v2/types'
 
 // 原 constants.ts 中的顏色配置
 const COLORS = [
-    '#3B82F6', // blue-500
-    '#10B981', // emerald-500
-    '#F59E0B', // amber-500
-    '#6366F1', // indigo-500
-    '#EC4899', // pink-500
+    'hsl(var(--chart-1))', // blue
+    'hsl(var(--chart-2))', // emerald
+    'hsl(var(--chart-3))', // amber
+    'hsl(var(--chart-4))', // indigo
+    'hsl(var(--chart-5))', // pink
 ] as const;
 
 interface Props {
@@ -23,37 +23,37 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
     const maxCount = Math.max(...tactics.map(t => t.count));
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">身份驗證策略分佈</h2>
+        <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">身份驗證策略分佈</h2>
 
             {/* 統計卡片 - 在移動端顯示在底部，在桌面端顯示在底部 */}
             <div className="grid grid-cols-2 gap-2 sm:gap-4 mb-3 sm:mb-0 order-1 sm:order-2">
-                <div className="bg-blue-50 rounded-lg p-2 sm:p-4">
+                <div className="bg-accent rounded-lg p-2 sm:p-4">
                     <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-700">
+                        <UserCheck className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
+                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '事件總數' : 'Total'}
                         </span>
                     </div>
-                    <div className="text-lg sm:text-2xl font-bold text-blue-600">
+                    <div className="text-lg sm:text-2xl font-bold text-chart-1">
                         {total}
                     </div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-600 hidden sm:block">
+                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-1 hidden sm:block">
                         驗證嘗試次數
                     </div>
                 </div>
 
-                <div className="bg-amber-50 rounded-lg p-2 sm:p-4">
+                <div className="bg-accent rounded-lg p-2 sm:p-4">
                     <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <ShieldAlert className="w-4 h-4 sm:w-5 sm:h-5 text-amber-600" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-700">
+                        <ShieldAlert className="w-4 h-4 sm:w-5 sm:h-5 text-chart-3" />
+                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '主要策略' : 'Main'}
                         </span>
                     </div>
-                    <div className="text-sm sm:text-lg font-bold text-amber-600 line-clamp-1" title={tactics[0]?.tactic}>
+                    <div className="text-sm sm:text-lg font-bold text-chart-3 line-clamp-1" title={tactics[0]?.tactic}>
                         {tactics[0]?.tactic || '無資料'}
                     </div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-amber-600 hidden sm:block">
+                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-3 hidden sm:block">
                         {tactics[0]?.count || 0} 個事件
                     </div>
                 </div>
@@ -72,8 +72,7 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                             className="sm:space-y-2"
                         >
                             {/* 移動端顯示 */}
-                            <div className="flex sm:hidden items-center p-2 rounded-lg transition-transform hover:scale-[1.02]"
-                                style={{ backgroundColor: `${color}10` }}
+                            <div className="flex sm:hidden items-center p-2 rounded-lg transition-transform hover:scale-[1.02] bg-accent"
                             >
                                 <div className="flex-shrink-0 mr-3">
                                     <Key
@@ -82,10 +81,10 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                                     />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-xs text-gray-600 line-clamp-1" title={item.tactic}>
+                                    <div className="text-xs text-muted-foreground line-clamp-1" title={item.tactic}>
                                         {item.tactic}
                                     </div>
-                                    <div className="text-xs text-gray-500 mt-0.5">
+                                    <div className="text-xs text-muted-foreground mt-0.5">
                                         {percentage}% of total
                                     </div>
                                 </div>
@@ -99,15 +98,15 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <Key className="w-4 h-4" style={{ color }} />
-                                        <span className="text-sm font-medium text-gray-700">
+                                        <span className="text-sm font-medium text-card-foreground">
                                             {item.tactic}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-sm text-muted-foreground">
                                         {item.count} ({percentage}%)
                                     </div>
                                 </div>
-                                <div className="h-8 bg-gray-100 rounded-lg overflow-hidden">
+                                <div className="h-8 bg-muted rounded-lg overflow-hidden">
                                     <div
                                         className="h-full rounded-lg transition-all duration-500 flex items-center px-3"
                                         style={{
@@ -116,7 +115,7 @@ const AuthenticationChart: FC<Props> = ({ data }) => {
                                             minWidth: '40px'
                                         }}
                                     >
-                                        <span className="text-xs font-medium text-white">
+                                        <span className="text-xs font-medium text-background">
                                             {item.count}
                                         </span>
                                     </div>

@@ -8,29 +8,29 @@ import type { Alerts } from '../../../../../features/dashboard_v2/types';
 const SEVERITY_CONFIG = [
     {
         name: 'Critical',
-        color: '#DC2626', // red-600
-        bgColor: '#FEE2E2', // red-100
+        color: 'hsl(var(--destructive))',
+        bgColor: 'hsl(var(--destructive) / 0.2)',
         icon: AlertOctagon,
         getValue: (data: Alerts) => data.content.alerts.critical_severity
     },
     {
         name: 'High',
-        color: '#F97316', // orange-500
-        bgColor: '#FFEDD5', // orange-100
+        color: 'hsl(var(--chart-3))',
+        bgColor: 'hsl(var(--chart-3) / 0.2)',
         icon: AlertTriangle,
         getValue: (data: Alerts) => data.content.alerts.high_severity
     },
     {
         name: 'Medium',
-        color: '#FBBF24', // amber-400
-        bgColor: '#FEF3C7', // amber-100
+        color: 'hsl(var(--chart-4))',
+        bgColor: 'hsl(var(--chart-4) / 0.2)',
         icon: AlertCircle,
         getValue: (data: Alerts) => data.content.alerts.medium_severity
     },
     {
         name: 'Low',
-        color: '#22C55E', // green-500
-        bgColor: '#DCFCE7', // green-100
+        color: 'hsl(var(--chart-2))',
+        bgColor: 'hsl(var(--chart-2) / 0.2)',
         icon: CheckCircle,
         getValue: (data: Alerts) => data.content.alerts.low_severity
     }
@@ -45,8 +45,8 @@ const AlertsChart: FC<Props> = ({ data }) => {
     const criticalPlusHigh = SEVERITY_CONFIG[0].getValue(data) + SEVERITY_CONFIG[1].getValue(data);
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">警報嚴重程度分佈</h2>
+        <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">警報嚴重程度分佈</h2>
 
             {/* 主要內容區域 */}
             <div className="space-y-4 sm:space-y-6">
@@ -60,12 +60,11 @@ const AlertsChart: FC<Props> = ({ data }) => {
                         return (
                             <div
                                 key={config.name}
-                                className="p-3 rounded-lg"
-                                style={{ backgroundColor: config.bgColor }}
+                                className="p-3 rounded-lg bg-accent"
                             >
                                 <div className="flex items-center gap-2 mb-1">
                                     <Icon className="w-4 h-4" style={{ color: config.color }} />
-                                    <div className="text-xs text-gray-600">{config.name}</div>
+                                    <div className="text-xs text-muted-foreground">{config.name}</div>
                                 </div>
                                 <div
                                     className="text-xl font-bold"
@@ -73,7 +72,7 @@ const AlertsChart: FC<Props> = ({ data }) => {
                                 >
                                     {value}
                                 </div>
-                                <div className="text-xs text-gray-500">
+                                <div className="text-xs text-muted-foreground">
                                     {percentage}% of total
                                 </div>
                             </div>
@@ -93,15 +92,15 @@ const AlertsChart: FC<Props> = ({ data }) => {
                                 <div className="flex justify-between items-center">
                                     <div className="flex items-center gap-2">
                                         <Icon className="w-5 h-5" style={{ color: config.color }} />
-                                        <span className="text-sm font-medium text-gray-700">
+                                        <span className="text-sm font-medium text-card-foreground">
                                             {config.name}
                                         </span>
                                     </div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="text-sm text-muted-foreground">
                                         {value} ({percentage.toFixed(1)}%)
                                     </div>
                                 </div>
-                                <div className="h-2 bg-gray-100 rounded-full overflow-hidden">
+                                <div className="h-2 bg-muted rounded-full overflow-hidden">
                                     <div
                                         className="h-full rounded-full transition-all duration-500"
                                         style={{
@@ -116,25 +115,25 @@ const AlertsChart: FC<Props> = ({ data }) => {
                 </div>
 
                 {/* 統計摘要 */}
-                <div className="bg-gray-50 rounded-lg p-3 sm:p-4">
+                <div className="bg-muted rounded-lg p-3 sm:p-4">
                     <div className="grid grid-cols-2 gap-3 sm:gap-4">
                         <div>
-                            <div className="text-xs sm:text-sm text-gray-500">
+                            <div className="text-xs sm:text-sm text-muted-foreground">
                                 {window.innerWidth >= 640 ? '警報總數' : 'Total Alerts'}
                             </div>
-                            <div className="text-lg sm:text-2xl font-bold text-gray-900">{total}</div>
+                            <div className="text-lg sm:text-2xl font-bold text-card-foreground">{total}</div>
                         </div>
                         <div>
-                            <div className="text-xs sm:text-sm text-gray-500">
+                            <div className="text-xs sm:text-sm text-muted-foreground">
                                 {window.innerWidth >= 640 ? '嚴重 + 高風險' : 'Critical + High'}
                             </div>
-                            <div className="text-lg sm:text-2xl font-bold text-red-600">
+                            <div className="text-lg sm:text-2xl font-bold text-destructive">
                                 {criticalPlusHigh}
                             </div>
                         </div>
                     </div>
                     {SEVERITY_CONFIG[0].getValue(data) > 0 && (
-                        <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-red-600">
+                        <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-destructive">
                             ⚠️ {SEVERITY_CONFIG[0].getValue(data)} {window.innerWidth >= 640 ? '個嚴重警報需要立即處理' : 'critical alerts need attention'}
                         </div>
                     )}

@@ -18,18 +18,18 @@ import type { TtpLinechart, TtpLinechartTypes } from '../../../../../features/da
 
 // Constants
 const TTP_COLORS: { [key: string]: string } = {
-    'Initial Access': '#2563EB',      // Blue
-    'Execution': '#DC2626',           // Red
-    'Persistence': '#9333EA',         // Purple
-    'Privilege Escalation': '#EA580C', // Orange
-    'Defense Evasion': '#059669',     // Green
-    'Credential Access': '#CA8A04',    // Yellow
-    'Discovery': '#0891B2',           // Cyan
-    'Lateral Movement': '#BE185D',    // Pink
-    'Collection': '#4F46E5',          // Indigo
-    'Command and Control': '#7C3AED', // Violet
-    'Exfiltration': '#B91C1C',        // Dark Red
-    'Impact': '#15803D',              // Dark Green
+    'Initial Access': 'hsl(var(--chart-1))',      // Blue
+    'Execution': 'hsl(var(--destructive))',       // Red
+    'Persistence': 'hsl(var(--chart-5))',         // Purple
+    'Privilege Escalation': 'hsl(var(--chart-3))', // Orange
+    'Defense Evasion': 'hsl(var(--chart-2))',     // Green
+    'Credential Access': 'hsl(var(--chart-3))',    // Yellow
+    'Discovery': 'hsl(var(--chart-1))',           // Cyan
+    'Lateral Movement': 'hsl(var(--chart-5))',    // Pink
+    'Collection': 'hsl(var(--chart-4))',          // Indigo
+    'Command and Control': 'hsl(var(--chart-4))', // Violet
+    'Exfiltration': 'hsl(var(--destructive))',    // Dark Red
+    'Impact': 'hsl(var(--chart-2))',              // Dark Green
 } as const;
 
 // Types
@@ -80,15 +80,15 @@ const calculateTrendSummary = (timePoints: TimePoint[]): TrendSummary => {
 };
 
 const getSeriesColor = (seriesName: string): string =>
-    TTP_COLORS[seriesName as keyof typeof TTP_COLORS] || '#6B7280';
+    TTP_COLORS[seriesName as keyof typeof TTP_COLORS] || 'hsl(var(--muted-foreground))';
 
 // CustomTooltip Component
 const CustomTooltip: FC<CustomTooltipProps> = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
 
     return (
-        <div className="bg-white p-2 sm:p-3 rounded-lg shadow-lg border border-gray-200 max-w-[280px] sm:max-w-none">
-            <p className="text-xs sm:text-sm text-gray-600 mb-1 sm:mb-2">
+        <div className="bg-popover p-2 sm:p-3 rounded-lg shadow-lg border border-border max-w-[280px] sm:max-w-none">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
                 {new Date(label || '').toLocaleString()}
             </p>
             <div className="space-y-1 sm:space-y-2">
@@ -99,7 +99,7 @@ const CustomTooltip: FC<CustomTooltipProps> = ({ active, payload, label }) => {
                                 className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
                                 style={{ backgroundColor: getSeriesColor(entry.name) }}
                             />
-                            <span className="text-xs sm:text-sm text-gray-700">{entry.name}</span>
+                            <span className="text-xs sm:text-sm text-popover-foreground">{entry.name}</span>
                         </div>
                         <span
                             className="text-xs sm:text-sm font-medium"
@@ -131,32 +131,32 @@ const TtpLineChart: FC<Props> = ({ data }) => {
     const { criticalCount, increasingTrends } = calculateTrendSummary(timePoints);
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">MITRE 戰術時間分佈</h2>
+        <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">MITRE 戰術時間分佈</h2>
 
             {/* 趨勢摘要卡片 */}
             <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="bg-orange-50 p-3 sm:p-4 rounded-lg">
+                <div className="bg-accent p-3 sm:p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-orange-600" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-700">
+                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-chart-3" />
+                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '嚴重戰術' : 'Critical'}
                         </span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-orange-600">{criticalCount}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-orange-600 hidden sm:block">
+                    <div className="text-xl sm:text-2xl font-bold text-chart-3">{criticalCount}</div>
+                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-3 hidden sm:block">
                         具有嚴重程度的戰術
                     </div>
                 </div>
-                <div className="bg-blue-50 p-3 sm:p-4 rounded-lg">
+                <div className="bg-accent p-3 sm:p-4 rounded-lg">
                     <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" />
-                        <span className="text-xs sm:text-sm font-medium text-gray-700">
+                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
+                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '上升趨勢' : 'Increasing'}
                         </span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-blue-600">{increasingTrends}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-blue-600 hidden sm:block">
+                    <div className="text-xl sm:text-2xl font-bold text-chart-1">{increasingTrends}</div>
+                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-1 hidden sm:block">
                         顯示上升趨勢的戰術
                     </div>
                 </div>
@@ -170,28 +170,28 @@ const TtpLineChart: FC<Props> = ({ data }) => {
                             data={timePoints}
                             margin={{ top: 20, right: 10, left: 0, bottom: 60 }}
                         >
-                            <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
+                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
                             <XAxis
                                 dataKey="time"
-                                tick={{ fontSize: 10, fill: '#6B7280' }}
+                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                                 angle={-35}
                                 textAnchor="end"
                                 height={60}
                                 tickMargin={20}
-                                stroke="#9CA3AF"
+                                stroke="hsl(var(--muted-foreground))"
                                 interval="preserveStartEnd"
                             />
                             <YAxis
-                                tick={{ fontSize: 10, fill: '#6B7280' }}
+                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                                 width={35}
-                                stroke="#9CA3AF"
+                                stroke="hsl(var(--muted-foreground))"
                             />
                             <Tooltip content={<CustomTooltip />} />
                             <Legend
                                 verticalAlign="top"
                                 height={36}
                                 iconSize={8}
-                                wrapperStyle={{ fontSize: '12px' }}
+                                wrapperStyle={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))' }}
                             />
                             {chartData.datas.map((series) => (
                                 <Line
@@ -214,17 +214,19 @@ const TtpLineChart: FC<Props> = ({ data }) => {
                             data={recentTimePoints}
                             margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
                         >
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} />
+                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
                             <XAxis
                                 dataKey="time"
-                                tick={{ fontSize: 10 }}
+                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                                 angle={-35}
                                 textAnchor="end"
                                 height={50}
+                                stroke="hsl(var(--muted-foreground))"
                             />
                             <YAxis
-                                tick={{ fontSize: 10 }}
+                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
                                 width={25}
+                                stroke="hsl(var(--muted-foreground))"
                             />
                             <Tooltip content={<CustomTooltip />} />
                             {chartData.datas.map((series) => (
@@ -245,14 +247,13 @@ const TtpLineChart: FC<Props> = ({ data }) => {
                 {chartData.datas.map((series) => (
                     <div
                         key={series.name}
-                        className="flex items-center gap-2 p-2 rounded-lg"
-                        style={{ backgroundColor: `${getSeriesColor(series.name)}10` }}
+                        className="flex items-center gap-2 p-2 rounded-lg bg-accent"
                     >
                         <div
                             className="w-2 h-2 rounded-full"
                             style={{ backgroundColor: getSeriesColor(series.name) }}
                         />
-                        <span className="text-xs text-gray-600 truncate">{series.name}</span>
+                        <span className="text-xs text-muted-foreground truncate">{series.name}</span>
                     </div>
                 ))}
             </div>

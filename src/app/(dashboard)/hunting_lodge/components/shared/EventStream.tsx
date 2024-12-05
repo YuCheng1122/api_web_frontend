@@ -8,28 +8,28 @@ import type { EventTableElement } from '../../../../../features/dashboard_v2/typ
 // Constants
 const SEVERITY_COLORS = {
     critical: {
-        bg: 'bg-red-100',
-        border: 'border-red-500',
-        text: 'text-red-800',
-        fill: '#EF4444'
+        bg: 'bg-destructive/20',
+        border: 'border-destructive',
+        text: 'text-destructive',
+        fill: 'hsl(var(--destructive))'
     },
     high: {
-        bg: 'bg-orange-100',
-        border: 'border-orange-500',
-        text: 'text-orange-800',
-        fill: '#F97316'
+        bg: 'bg-chart-3/20',
+        border: 'border-chart-3',
+        text: 'text-chart-3',
+        fill: 'hsl(var(--chart-3))'
     },
     medium: {
-        bg: 'bg-yellow-100',
-        border: 'border-yellow-500',
-        text: 'text-yellow-800',
-        fill: '#F59E0B'
+        bg: 'bg-chart-4/20',
+        border: 'border-chart-4',
+        text: 'text-chart-4',
+        fill: 'hsl(var(--chart-4))'
     },
     low: {
-        bg: 'bg-green-100',
-        border: 'border-green-500',
-        text: 'text-green-800',
-        fill: '#10B981'
+        bg: 'bg-chart-2/20',
+        border: 'border-chart-2',
+        text: 'text-chart-2',
+        fill: 'hsl(var(--chart-2))'
     }
 } as const;
 
@@ -122,7 +122,7 @@ const Timeline: FC<TimelineProps> = ({ timelineRef, events, isMobile }) => {
                 .attr('y', margin.top)
                 .attr('width', width - margin.left - margin.right)
                 .attr('height', height - margin.top - margin.bottom)
-                .attr('fill', '#E5E7EB')
+                .attr('fill', 'hsl(var(--muted))')
                 .attr('opacity', 0.5)
                 .attr('rx', 3);
             return;
@@ -150,7 +150,7 @@ const Timeline: FC<TimelineProps> = ({ timelineRef, events, isMobile }) => {
                         .attr('y', height / 2)
                         .attr('text-anchor', 'middle')
                         .attr('dominant-baseline', 'middle')
-                        .attr('fill', 'white')
+                        .attr('fill', 'hsl(var(--background))')
                         .attr('font-size', isMobile ? '8px' : '10px')
                         .text(`${group.count}`);
                 }
@@ -190,7 +190,7 @@ const EventCard: FC<EventCardProps> = ({ event, isAnimating }) => {
                         {window.innerWidth >= 640 ? `Level ${event.rule_level}` : event.rule_level}
                     </div>
                 </div>
-                <div className="flex flex-wrap gap-1.5 sm:gap-3 text-xs sm:text-sm text-gray-600">
+                <div className="flex flex-wrap gap-1.5 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
                     <span className="flex items-center gap-1 sm:gap-1.5">
                         <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
                         {formatTime(event.timestamp)}
@@ -284,8 +284,8 @@ const EventStream: FC<Props> = ({ data, maxEvents = 10 }) => {
     const timelineData = groupEventsBySeverity(events);
 
     return (
-        <div className="w-full bg-white rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4">即時事件流</h2>
+        <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">即時事件流</h2>
 
             <div className="space-y-3 sm:space-y-4">
                 {/* Timeline Visualization */}
@@ -302,8 +302,8 @@ const EventStream: FC<Props> = ({ data, maxEvents = 10 }) => {
                     <button
                         onClick={() => handleSeverityChange('all')}
                         className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === 'all'
-                            ? 'bg-gray-200 text-gray-800'
-                            : 'bg-gray-100 text-gray-600'
+                            ? 'bg-accent text-accent-foreground'
+                            : 'bg-muted text-muted-foreground'
                             }`}
                     >
                         {window.innerWidth >= 640 ? '全部' : 'All'}
@@ -324,7 +324,7 @@ const EventStream: FC<Props> = ({ data, maxEvents = 10 }) => {
                                 onClick={() => handleSeverityChange(severity)}
                                 className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === severity
                                     ? `${colors.bg} ${colors.text} font-medium`
-                                    : 'bg-gray-100 text-gray-600'
+                                    : 'bg-muted text-muted-foreground'
                                     }`}
                             >
                                 {severityText}
@@ -335,7 +335,7 @@ const EventStream: FC<Props> = ({ data, maxEvents = 10 }) => {
 
                 {/* Event List */}
                 <div className="relative">
-                    <div className="absolute top-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-b from-white to-transparent z-10"></div>
+                    <div className="absolute top-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-b from-card to-transparent z-10"></div>
                     <div
                         ref={containerRef}
                         className="h-[300px] sm:h-[400px] overflow-y-auto space-y-2 sm:space-y-3"
@@ -348,7 +348,7 @@ const EventStream: FC<Props> = ({ data, maxEvents = 10 }) => {
                             />
                         ))}
                     </div>
-                    <div className="absolute bottom-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-t from-white to-transparent"></div>
+                    <div className="absolute bottom-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-t from-card to-transparent"></div>
                 </div>
             </div>
         </div>
