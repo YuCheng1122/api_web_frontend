@@ -4,13 +4,28 @@ import { FC } from 'react';
 import { ShieldAlert, AlertTriangle, Shield } from 'lucide-react';
 import type { CveBarchart } from '../../../../../features/dashboard_v2/types';
 
-// 原 constants.ts 中的顏色配置
+// Enhanced color configuration with gradients
 const COLORS = [
-    'hsl(var(--chart-1))', // blue
-    'hsl(var(--chart-2))', // emerald
-    'hsl(var(--chart-3))', // amber
-    'hsl(var(--chart-4))', // indigo
-    'hsl(var(--chart-5))', // pink
+    {
+        base: 'hsl(210, 85%, 50%)',  // Vibrant blue
+        gradient: 'linear-gradient(45deg, hsl(210, 85%, 50%), hsl(220, 85%, 55%))'
+    },
+    {
+        base: 'hsl(340, 75%, 50%)',  // Rose pink
+        gradient: 'linear-gradient(45deg, hsl(340, 75%, 50%), hsl(350, 75%, 55%))'
+    },
+    {
+        base: 'hsl(150, 75%, 40%)',  // Rich green
+        gradient: 'linear-gradient(45deg, hsl(150, 75%, 40%), hsl(160, 75%, 45%))'
+    },
+    {
+        base: 'hsl(280, 70%, 45%)',  // Royal purple
+        gradient: 'linear-gradient(45deg, hsl(280, 70%, 45%), hsl(290, 70%, 50%))'
+    },
+    {
+        base: 'hsl(25, 85%, 55%)',   // Warm orange
+        gradient: 'linear-gradient(45deg, hsl(25, 85%, 55%), hsl(35, 85%, 60%))'
+    }
 ] as const;
 
 interface Props {
@@ -19,49 +34,72 @@ interface Props {
 
 const CveChart: FC<Props> = ({ data }) => {
     const total = data.reduce((sum, item) => sum + item.count, 0);
+    const maxCount = Math.max(...data.map(item => item.count));
 
     return (
-        <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-4">
-            <h2 className="text-base font-semibold mb-3 text-card-foreground">CVE 分析</h2>
+        <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+            <h2 className="text-base sm:text-lg font-semibold mb-4 text-card-foreground">CVE 分析</h2>
 
-            {/* 響應式統計區塊 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 mb-4">
-                <div className="bg-accent p-2 sm:p-3 rounded-lg">
-                    <div className="flex items-center gap-2">
-                        <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
-                        <span className="text-sm font-medium text-card-foreground">漏洞總數</span>
-                        <span className="text-lg font-bold text-chart-1 ml-auto">{total}</span>
+            {/* 統計卡片 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
+                <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-3">
+                        <Shield className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: COLORS[0].base }} />
+                        <div className="flex-1">
+                            <div className="text-sm font-medium text-card-foreground mb-1">漏洞總數</div>
+                            <div className="text-2xl font-bold" style={{ color: COLORS[0].base }}>{total}</div>
+                        </div>
                     </div>
                 </div>
-                <div className="bg-accent p-2 sm:p-3 rounded-lg">
-                    <div className="flex items-center gap-2">
-                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-chart-3" />
-                        <span className="text-sm font-medium text-card-foreground">漏洞類型</span>
-                        <span className="text-lg font-bold text-chart-3 ml-auto">{data.length}</span>
+                <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-3">
+                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: COLORS[1].base }} />
+                        <div className="flex-1">
+                            <div className="text-sm font-medium text-card-foreground mb-1">漏洞類型</div>
+                            <div className="text-2xl font-bold" style={{ color: COLORS[1].base }}>{data.length}</div>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            {/* 響應式列表 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {/* CVE 列表 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 {data.map((item, index) => {
                     const color = COLORS[index % COLORS.length];
+                    const percentage = (item.count / maxCount) * 100;
+
                     return (
                         <div
                             key={item.cve_name}
-                            className="flex items-center p-2 rounded-lg transition-transform hover:scale-[1.01] bg-accent"
+                            className="relative overflow-hidden bg-accent/50 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-[1.02] hover:bg-accent/70 group"
+                            style={{ borderLeft: `4px solid ${color.base}` }}
                         >
-                            <ShieldAlert
-                                className="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0"
-                                style={{ color }}
+                            {/* Progress bar background */}
+                            <div
+                                className="absolute inset-0 opacity-10 transition-all duration-300 group-hover:opacity-20"
+                                style={{
+                                    background: color.gradient,
+                                    width: `${percentage}%`
+                                }}
                             />
-                            <div className="flex-1 min-w-0">
-                                <div className="text-xs sm:text-sm text-card-foreground truncate">
-                                    {item.cve_name}
+
+                            {/* Content */}
+                            <div className="relative p-3 flex items-center gap-3">
+                                <ShieldAlert
+                                    className="w-5 h-5 flex-shrink-0"
+                                    style={{ color: color.base }}
+                                />
+                                <div className="flex-1 min-w-0">
+                                    <div className="text-sm font-medium text-card-foreground truncate" title={item.cve_name}>
+                                        {item.cve_name}
+                                    </div>
+                                    <div className="text-xs text-muted-foreground mt-0.5">
+                                        {((item.count / total) * 100).toFixed(1)}% of total
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="text-sm font-medium ml-2" style={{ color }}>
-                                {item.count}
+                                <div className="text-lg font-bold" style={{ color: color.base }}>
+                                    {item.count}
+                                </div>
                             </div>
                         </div>
                     );

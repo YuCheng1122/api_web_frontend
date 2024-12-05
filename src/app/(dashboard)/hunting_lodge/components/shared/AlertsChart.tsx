@@ -4,33 +4,33 @@ import { FC } from 'react';
 import { AlertTriangle, AlertCircle, AlertOctagon, CheckCircle } from 'lucide-react';
 import type { Alerts } from '../../../../../features/dashboard_v2/types';
 
-// 原 constants.ts 中的配置
+// Enhanced severity configuration with intuitive colors
 const SEVERITY_CONFIG = [
     {
         name: 'Critical',
-        color: 'hsl(var(--destructive))',
-        bgColor: 'hsl(var(--destructive) / 0.2)',
+        color: 'hsl(0, 85%, 60%)',  // Bright red for critical
+        bgColor: 'hsl(0, 85%, 60%, 0.2)',
         icon: AlertOctagon,
         getValue: (data: Alerts) => data.content.alerts.critical_severity
     },
     {
         name: 'High',
-        color: 'hsl(var(--chart-3))',
-        bgColor: 'hsl(var(--chart-3) / 0.2)',
+        color: 'hsl(25, 95%, 55%)',  // Vibrant orange for high
+        bgColor: 'hsl(25, 95%, 55%, 0.2)',
         icon: AlertTriangle,
         getValue: (data: Alerts) => data.content.alerts.high_severity
     },
     {
         name: 'Medium',
-        color: 'hsl(var(--chart-4))',
-        bgColor: 'hsl(var(--chart-4) / 0.2)',
+        color: 'hsl(45, 90%, 50%)',  // Strong yellow for medium
+        bgColor: 'hsl(45, 90%, 50%, 0.2)',
         icon: AlertCircle,
         getValue: (data: Alerts) => data.content.alerts.medium_severity
     },
     {
         name: 'Low',
-        color: 'hsl(var(--chart-2))',
-        bgColor: 'hsl(var(--chart-2) / 0.2)',
+        color: 'hsl(142, 70%, 45%)',  // Calming green for low
+        bgColor: 'hsl(142, 70%, 45%, 0.2)',
         icon: CheckCircle,
         getValue: (data: Alerts) => data.content.alerts.low_severity
     }
@@ -60,7 +60,8 @@ const AlertsChart: FC<Props> = ({ data }) => {
                         return (
                             <div
                                 key={config.name}
-                                className="p-3 rounded-lg bg-accent"
+                                className="p-3 rounded-lg bg-accent hover:bg-accent/80 transition-colors"
+                                style={{ borderLeft: `4px solid ${config.color}` }}
                             >
                                 <div className="flex items-center gap-2 mb-1">
                                     <Icon className="w-4 h-4" style={{ color: config.color }} />
@@ -100,12 +101,13 @@ const AlertsChart: FC<Props> = ({ data }) => {
                                         {value} ({percentage.toFixed(1)}%)
                                     </div>
                                 </div>
-                                <div className="h-2 bg-muted rounded-full overflow-hidden">
+                                <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                                     <div
-                                        className="h-full rounded-full transition-all duration-500"
+                                        className="h-full rounded-full transition-all duration-500 ease-out"
                                         style={{
                                             backgroundColor: config.color,
-                                            width: `${percentage}%`
+                                            width: `${Math.max(percentage, 2)}%`,
+                                            boxShadow: `0 0 8px ${config.bgColor}`
                                         }}
                                     />
                                 </div>
@@ -127,13 +129,13 @@ const AlertsChart: FC<Props> = ({ data }) => {
                             <div className="text-xs sm:text-sm text-muted-foreground">
                                 {window.innerWidth >= 640 ? '嚴重 + 高風險' : 'Critical + High'}
                             </div>
-                            <div className="text-lg sm:text-2xl font-bold text-destructive">
+                            <div className="text-lg sm:text-2xl font-bold" style={{ color: SEVERITY_CONFIG[0].color }}>
                                 {criticalPlusHigh}
                             </div>
                         </div>
                     </div>
                     {SEVERITY_CONFIG[0].getValue(data) > 0 && (
-                        <div className="mt-3 sm:mt-4 text-xs sm:text-sm text-destructive">
+                        <div className="mt-3 sm:mt-4 text-xs sm:text-sm" style={{ color: SEVERITY_CONFIG[0].color }}>
                             ⚠️ {SEVERITY_CONFIG[0].getValue(data)} {window.innerWidth >= 640 ? '個嚴重警報需要立即處理' : 'critical alerts need attention'}
                         </div>
                     )}

@@ -253,10 +253,7 @@ export default function DashboardPage() {
                     {/* Event Stream with better mobile padding */}
                     <Suspense fallback={<Loading />}>
                         <div className="transform transition-transform duration-200 hover:scale-[1.02] overflow-x-auto">
-                            <EventStream
-                                data={eventData.content.event_table}
-                                maxEvents={10} // 減少移動端顯示的事件數量
-                            />
+                            <EventStream maxEvents={10} pollInterval={3000} />
                         </div>
                     </Suspense>
                 </div>

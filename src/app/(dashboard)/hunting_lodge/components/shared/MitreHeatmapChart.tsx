@@ -5,11 +5,20 @@ import { Shield, AlertTriangle, Activity } from 'lucide-react';
 import type { EventTable } from '../../../../../features/dashboard_v2/types';
 import { RuleMitreTactic, RuleMitreID } from '../../../../../features/dashboard_v2/types/event_table';
 
-// Constants
+// Enhanced color configuration
 const CELL_COLORS = {
-    low: 'hsl(var(--chart-2))',    // emerald
-    medium: 'hsl(var(--chart-3))', // amber
-    high: 'hsl(var(--destructive))',   // red
+    low: {
+        base: 'hsl(150, 75%, 40%)',  // Rich green
+        gradient: 'linear-gradient(45deg, hsl(150, 75%, 40%), hsl(160, 75%, 45%))'
+    },
+    medium: {
+        base: 'hsl(25, 85%, 55%)',   // Warm orange
+        gradient: 'linear-gradient(45deg, hsl(25, 85%, 55%), hsl(35, 85%, 60%))'
+    },
+    high: {
+        base: 'hsl(0, 85%, 60%)',    // Bright red
+        gradient: 'linear-gradient(45deg, hsl(0, 85%, 60%), hsl(10, 85%, 65%))'
+    }
 } as const;
 
 // Types
@@ -72,7 +81,7 @@ const calculateFrequencies = (data: EventTable): TacticFrequency[] => {
 
         const total = techniques.reduce((sum, t) => sum + t.count, 0);
 
-        if (total > 0) { // 只顯示有事件的戰術
+        if (total > 0) {
             result.push({
                 tactic,
                 techniques,
@@ -111,7 +120,7 @@ const calculateSummary = (frequencies: TacticFrequency[], maxCount: number): Sum
     return { totalTechniques, highRiskTechniques, activeTactics };
 };
 
-const getColor = (count: number, maxCount: number): string => {
+const getColor = (count: number, maxCount: number): typeof CELL_COLORS[keyof typeof CELL_COLORS] => {
     const ratio = count / maxCount;
     if (ratio > 0.66) return CELL_COLORS.high;
     if (ratio > 0.33) return CELL_COLORS.medium;
@@ -124,103 +133,105 @@ interface Props {
 }
 
 const MitreHeatmapChart: FC<Props> = ({ data }) => {
-    // Calculate frequencies of tactics and techniques
     const frequencies = useMemo(() => calculateFrequencies(data), [data]);
-
-    // Calculate max count for color scaling
     const maxCount = useMemo(() => calculateMaxCount(frequencies), [frequencies]);
-
-    // Calculate summary statistics
     const summary = useMemo(() => calculateSummary(frequencies, maxCount), [frequencies, maxCount]);
-
-    // Create color getter function
     const colorGetter = (count: number) => getColor(count, maxCount);
 
     return (
         <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">MITRE ATT&CK 矩陣</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">MITRE ATT&CK 矩陣</h2>
 
             {/* 摘要統計 */}
-            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-4 sm:mb-6">
-                <div className="bg-accent p-2 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
-                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
+            <div className="grid grid-cols-3 gap-3 sm:gap-4 mb-6">
+                <div className="bg-accent/50 backdrop-blur-sm p-3 sm:p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Shield className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: CELL_COLORS.low.base }} />
+                        <span className="text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '活躍戰術' : 'Tactics'}
                         </span>
                     </div>
-                    <div className="text-lg sm:text-2xl font-bold text-chart-1">{summary.activeTactics}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-1 hidden sm:block">
+                    <div className="text-xl sm:text-2xl font-bold" style={{ color: CELL_COLORS.low.base }}>
+                        {summary.activeTactics}
+                    </div>
+                    <div className="mt-2 text-sm hidden sm:block" style={{ color: CELL_COLORS.low.base }}>
                         使用中的戰術
                     </div>
                 </div>
-                <div className="bg-accent p-2 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <Activity className="w-4 h-4 sm:w-5 sm:h-5 text-chart-3" />
-                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
+                <div className="bg-accent/50 backdrop-blur-sm p-3 sm:p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                        <Activity className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: CELL_COLORS.medium.base }} />
+                        <span className="text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '技術總數' : 'Tech.'}
                         </span>
                     </div>
-                    <div className="text-lg sm:text-2xl font-bold text-chart-3">{summary.totalTechniques}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-3 hidden sm:block">
+                    <div className="text-xl sm:text-2xl font-bold" style={{ color: CELL_COLORS.medium.base }}>
+                        {summary.totalTechniques}
+                    </div>
+                    <div className="mt-2 text-sm hidden sm:block" style={{ color: CELL_COLORS.medium.base }}>
                         已觀察到的獨特技術
                     </div>
                 </div>
-                <div className="bg-accent p-2 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-1 sm:gap-2 mb-1 sm:mb-2">
-                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-destructive" />
-                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
+                <div className="bg-accent/50 backdrop-blur-sm p-3 sm:p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: CELL_COLORS.high.base }} />
+                        <span className="text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '高風險' : 'High'}
                         </span>
                     </div>
-                    <div className="text-lg sm:text-2xl font-bold text-destructive">{summary.highRiskTechniques}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-destructive hidden sm:block">
+                    <div className="text-xl sm:text-2xl font-bold" style={{ color: CELL_COLORS.high.base }}>
+                        {summary.highRiskTechniques}
+                    </div>
+                    <div className="mt-2 text-sm hidden sm:block" style={{ color: CELL_COLORS.high.base }}>
                         高風險技術
                     </div>
                 </div>
             </div>
 
             {/* 戰術和技術列表 */}
-            <div className="space-y-2 sm:space-y-4">
+            <div className="space-y-3 sm:space-y-4">
                 {frequencies.map(({ tactic, techniques, total }) => (
-                    <div key={tactic} className="bg-muted rounded-lg p-2 sm:p-4">
-                        <div className="flex justify-between items-center mb-1 sm:mb-3">
+                    <div key={tactic} className="bg-accent/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 hover:bg-accent/70 transition-colors">
+                        <div className="flex justify-between items-center mb-3">
                             <div>
-                                <div className="text-xs sm:text-base font-medium text-card-foreground line-clamp-1" title={tactic}>
+                                <div className="text-sm sm:text-base font-medium text-card-foreground line-clamp-1" title={tactic}>
                                     {tactic}
                                 </div>
-                                <div className="text-xs text-muted-foreground">
+                                <div className="text-xs text-muted-foreground mt-1">
                                     {techniques.length} {window.innerWidth >= 640 ? '個技術，' : ' tech, '}
                                     {total} {window.innerWidth >= 640 ? '個事件' : ' events'}
                                 </div>
                             </div>
                         </div>
-                        <div className="flex flex-wrap gap-1 sm:gap-2">
-                            {techniques.map(technique => (
-                                <div
-                                    key={technique.id}
-                                    className="relative group"
-                                >
+                        <div className="flex flex-wrap gap-2">
+                            {techniques.map(technique => {
+                                const color = colorGetter(technique.count);
+                                return (
                                     <div
-                                        className="px-2 sm:px-3 py-1 sm:py-1.5 rounded text-background text-xs sm:text-sm transition-transform hover:scale-105"
-                                        style={{
-                                            backgroundColor: colorGetter(technique.count)
-                                        }}
+                                        key={technique.id}
+                                        className="relative group"
                                     >
-                                        {technique.id} {window.innerWidth >= 640 && `(${technique.count})`}
+                                        <div
+                                            className="px-3 py-1.5 rounded text-white text-sm transition-all duration-300 hover:scale-105 hover:shadow-lg"
+                                            style={{
+                                                background: color.gradient,
+                                                boxShadow: `0 0 10px ${color.base}40`
+                                            }}
+                                        >
+                                            {technique.id} {window.innerWidth >= 640 && `(${technique.count})`}
+                                        </div>
+                                        {/* 提示框 */}
+                                        <div className="absolute z-10 invisible group-hover:visible bg-popover/95 backdrop-blur-sm text-popover-foreground text-xs rounded-lg py-3 px-4 w-72 bottom-full left-0 mb-2 hidden sm:block border border-border shadow-lg">
+                                            <div className="font-medium mb-2" style={{ color: color.base }}>{technique.id}</div>
+                                            <div className="text-muted-foreground leading-relaxed">{technique.description}</div>
+                                            <div className="mt-2 font-medium" style={{ color: color.base }}>事件數量：{technique.count}</div>
+                                            <div className="absolute bottom-[-6px] left-4 w-3 h-3 rotate-45 bg-popover/95 backdrop-blur-sm border-r border-b border-border"></div>
+                                        </div>
                                     </div>
-                                    {/* 提示框 - 僅在桌面版顯示 */}
-                                    <div className="absolute z-10 invisible group-hover:visible bg-popover text-popover-foreground text-xs rounded-lg py-2 px-3 w-64 bottom-full left-0 mb-2 hidden sm:block border border-border">
-                                        <div className="font-medium mb-1">{technique.id}</div>
-                                        <div className="text-muted-foreground">{technique.description}</div>
-                                        <div className="mt-1 text-muted-foreground">數量：{technique.count}</div>
-                                        <div className="absolute bottom-[-6px] left-4 w-3 h-3 rotate-45 bg-popover border-r border-b border-border"></div>
-                                    </div>
-                                </div>
-                            ))}
-                            {/* 在移動端只顯示前3個技術 */}
+                                );
+                            })}
                             {window.innerWidth < 640 && techniques.length > 3 && (
-                                <div className="px-2 py-1 rounded bg-accent text-muted-foreground text-xs">
+                                <div className="px-3 py-1.5 rounded bg-muted text-muted-foreground text-sm">
                                     +{techniques.length - 3}
                                 </div>
                             )}

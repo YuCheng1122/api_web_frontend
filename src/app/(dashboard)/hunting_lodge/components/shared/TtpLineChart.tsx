@@ -16,20 +16,56 @@ import {
 import { AlertTriangle, TrendingUp } from 'lucide-react';
 import type { TtpLinechart, TtpLinechartTypes } from '../../../../../features/dashboard_v2/types';
 
-// Constants
-const TTP_COLORS: { [key: string]: string } = {
-    'Initial Access': 'hsl(var(--chart-1))',      // Blue
-    'Execution': 'hsl(var(--destructive))',       // Red
-    'Persistence': 'hsl(var(--chart-5))',         // Purple
-    'Privilege Escalation': 'hsl(var(--chart-3))', // Orange
-    'Defense Evasion': 'hsl(var(--chart-2))',     // Green
-    'Credential Access': 'hsl(var(--chart-3))',    // Yellow
-    'Discovery': 'hsl(var(--chart-1))',           // Cyan
-    'Lateral Movement': 'hsl(var(--chart-5))',    // Pink
-    'Collection': 'hsl(var(--chart-4))',          // Indigo
-    'Command and Control': 'hsl(var(--chart-4))', // Violet
-    'Exfiltration': 'hsl(var(--destructive))',    // Dark Red
-    'Impact': 'hsl(var(--chart-2))',              // Dark Green
+// Enhanced color configuration
+const TTP_COLORS: { [key: string]: { base: string; gradient: string } } = {
+    'Initial Access': {
+        base: 'hsl(210, 85%, 50%)',
+        gradient: 'linear-gradient(45deg, hsl(210, 85%, 50%), hsl(220, 85%, 55%))'
+    },
+    'Execution': {
+        base: 'hsl(0, 85%, 60%)',
+        gradient: 'linear-gradient(45deg, hsl(0, 85%, 60%), hsl(10, 85%, 65%))'
+    },
+    'Persistence': {
+        base: 'hsl(280, 70%, 45%)',
+        gradient: 'linear-gradient(45deg, hsl(280, 70%, 45%), hsl(290, 70%, 50%))'
+    },
+    'Privilege Escalation': {
+        base: 'hsl(25, 85%, 55%)',
+        gradient: 'linear-gradient(45deg, hsl(25, 85%, 55%), hsl(35, 85%, 60%))'
+    },
+    'Defense Evasion': {
+        base: 'hsl(150, 75%, 40%)',
+        gradient: 'linear-gradient(45deg, hsl(150, 75%, 40%), hsl(160, 75%, 45%))'
+    },
+    'Credential Access': {
+        base: 'hsl(45, 90%, 50%)',
+        gradient: 'linear-gradient(45deg, hsl(45, 90%, 50%), hsl(55, 90%, 55%))'
+    },
+    'Discovery': {
+        base: 'hsl(190, 85%, 50%)',
+        gradient: 'linear-gradient(45deg, hsl(190, 85%, 50%), hsl(200, 85%, 55%))'
+    },
+    'Lateral Movement': {
+        base: 'hsl(320, 75%, 50%)',
+        gradient: 'linear-gradient(45deg, hsl(320, 75%, 50%), hsl(330, 75%, 55%))'
+    },
+    'Collection': {
+        base: 'hsl(260, 70%, 45%)',
+        gradient: 'linear-gradient(45deg, hsl(260, 70%, 45%), hsl(270, 70%, 50%))'
+    },
+    'Command and Control': {
+        base: 'hsl(230, 70%, 45%)',
+        gradient: 'linear-gradient(45deg, hsl(230, 70%, 45%), hsl(240, 70%, 50%))'
+    },
+    'Exfiltration': {
+        base: 'hsl(350, 85%, 60%)',
+        gradient: 'linear-gradient(45deg, hsl(350, 85%, 60%), hsl(0, 85%, 65%))'
+    },
+    'Impact': {
+        base: 'hsl(170, 75%, 40%)',
+        gradient: 'linear-gradient(45deg, hsl(170, 75%, 40%), hsl(180, 75%, 45%))'
+    }
 } as const;
 
 // Types
@@ -80,23 +116,23 @@ const calculateTrendSummary = (timePoints: TimePoint[]): TrendSummary => {
 };
 
 const getSeriesColor = (seriesName: string): string =>
-    TTP_COLORS[seriesName as keyof typeof TTP_COLORS] || 'hsl(var(--muted-foreground))';
+    TTP_COLORS[seriesName as keyof typeof TTP_COLORS]?.base || 'hsl(var(--muted-foreground))';
 
 // CustomTooltip Component
 const CustomTooltip: FC<CustomTooltipProps> = ({ active, payload, label }) => {
     if (!active || !payload || !payload.length) return null;
 
     return (
-        <div className="bg-popover p-2 sm:p-3 rounded-lg shadow-lg border border-border max-w-[280px] sm:max-w-none">
-            <p className="text-xs sm:text-sm text-muted-foreground mb-1 sm:mb-2">
+        <div className="bg-popover/95 backdrop-blur-sm p-3 sm:p-4 rounded-lg shadow-lg border border-border">
+            <p className="text-xs sm:text-sm text-muted-foreground mb-2">
                 {new Date(label || '').toLocaleString()}
             </p>
-            <div className="space-y-1 sm:space-y-2">
+            <div className="space-y-2">
                 {payload.map((entry: any, index: number) => (
-                    <div key={index} className="flex items-center justify-between gap-2 sm:gap-4">
-                        <div className="flex items-center gap-1 sm:gap-2">
+                    <div key={index} className="flex items-center justify-between gap-4">
+                        <div className="flex items-center gap-2">
                             <div
-                                className="w-2 h-2 sm:w-3 sm:h-3 rounded-full"
+                                className="w-3 h-3 rounded-full"
                                 style={{ backgroundColor: getSeriesColor(entry.name) }}
                             />
                             <span className="text-xs sm:text-sm text-popover-foreground">{entry.name}</span>
@@ -123,123 +159,123 @@ const TtpLineChart: FC<Props> = ({ data }) => {
     const chartData = data.content.tactic_linechart[0];
     if (!chartData) return null;
 
-    // Transform data for charts
     const timePoints = transformDataForCharts(chartData);
     const recentTimePoints = timePoints.slice(-5);
-
-    // Calculate trend summary
     const { criticalCount, increasingTrends } = calculateTrendSummary(timePoints);
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">MITRE 戰術時間分佈</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">MITRE 戰術時間分佈</h2>
 
             {/* 趨勢摘要卡片 */}
-            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="bg-accent p-3 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-chart-3" />
-                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4 mb-6">
+                <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: TTP_COLORS['Execution'].base }} />
+                        <span className="text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '嚴重戰術' : 'Critical'}
                         </span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-chart-3">{criticalCount}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-3 hidden sm:block">
+                    <div className="text-2xl font-bold" style={{ color: TTP_COLORS['Execution'].base }}>{criticalCount}</div>
+                    <div className="mt-2 text-sm hidden sm:block" style={{ color: TTP_COLORS['Execution'].base }}>
                         具有嚴重程度的戰術
                     </div>
                 </div>
-                <div className="bg-accent p-3 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <TrendingUp className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
-                        <span className="text-xs sm:text-sm font-medium text-card-foreground">
+                <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-2 mb-2">
+                        <TrendingUp className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: TTP_COLORS['Initial Access'].base }} />
+                        <span className="text-sm font-medium text-card-foreground">
                             {window.innerWidth >= 640 ? '上升趨勢' : 'Increasing'}
                         </span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-chart-1">{increasingTrends}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-1 hidden sm:block">
+                    <div className="text-2xl font-bold" style={{ color: TTP_COLORS['Initial Access'].base }}>{increasingTrends}</div>
+                    <div className="mt-2 text-sm hidden sm:block" style={{ color: TTP_COLORS['Initial Access'].base }}>
                         顯示上升趨勢的戰術
                     </div>
                 </div>
             </div>
 
-            {/* 響應式圖表 */}
-            <div className="h-[200px] sm:h-[400px]">
-                <ResponsiveContainer width="100%" height="100%">
-                    {window.innerWidth >= 640 ? (
-                        <LineChart
-                            data={timePoints}
-                            margin={{ top: 20, right: 10, left: 0, bottom: 60 }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" />
-                            <XAxis
-                                dataKey="time"
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                angle={-35}
-                                textAnchor="end"
-                                height={60}
-                                tickMargin={20}
-                                stroke="hsl(var(--muted-foreground))"
-                                interval="preserveStartEnd"
-                            />
-                            <YAxis
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                width={35}
-                                stroke="hsl(var(--muted-foreground))"
-                            />
-                            <Tooltip content={<CustomTooltip />} />
-                            <Legend
-                                verticalAlign="top"
-                                height={36}
-                                iconSize={8}
-                                wrapperStyle={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))' }}
-                            />
-                            {chartData.datas.map((series) => (
-                                <Line
-                                    key={series.name}
-                                    type="monotone"
-                                    dataKey={series.name}
-                                    stroke={getSeriesColor(series.name)}
-                                    strokeWidth={2}
-                                    dot={false}
-                                    activeDot={{
-                                        r: 4,
-                                        strokeWidth: 0,
-                                        fill: getSeriesColor(series.name)
-                                    }}
+            {/* 圖表區域 */}
+            <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg">
+                <div className="h-[200px] sm:h-[400px]">
+                    <ResponsiveContainer width="100%" height="100%">
+                        {window.innerWidth >= 640 ? (
+                            <LineChart
+                                data={timePoints}
+                                margin={{ top: 20, right: 10, left: 0, bottom: 60 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--muted))" opacity={0.5} />
+                                <XAxis
+                                    dataKey="time"
+                                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                                    angle={-35}
+                                    textAnchor="end"
+                                    height={60}
+                                    tickMargin={20}
+                                    stroke="hsl(var(--muted-foreground))"
+                                    interval="preserveStartEnd"
                                 />
-                            ))}
-                        </LineChart>
-                    ) : (
-                        <BarChart
-                            data={recentTimePoints}
-                            margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" />
-                            <XAxis
-                                dataKey="time"
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                angle={-35}
-                                textAnchor="end"
-                                height={50}
-                                stroke="hsl(var(--muted-foreground))"
-                            />
-                            <YAxis
-                                tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
-                                width={25}
-                                stroke="hsl(var(--muted-foreground))"
-                            />
-                            <Tooltip content={<CustomTooltip />} />
-                            {chartData.datas.map((series) => (
-                                <Bar
-                                    key={series.name}
-                                    dataKey={series.name}
-                                    fill={getSeriesColor(series.name)}
-                                    name={series.name}
+                                <YAxis
+                                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                                    width={35}
+                                    stroke="hsl(var(--muted-foreground))"
                                 />
-                            ))}
-                        </BarChart>
-                    )}
-                </ResponsiveContainer>
+                                <Tooltip content={<CustomTooltip />} />
+                                <Legend
+                                    verticalAlign="top"
+                                    height={36}
+                                    iconSize={8}
+                                    wrapperStyle={{ fontSize: '12px', color: 'hsl(var(--muted-foreground))' }}
+                                />
+                                {chartData.datas.map((series) => (
+                                    <Line
+                                        key={series.name}
+                                        type="monotone"
+                                        dataKey={series.name}
+                                        stroke={getSeriesColor(series.name)}
+                                        strokeWidth={2}
+                                        dot={false}
+                                        activeDot={{
+                                            r: 6,
+                                            strokeWidth: 2,
+                                            stroke: getSeriesColor(series.name),
+                                            fill: 'hsl(var(--background))'
+                                        }}
+                                    />
+                                ))}
+                            </LineChart>
+                        ) : (
+                            <BarChart
+                                data={recentTimePoints}
+                                margin={{ top: 10, right: 10, left: 0, bottom: 20 }}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="hsl(var(--muted))" opacity={0.5} />
+                                <XAxis
+                                    dataKey="time"
+                                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                                    angle={-35}
+                                    textAnchor="end"
+                                    height={50}
+                                    stroke="hsl(var(--muted-foreground))"
+                                />
+                                <YAxis
+                                    tick={{ fontSize: 10, fill: 'hsl(var(--muted-foreground))' }}
+                                    width={25}
+                                    stroke="hsl(var(--muted-foreground))"
+                                />
+                                <Tooltip content={<CustomTooltip />} />
+                                {chartData.datas.map((series) => (
+                                    <Bar
+                                        key={series.name}
+                                        dataKey={series.name}
+                                        fill={getSeriesColor(series.name)}
+                                        name={series.name}
+                                    />
+                                ))}
+                            </BarChart>
+                        )}
+                    </ResponsiveContainer>
+                </div>
             </div>
 
             {/* 移動端圖例 */}
@@ -247,7 +283,7 @@ const TtpLineChart: FC<Props> = ({ data }) => {
                 {chartData.datas.map((series) => (
                     <div
                         key={series.name}
-                        className="flex items-center gap-2 p-2 rounded-lg bg-accent"
+                        className="flex items-center gap-2 p-2 rounded-lg bg-accent/50 backdrop-blur-sm hover:bg-accent/70 transition-colors"
                     >
                         <div
                             className="w-2 h-2 rounded-full"

@@ -4,13 +4,28 @@ import { FC } from 'react';
 import { FileWarning, AlertTriangle, FileText } from 'lucide-react';
 import type { MaliciousFile } from '../../../../../features/dashboard_v2/types';
 
-// 原 constants.ts 中的顏色配置
+// Enhanced color configuration with gradients
 const COLORS = [
-    'hsl(var(--chart-1))', // blue
-    'hsl(var(--chart-2))', // emerald
-    'hsl(var(--chart-3))', // amber
-    'hsl(var(--chart-4))', // indigo
-    'hsl(var(--chart-5))', // pink
+    {
+        base: 'hsl(210, 85%, 50%)',  // Vibrant blue
+        gradient: 'linear-gradient(45deg, hsl(210, 85%, 50%), hsl(220, 85%, 55%))'
+    },
+    {
+        base: 'hsl(340, 75%, 50%)',  // Rose pink
+        gradient: 'linear-gradient(45deg, hsl(340, 75%, 50%), hsl(350, 75%, 55%))'
+    },
+    {
+        base: 'hsl(150, 75%, 40%)',  // Rich green
+        gradient: 'linear-gradient(45deg, hsl(150, 75%, 40%), hsl(160, 75%, 45%))'
+    },
+    {
+        base: 'hsl(280, 70%, 45%)',  // Royal purple
+        gradient: 'linear-gradient(45deg, hsl(280, 70%, 45%), hsl(290, 70%, 50%))'
+    },
+    {
+        base: 'hsl(25, 85%, 55%)',   // Warm orange
+        gradient: 'linear-gradient(45deg, hsl(25, 85%, 55%), hsl(35, 85%, 60%))'
+    }
 ] as const;
 
 interface Props {
@@ -23,34 +38,34 @@ const MaliciousFileChart: FC<Props> = ({ data }) => {
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">惡意檔案分佈</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">惡意檔案分佈</h2>
 
-            {/* 響應式統計區塊 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-4 sm:mb-6">
-                <div className="bg-accent p-3 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <FileText className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
+            {/* 統計卡片 */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mb-6">
+                <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-3 mb-2">
+                        <FileText className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: COLORS[0].base }} />
                         <span className="text-sm font-medium text-card-foreground">檔案總數</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-chart-1">{total}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-1">
+                    <div className="text-2xl font-bold" style={{ color: COLORS[0].base }}>{total}</div>
+                    <div className="mt-2 text-sm" style={{ color: COLORS[0].base }}>
                         已偵測到的惡意檔案
                     </div>
                 </div>
-                <div className="bg-accent p-3 sm:p-4 rounded-lg">
-                    <div className="flex items-center gap-2 mb-1 sm:mb-2">
-                        <AlertTriangle className="w-4 h-4 sm:w-5 sm:h-5 text-chart-3" />
+                <div className="bg-accent/50 backdrop-blur-sm p-4 rounded-lg hover:bg-accent/70 transition-colors">
+                    <div className="flex items-center gap-3 mb-2">
+                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: COLORS[1].base }} />
                         <span className="text-sm font-medium text-card-foreground">檔案類型</span>
                     </div>
-                    <div className="text-xl sm:text-2xl font-bold text-chart-3">{files.length}</div>
-                    <div className="mt-1 sm:mt-2 text-xs sm:text-sm text-chart-3">
+                    <div className="text-2xl font-bold" style={{ color: COLORS[1].base }}>{files.length}</div>
+                    <div className="mt-2 text-sm" style={{ color: COLORS[1].base }}>
                         獨特檔案類別
                     </div>
                 </div>
             </div>
 
-            {/* 響應式檔案列表 */}
-            <div className="space-y-2 sm:space-y-3">
+            {/* 檔案列表 */}
+            <div className="space-y-3 sm:space-y-4">
                 {files.map((item, index) => {
                     const color = COLORS[index % COLORS.length];
                     const percentage = total > 0 ? ((item.count / total) * 100).toFixed(1) : '0';
@@ -58,41 +73,52 @@ const MaliciousFileChart: FC<Props> = ({ data }) => {
                     return (
                         <div
                             key={item.name}
-                            className="flex items-start p-2 sm:p-3 rounded-lg transition-transform hover:scale-[1.01] bg-accent"
+                            className="relative overflow-hidden bg-accent/50 backdrop-blur-sm rounded-lg transition-all duration-300 hover:scale-[1.02] hover:bg-accent/70 group"
+                            style={{ borderLeft: `4px solid ${color.base}` }}
                         >
-                            <div className="flex-shrink-0 mr-3 sm:mr-4 mt-0.5 sm:mt-1">
-                                <FileWarning
-                                    className="w-5 h-5 sm:w-6 sm:h-6"
-                                    style={{ color }}
-                                />
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <div className="flex items-start justify-between gap-2 sm:gap-4">
-                                    <div className="min-w-0 flex-1">
+                            {/* Progress bar background */}
+                            <div
+                                className="absolute inset-0 opacity-10 transition-all duration-300 group-hover:opacity-20"
+                                style={{
+                                    background: color.gradient,
+                                    width: `${percentage}%`
+                                }}
+                            />
+
+                            {/* Content */}
+                            <div className="relative p-4">
+                                <div className="flex items-start gap-3 mb-3">
+                                    <FileWarning
+                                        className="w-5 h-5 sm:w-6 sm:h-6 flex-shrink-0 mt-0.5"
+                                        style={{ color: color.base }}
+                                    />
+                                    <div className="flex-1 min-w-0">
                                         <div
-                                            className="text-xs sm:text-sm font-medium text-card-foreground line-clamp-2"
+                                            className="text-sm font-medium text-card-foreground line-clamp-2"
                                             title={item.name}
                                         >
                                             {item.name}
                                         </div>
                                     </div>
                                     <div
-                                        className="flex-shrink-0 text-xs sm:text-sm font-medium"
-                                        style={{ color }}
+                                        className="text-sm font-bold flex-shrink-0 ml-2"
+                                        style={{ color: color.base }}
                                     >
                                         {percentage}%
                                     </div>
                                 </div>
-                                <div className="mt-1.5 sm:mt-2 flex items-center gap-2 sm:gap-4">
-                                    <div className="flex-shrink-0 text-xs sm:text-sm text-muted-foreground min-w-[80px] sm:min-w-[100px]">
+
+                                <div className="flex items-center gap-4">
+                                    <div className="text-sm text-muted-foreground flex-shrink-0">
                                         數量：{item.count}
                                     </div>
-                                    <div className="flex-1 h-1 sm:h-1.5 bg-muted rounded-full overflow-hidden">
+                                    <div className="flex-1 h-2 bg-muted rounded-full overflow-hidden">
                                         <div
                                             className="h-full rounded-full transition-all duration-500"
                                             style={{
-                                                backgroundColor: color,
-                                                width: `${percentage}%`
+                                                background: color.gradient,
+                                                width: `${Math.max(parseFloat(percentage), 2)}%`,
+                                                boxShadow: `0 0 8px ${color.base}40`
                                             }}
                                         />
                                     </div>

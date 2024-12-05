@@ -1,47 +1,37 @@
 'use client';
 
 import { FC, useCallback, useRef, useEffect, useState } from 'react';
-import { Clock, User, Target, Search } from 'lucide-react';
-import * as d3 from 'd3';
 import type { EventTableElement } from '../../../../../features/dashboard_v2/types';
+import { DashboardService } from '../../../../../features/dashboard_v2/api/dashboardService';
 
-// Constants
+// Enhanced color configuration
 const SEVERITY_COLORS = {
     critical: {
-        bg: 'bg-destructive/20',
-        border: 'border-destructive',
-        text: 'text-destructive',
-        fill: 'hsl(var(--destructive))'
+        base: 'hsl(0, 85%, 60%)',
+        bg: 'bg-[hsl(0,85%,60%)]/10',
+        text: 'text-[hsl(0,85%,60%)]'
     },
     high: {
-        bg: 'bg-chart-3/20',
-        border: 'border-chart-3',
-        text: 'text-chart-3',
-        fill: 'hsl(var(--chart-3))'
+        base: 'hsl(25, 85%, 55%)',
+        bg: 'bg-[hsl(25,85%,55%)]/10',
+        text: 'text-[hsl(25,85%,55%)]'
     },
     medium: {
-        bg: 'bg-chart-4/20',
-        border: 'border-chart-4',
-        text: 'text-chart-4',
-        fill: 'hsl(var(--chart-4))'
+        base: 'hsl(45, 90%, 50%)',
+        bg: 'bg-[hsl(45,90%,50%)]/10',
+        text: 'text-[hsl(45,90%,50%)]'
     },
     low: {
-        bg: 'bg-chart-2/20',
-        border: 'border-chart-2',
-        text: 'text-chart-2',
-        fill: 'hsl(var(--chart-2))'
+        base: 'hsl(150, 75%, 40%)',
+        bg: 'bg-[hsl(150,75%,40%)]/10',
+        text: 'text-[hsl(150,75%,40%)]'
     }
 } as const;
 
 // Types
 interface EventWithId extends EventTableElement {
     _id: string;
-}
-
-interface EventGroup {
-    severity: keyof typeof SEVERITY_COLORS;
-    count: number;
-    events: EventTableElement[];
+    uniqueKey: string;
 }
 
 interface EventCardProps {
@@ -49,17 +39,12 @@ interface EventCardProps {
     isAnimating: boolean;
 }
 
-interface TimelineProps {
-    timelineRef: React.RefObject<SVGSVGElement>;
-    events: EventWithId[];
-    isMobile: boolean;
-}
-
 // Utility Functions
-let eventCounter = 0;
-const generateEventId = () => {
-    eventCounter += 1;
-    return `event-${Date.now()}-${eventCounter}`;
+const generateEventId = () => `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+
+const generateUniqueKey = (event: EventTableElement) => {
+    // Create a unique key based on event content
+    return `${event.timestamp}-${event.rule_level}-${event.agent_name}-${event.rule_description}`;
 };
 
 const getSeverityLevel = (level: number): keyof typeof SEVERITY_COLORS => {
@@ -70,101 +55,23 @@ const getSeverityLevel = (level: number): keyof typeof SEVERITY_COLORS => {
 };
 
 const formatTime = (timestamp: Date) => {
-    return new Date(timestamp).toLocaleTimeString();
-};
+    const date = new Date(timestamp);
+    const hours = date.getHours();
+    const minutes = date.getMinutes();
+    const seconds = date.getSeconds();
+    const ampm = hours >= 12 ? '下午' : '上午';
+    const formattedHours = hours % 12 || 12;
 
-const groupEventsBySeverity = (events: EventWithId[]): EventGroup[] => {
-    const groups: Record<string, EventGroup> = {
-        critical: { severity: 'critical', count: 0, events: [] },
-        high: { severity: 'high', count: 0, events: [] },
-        medium: { severity: 'medium', count: 0, events: [] },
-        low: { severity: 'low', count: 0, events: [] }
-    };
-
-    events.forEach(event => {
-        const severity = getSeverityLevel(event.rule_level);
-        groups[severity].count++;
-        groups[severity].events.push(event);
-    });
-
-    return Object.values(groups);
-};
-
-const filterEventsBySeverity = (events: EventWithId[], selectedSeverity: string) => {
-    return events.filter(event =>
-        selectedSeverity === 'all' || getSeverityLevel(event.rule_level) === selectedSeverity
-    );
+    return `${ampm}${formattedHours}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
 };
 
 const createEventWithId = (event: EventTableElement): EventWithId => ({
     ...event,
-    _id: generateEventId()
+    _id: generateEventId(),
+    uniqueKey: generateUniqueKey(event)
 });
 
-// Sub-components
-const Timeline: FC<TimelineProps> = ({ timelineRef, events, isMobile }) => {
-    useEffect(() => {
-        if (!timelineRef.current) return;
-
-        const width = timelineRef.current.clientWidth;
-        const height = isMobile ? 40 : 50;
-        const margin = { top: 8, right: 8, bottom: 8, left: 8 };
-
-        const svg = d3.select(timelineRef.current);
-        svg.selectAll('*').remove();
-
-        const grouped = groupEventsBySeverity(events);
-        const total = grouped.reduce((sum, g) => sum + g.count, 0);
-
-        if (total === 0) {
-            svg.append('rect')
-                .attr('x', margin.left)
-                .attr('y', margin.top)
-                .attr('width', width - margin.left - margin.right)
-                .attr('height', height - margin.top - margin.bottom)
-                .attr('fill', 'hsl(var(--muted))')
-                .attr('opacity', 0.5)
-                .attr('rx', 3);
-            return;
-        }
-
-        let x = margin.left;
-        grouped.forEach(group => {
-            if (group.count === 0) return;
-
-            const barWidth = (group.count / total) * (width - margin.left - margin.right);
-
-            if (!isNaN(barWidth) && barWidth > 0) {
-                svg.append('rect')
-                    .attr('x', x)
-                    .attr('y', margin.top)
-                    .attr('width', barWidth)
-                    .attr('height', height - margin.top - margin.bottom)
-                    .attr('fill', SEVERITY_COLORS[group.severity].fill)
-                    .attr('opacity', 0.7)
-                    .attr('rx', 3);
-
-                if (barWidth > 30) {
-                    svg.append('text')
-                        .attr('x', x + barWidth / 2)
-                        .attr('y', height / 2)
-                        .attr('text-anchor', 'middle')
-                        .attr('dominant-baseline', 'middle')
-                        .attr('fill', 'hsl(var(--background))')
-                        .attr('font-size', isMobile ? '8px' : '10px')
-                        .text(`${group.count}`);
-                }
-
-                x += barWidth;
-            }
-        });
-    }, [events, isMobile, timelineRef]);
-
-    return (
-        <svg ref={timelineRef} className="w-full" height={isMobile ? "40" : "50"} />
-    );
-};
-
+// Event Card Component
 const EventCard: FC<EventCardProps> = ({ event, isAnimating }) => {
     const severity = getSeverityLevel(event.rule_level);
     const colors = SEVERITY_COLORS[severity];
@@ -172,50 +79,19 @@ const EventCard: FC<EventCardProps> = ({ event, isAnimating }) => {
     return (
         <div
             className={`
-                border-l-4 rounded p-2 sm:p-3 transition-all duration-500
-                ${colors.bg} ${colors.border} ${colors.text}
+                relative p-2 transition-all duration-300
+                ${colors.bg} ${colors.text}
                 ${isAnimating ? 'animate-slide-in' : ''}
-                hover:shadow-md
             `}
         >
-            <div className="space-y-1.5 sm:space-y-2">
-                <div className="flex justify-between items-start gap-2">
-                    <div className="text-xs sm:text-sm font-medium line-clamp-2">
-                        {event.rule_description}
-                    </div>
-                    <div className={`
-                        shrink-0 px-1.5 sm:px-2 py-0.5 sm:py-1 rounded text-xs sm:text-sm font-medium
-                        ${colors.bg} ${colors.text}
-                    `}>
-                        {window.innerWidth >= 640 ? `Level ${event.rule_level}` : event.rule_level}
-                    </div>
+            <div className="space-y-1">
+                <div className="text-sm">
+                    {event.rule_description}
                 </div>
-                <div className="flex flex-wrap gap-1.5 sm:gap-3 text-xs sm:text-sm text-muted-foreground">
-                    <span className="flex items-center gap-1 sm:gap-1.5">
-                        <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                        {formatTime(event.timestamp)}
-                    </span>
-                    <span className="flex items-center gap-1 sm:gap-1.5">
-                        <User className="w-3 h-3 sm:w-4 sm:h-4" />
-                        {event.agent_name}
-                    </span>
-                    {/* MITRE ATT&CK 資訊只在桌面版顯示 */}
-                    {window.innerWidth >= 640 && (
-                        <>
-                            {event.rule_mitre_tactic && (
-                                <span className="flex items-center gap-1.5">
-                                    <Target className="w-4 h-4" />
-                                    {event.rule_mitre_tactic}
-                                </span>
-                            )}
-                            {event.rule_mitre_id && (
-                                <span className="flex items-center gap-1.5">
-                                    <Search className="w-4 h-4" />
-                                    {event.rule_mitre_id}
-                                </span>
-                            )}
-                        </>
-                    )}
+                <div className="flex items-center gap-2 text-sm">
+                    <span>Level {event.rule_level}</span>
+                    <span>{formatTime(event.timestamp)}</span>
+                    <span>{event.agent_name}</span>
                 </div>
             </div>
         </div>
@@ -224,131 +100,118 @@ const EventCard: FC<EventCardProps> = ({ event, isAnimating }) => {
 
 // Main Component
 interface Props {
-    data: EventTableElement[];
     maxEvents?: number;
+    pollInterval?: number; // in milliseconds
 }
 
-const EventStream: FC<Props> = ({ data, maxEvents = 10 }) => {
+const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
     const [events, setEvents] = useState<EventWithId[]>([]);
     const [animatingEvents, setAnimatingEvents] = useState<Set<string>>(new Set());
-    const [selectedSeverity, setSelectedSeverity] = useState<string>('all');
+    const [isLoading, setIsLoading] = useState(true);
     const containerRef = useRef<HTMLDivElement>(null);
-    const timelineRef = useRef<SVGSVGElement>(null);
+    const lastEventTimestampRef = useRef<Date | null>(null);
+    const seenEventsRef = useRef<Set<string>>(new Set());
 
-    const addEvent = useCallback((event: EventTableElement) => {
-        const eventWithId = createEventWithId(event);
+    const addNewEvents = useCallback((newEvents: EventTableElement[]) => {
+        const processedEvents = newEvents
+            .map(createEventWithId)
+            .filter(event => !seenEventsRef.current.has(event.uniqueKey));
 
-        setAnimatingEvents((prev: Set<string>) => new Set(prev).add(eventWithId._id));
-        setEvents((prev: EventWithId[]) => {
-            const newEvents = [eventWithId, ...prev].slice(0, maxEvents);
-            return newEvents;
+        if (processedEvents.length === 0) return;
+
+        // Add new unique keys to seen events
+        processedEvents.forEach(event => {
+            seenEventsRef.current.add(event.uniqueKey);
         });
 
-        setTimeout(() => {
-            setAnimatingEvents((prev: Set<string>) => {
-                const newSet = new Set(prev);
-                newSet.delete(eventWithId._id);
-                return newSet;
+        setEvents(prevEvents => {
+            // Combine existing and new events, sort by timestamp (newest last)
+            const combined = [...prevEvents, ...processedEvents].sort((a, b) => {
+                const timeA = new Date(a.timestamp).getTime();
+                const timeB = new Date(b.timestamp).getTime();
+                if (timeA === timeB) {
+                    // If timestamps are equal, maintain stable order using IDs
+                    return a._id.localeCompare(b._id);
+                }
+                return timeA - timeB;
             });
+
+            // Keep only the most recent events up to maxEvents
+            return combined.slice(-maxEvents);
+        });
+
+        // Animate new events
+        const newEventIds = new Set(processedEvents.map(event => event._id));
+        setAnimatingEvents(newEventIds);
+        setTimeout(() => {
+            setAnimatingEvents(new Set());
         }, 500);
 
+        // Auto-scroll to bottom
         if (containerRef.current) {
             containerRef.current.scrollTo({
-                top: 0,
+                top: containerRef.current.scrollHeight,
                 behavior: 'smooth'
             });
         }
     }, [maxEvents]);
 
-    useEffect(() => {
-        if (!data.length) return;
+    const fetchEvents = useCallback(async () => {
+        try {
+            const timeRange = {
+                start_time: new Date(Date.now() - 24 * 60 * 60 * 1000).toISOString(),
+                end_time: new Date().toISOString()
+            };
 
-        let currentIndex = 0;
-        const interval = setInterval(() => {
-            if (currentIndex < data.length) {
-                addEvent(data[currentIndex]);
-                currentIndex++;
-            } else {
-                currentIndex = 0;
+            const response = await DashboardService.fetchEventTableData(timeRange);
+            if (!response.success || !response.content.event_table) return;
+
+            const newEvents = response.content.event_table.filter(event => {
+                const eventTime = new Date(event.timestamp);
+                return !lastEventTimestampRef.current || eventTime > lastEventTimestampRef.current;
+            });
+
+            if (newEvents.length > 0) {
+                addNewEvents(newEvents);
+                lastEventTimestampRef.current = new Date(
+                    Math.max(...newEvents.map(e => new Date(e.timestamp).getTime()))
+                );
             }
-        }, 3000);
+        } catch (error) {
+            console.error('Failed to fetch events:', error);
+        } finally {
+            setIsLoading(false);
+        }
+    }, [addNewEvents]);
 
+    // Initial fetch and polling setup
+    useEffect(() => {
+        fetchEvents();
+        const interval = setInterval(fetchEvents, pollInterval);
         return () => clearInterval(interval);
-    }, [data, addEvent]);
-
-    const handleSeverityChange = (severity: string) => {
-        setSelectedSeverity(severity);
-    };
-
-    const filteredEvents = filterEventsBySeverity(events, selectedSeverity);
-    const timelineData = groupEventsBySeverity(events);
+    }, [fetchEvents, pollInterval]);
 
     return (
         <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">即時事件流</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-4 text-card-foreground">即時事件流</h2>
 
-            <div className="space-y-3 sm:space-y-4">
-                {/* Timeline Visualization */}
-                <div>
-                    <Timeline
-                        timelineRef={timelineRef}
-                        events={events}
-                        isMobile={window.innerWidth < 640}
-                    />
-                </div>
-
-                {/* Severity Filter */}
-                <div className="flex flex-wrap gap-1.5 sm:gap-2">
-                    <button
-                        onClick={() => handleSeverityChange('all')}
-                        className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === 'all'
-                            ? 'bg-accent text-accent-foreground'
-                            : 'bg-muted text-muted-foreground'
-                            }`}
-                    >
-                        {window.innerWidth >= 640 ? '全部' : 'All'}
-                    </button>
-                    {Object.entries(SEVERITY_COLORS).map(([severity, colors]) => {
-                        const severityText = window.innerWidth >= 640
-                            ? {
-                                'critical': '嚴重',
-                                'high': '高風險',
-                                'medium': '中風險',
-                                'low': '低風險'
-                            }[severity]
-                            : severity.charAt(0).toUpperCase() + severity.slice(1);
-
-                        return (
-                            <button
-                                key={severity}
-                                onClick={() => handleSeverityChange(severity)}
-                                className={`px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm ${selectedSeverity === severity
-                                    ? `${colors.bg} ${colors.text} font-medium`
-                                    : 'bg-muted text-muted-foreground'
-                                    }`}
-                            >
-                                {severityText}
-                            </button>
-                        );
-                    })}
-                </div>
-
-                {/* Event List */}
-                <div className="relative">
-                    <div className="absolute top-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-b from-card to-transparent z-10"></div>
-                    <div
-                        ref={containerRef}
-                        className="h-[300px] sm:h-[400px] overflow-y-auto space-y-2 sm:space-y-3"
-                    >
-                        {filteredEvents.map((event) => (
-                            <EventCard
-                                key={event._id}
-                                event={event}
-                                isAnimating={animatingEvents.has(event._id)}
-                            />
-                        ))}
-                    </div>
-                    <div className="absolute bottom-0 left-0 w-full h-6 sm:h-8 bg-gradient-to-t from-card to-transparent"></div>
+            <div className="relative">
+                <div
+                    ref={containerRef}
+                    className="h-[400px] overflow-y-auto space-y-1"
+                >
+                    {events.map((event) => (
+                        <EventCard
+                            key={event._id}
+                            event={event}
+                            isAnimating={animatingEvents.has(event._id)}
+                        />
+                    ))}
+                    {isLoading && events.length === 0 && (
+                        <div className="text-sm text-muted-foreground text-center py-2">
+                            載入中...
+                        </div>
+                    )}
                 </div>
             </div>
         </div>

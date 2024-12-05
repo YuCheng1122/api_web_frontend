@@ -6,6 +6,26 @@ import { Activity, AlertTriangle, Shield, Clock, Network, Crosshair } from 'luci
 import { useAuthContext } from '../../../../../core/contexts/AuthContext';
 import type { EventTable } from '../../../../../features/dashboard_v2/types';
 
+// Enhanced color configuration with gradients
+const SEVERITY_COLORS = {
+    critical: {
+        base: 'hsl(0, 85%, 60%)',    // Bright red
+        gradient: 'linear-gradient(45deg, hsl(0, 85%, 60%), hsl(10, 85%, 65%))'
+    },
+    high: {
+        base: 'hsl(25, 85%, 55%)',   // Warm orange
+        gradient: 'linear-gradient(45deg, hsl(25, 85%, 55%), hsl(35, 85%, 60%))'
+    },
+    medium: {
+        base: 'hsl(45, 90%, 50%)',   // Strong yellow
+        gradient: 'linear-gradient(45deg, hsl(45, 90%, 50%), hsl(55, 90%, 55%))'
+    },
+    low: {
+        base: 'hsl(150, 75%, 40%)',  // Rich green
+        gradient: 'linear-gradient(45deg, hsl(150, 75%, 40%), hsl(160, 75%, 45%))'
+    }
+} as const;
+
 interface Props {
     data: EventTable;
 }
@@ -48,65 +68,69 @@ const SecurityEventsCard: FC<Props> = ({ data }) => {
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
-            <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">安全事件</h2>
+            <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">安全事件</h2>
 
             {/* 主要統計區塊 */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-4 sm:mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 mb-6">
                 {/* 總事件數 */}
-                <div className="bg-primary rounded-lg p-4 sm:p-6 text-primary-foreground">
-                    <Activity className="w-6 h-6 sm:w-8 sm:h-8 mb-3 sm:mb-4" />
-                    <div className="text-2xl sm:text-3xl font-bold mb-1 sm:mb-2">{totalEvents}</div>
-                    <div className="text-sm sm:text-base opacity-90">安全事件總數</div>
-                    <div className="mt-3 sm:mt-4 text-xs sm:text-sm opacity-75">
-                        最後更新：{new Date().toLocaleTimeString()}
+                <div className="relative overflow-hidden bg-primary/90 backdrop-blur-sm rounded-lg p-4 sm:p-6 text-primary-foreground hover:bg-primary transition-colors">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/50 to-transparent"></div>
+                    <div className="relative">
+                        <Activity className="w-6 h-6 sm:w-8 sm:h-8 mb-4" />
+                        <div className="text-2xl sm:text-3xl font-bold mb-2">{totalEvents}</div>
+                        <div className="text-sm sm:text-base opacity-90">安全事件總數</div>
+                        <div className="mt-4 text-xs sm:text-sm opacity-75">
+                            最後更新：{new Date().toLocaleTimeString()}
+                        </div>
                     </div>
                 </div>
 
                 {/* 嚴重程度統計 */}
-                <div className="grid grid-cols-3 sm:grid-cols-2 gap-2 sm:gap-4">
-                    <div className="bg-accent rounded-lg p-2 sm:p-4">
-                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 text-destructive mb-1 sm:mb-2" />
-                        <div className="text-lg sm:text-2xl font-bold text-destructive">{criticalEvents}</div>
+                <div className="grid grid-cols-3 sm:grid-cols-2 gap-3">
+                    <div className="bg-accent/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 hover:bg-accent/70 transition-colors">
+                        <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6 mb-2" style={{ color: SEVERITY_COLORS.critical.base }} />
+                        <div className="text-lg sm:text-2xl font-bold" style={{ color: SEVERITY_COLORS.critical.base }}>{criticalEvents}</div>
                         <div className="text-xs sm:text-sm text-muted-foreground">
                             {window.innerWidth >= 640 ? '嚴重事件' : 'Critical'}
                         </div>
                     </div>
-                    <div className="bg-accent rounded-lg p-2 sm:p-4">
-                        <Shield className="w-5 h-5 sm:w-6 sm:h-6 text-chart-3 mb-1 sm:mb-2" />
-                        <div className="text-lg sm:text-2xl font-bold text-chart-3">{highEvents}</div>
+                    <div className="bg-accent/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 hover:bg-accent/70 transition-colors">
+                        <Shield className="w-5 h-5 sm:w-6 sm:h-6 mb-2" style={{ color: SEVERITY_COLORS.high.base }} />
+                        <div className="text-lg sm:text-2xl font-bold" style={{ color: SEVERITY_COLORS.high.base }}>{highEvents}</div>
                         <div className="text-xs sm:text-sm text-muted-foreground">
                             {window.innerWidth >= 640 ? '高風險事件' : 'High'}
                         </div>
                     </div>
-                    <div className="bg-accent rounded-lg p-2 sm:p-4 block sm:hidden">
-                        <Shield className="w-5 h-5 text-chart-4 mb-1" />
-                        <div className="text-lg font-bold text-chart-4">{mediumEvents}</div>
+                    <div className="bg-accent/50 backdrop-blur-sm rounded-lg p-3 sm:p-4 block sm:hidden hover:bg-accent/70 transition-colors">
+                        <Shield className="w-5 h-5 mb-2" style={{ color: SEVERITY_COLORS.medium.base }} />
+                        <div className="text-lg font-bold" style={{ color: SEVERITY_COLORS.medium.base }}>{mediumEvents}</div>
                         <div className="text-xs text-muted-foreground">Medium</div>
                     </div>
                 </div>
             </div>
 
             {/* 嚴重程度分佈 - 僅在桌面版顯示 */}
-            <div className="hidden sm:block bg-muted rounded-lg p-6 mb-6">
+            <div className="hidden sm:block bg-accent/50 backdrop-blur-sm rounded-lg p-6 mb-6 hover:bg-accent/70 transition-colors">
                 <h3 className="text-sm font-medium text-card-foreground mb-4">嚴重程度分佈</h3>
-                <div className="space-y-3">
+                <div className="space-y-4">
                     {[
-                        { label: '嚴重', count: criticalEvents, color: 'hsl(var(--destructive))' },
-                        { label: '高風險', count: highEvents, color: 'hsl(var(--chart-3))' },
-                        { label: '中風險', count: mediumEvents, color: 'hsl(var(--chart-4))' },
-                        { label: '低風險', count: lowEvents, color: 'hsl(var(--chart-2))' }
+                        { label: '嚴重', count: criticalEvents, colors: SEVERITY_COLORS.critical },
+                        { label: '高風險', count: highEvents, colors: SEVERITY_COLORS.high },
+                        { label: '中風險', count: mediumEvents, colors: SEVERITY_COLORS.medium },
+                        { label: '低風險', count: lowEvents, colors: SEVERITY_COLORS.low }
                     ].map(item => (
                         <div key={item.label}>
-                            <div className="flex justify-between text-sm mb-1">
+                            <div className="flex justify-between text-sm mb-2">
                                 <span className="text-muted-foreground">{item.label}</span>
-                                <span className="font-medium text-card-foreground">{item.count}</span>
+                                <span className="font-medium" style={{ color: item.colors.base }}>{item.count}</span>
                             </div>
-                            <div className="h-2 bg-accent rounded-full overflow-hidden">
+                            <div className="h-2.5 bg-muted rounded-full overflow-hidden">
                                 <div
                                     className="h-full rounded-full transition-all duration-500"
                                     style={{
-                                        backgroundColor: item.color,
-                                        width: `${(item.count / totalEvents * 100) || 0}%`
+                                        background: item.colors.gradient,
+                                        width: `${Math.max((item.count / totalEvents * 100), 2)}%`,
+                                        boxShadow: `0 0 8px ${item.colors.base}40`
                                     }}
                                 />
                             </div>
@@ -116,13 +140,13 @@ const SecurityEventsCard: FC<Props> = ({ data }) => {
             </div>
 
             {/* 快速操作按鈕 */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <button
                     onClick={handleEventsClick}
-                    className="flex items-center justify-center gap-2 p-2 sm:p-4 bg-accent rounded-lg hover:bg-accent/80 transition-colors"
+                    className="flex items-center justify-center gap-2 p-3 sm:p-4 bg-accent/50 backdrop-blur-sm rounded-lg hover:bg-accent/70 transition-all duration-300 hover:scale-[1.02] group"
                 >
-                    <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-chart-1" />
-                    <span className="text-xs sm:text-sm font-medium text-card-foreground">
+                    <Clock className="w-5 h-5 text-chart-1 group-hover:scale-110 transition-transform" />
+                    <span className="text-sm font-medium text-card-foreground">
                         {window.innerWidth >= 640 ? '查看事件' : 'View Events'}
                     </span>
                 </button>
@@ -130,19 +154,19 @@ const SecurityEventsCard: FC<Props> = ({ data }) => {
                     <>
                         <button
                             onClick={handleNetworkClick}
-                            className="flex items-center justify-center gap-2 p-2 sm:p-4 bg-accent rounded-lg hover:bg-accent/80 transition-colors"
+                            className="flex items-center justify-center gap-2 p-3 sm:p-4 bg-accent/50 backdrop-blur-sm rounded-lg hover:bg-accent/70 transition-all duration-300 hover:scale-[1.02] group"
                         >
-                            <Network className="w-4 h-4 sm:w-5 sm:h-5 text-chart-2" />
-                            <span className="text-xs sm:text-sm font-medium text-card-foreground">
+                            <Network className="w-5 h-5 text-chart-2 group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-medium text-card-foreground">
                                 {window.innerWidth >= 640 ? '查看網路' : 'View Network'}
                             </span>
                         </button>
                         <button
                             onClick={handleThreatHuntingClick}
-                            className="flex items-center justify-center gap-2 p-2 sm:p-4 bg-accent rounded-lg hover:bg-accent/80 transition-colors"
+                            className="flex items-center justify-center gap-2 p-3 sm:p-4 bg-accent/50 backdrop-blur-sm rounded-lg hover:bg-accent/70 transition-all duration-300 hover:scale-[1.02] group"
                         >
-                            <Crosshair className="w-4 h-4 sm:w-5 sm:h-5 text-chart-4" />
-                            <span className="text-xs sm:text-sm font-medium text-card-foreground">
+                            <Crosshair className="w-5 h-5 text-chart-4 group-hover:scale-110 transition-transform" />
+                            <span className="text-sm font-medium text-card-foreground">
                                 {window.innerWidth >= 640 ? '威脅獵捕' : 'Threat Hunting'}
                             </span>
                         </button>

@@ -34,11 +34,12 @@
  
     --radius: 0.5rem;
 
-    --chart-1: 221.2 83.2% 53.3%;
-    --chart-2: 142.1 76.2% 36.3%;
-    --chart-3: 31.8 81.3% 45.9%;
-    --chart-4: 226.3 70.7% 40.2%;
-    --chart-5: 326.1 73.3% 57.5%;
+    /* Enhanced chart colors for light mode */
+    --chart-1: 210 85% 50%;  /* Vibrant blue */
+    --chart-2: 150 75% 40%;  /* Rich green */
+    --chart-3: 25 85% 55%;   /* Warm orange */
+    --chart-4: 270 70% 45%;  /* Royal purple */
+    --chart-5: 340 75% 50%;  /* Rose pink */
   }
  
   .dark {
@@ -70,11 +71,12 @@
     --input: 216 34% 17%;
     --ring: 216 34% 17%;
 
-    --chart-1: 217.2 91.2% 59.8%;
-    --chart-2: 142.1 70.6% 45.3%;
-    --chart-3: 35.5 91.7% 54.9%;
-    --chart-4: 231.6 89.2% 51.4%;
-    --chart-5: 322.7 81.1% 43.4%;
+    /* Enhanced chart colors for dark mode */
+    --chart-1: 210 85% 65%;  /* Luminous blue */
+    --chart-2: 150 70% 55%;  /* Glowing green */
+    --chart-3: 25 85% 65%;   /* Bright orange */
+    --chart-4: 270 70% 65%;  /* Bright purple */
+    --chart-5: 340 75% 65%;  /* Bright pink */
   }
 }
  
