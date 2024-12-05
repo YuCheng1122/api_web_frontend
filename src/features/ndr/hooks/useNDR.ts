@@ -162,9 +162,32 @@ export const useNDR = () => {
         });
     };
 
+    // 新增：獲取當前token
+    const getToken = () => {
+        return authState.token;
+    };
+
+    // 新增：獲取當前認證資訊
+    const getCredentials = async (): Promise<NDRLoginCredentials | null> => {
+        try {
+            return await retrieveCredentials();
+        } catch (error) {
+            console.error('Failed to get credentials:', error);
+            return null;
+        }
+    };
+
+    // 新增：獲取解碼後的token資訊
+    const getDecodedToken = () => {
+        return authState.decodedToken;
+    };
+
     return {
         ...authState,
         login,
-        logout
+        logout,
+        getToken,         // 導出token獲取方法
+        getCredentials,   // 導出認證資訊獲取方法
+        getDecodedToken   // 導出解碼後token獲取方法
     };
 };
