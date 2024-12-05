@@ -1,4 +1,3 @@
-import type { EventTable } from '../../../../../features/dashboard_v2/types';
 import { RuleMitreTactic, RuleMitreID } from '../../../../../features/dashboard_v2/types/event_table';
 
 export interface TacticFrequency {
