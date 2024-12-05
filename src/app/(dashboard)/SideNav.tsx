@@ -87,6 +87,11 @@ const SideNav = () => {
             label: '管理中心',
             icon: <Settings size={20} />,
             adminOnly: true
+        },
+        {
+            href: '/ics-syslog',
+            label: 'ics系統紀錄',
+            icon: <Shield size={20} />,
         }
     ];
 
