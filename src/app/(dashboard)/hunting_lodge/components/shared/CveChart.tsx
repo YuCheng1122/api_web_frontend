@@ -3,13 +3,21 @@
 import { FC } from 'react';
 import { ShieldAlert, AlertTriangle, Shield } from 'lucide-react';
 import type { CveBarchart } from '../../../../../features/dashboard_v2/types';
-import { COLORS } from './constants';
+
+// 原 constants.ts 中的顏色配置
+const COLORS = [
+    '#3B82F6', // blue-500
+    '#10B981', // emerald-500
+    '#F59E0B', // amber-500
+    '#6366F1', // indigo-500
+    '#EC4899', // pink-500
+] as const;
 
 interface Props {
     data: CveBarchart[];
 }
 
-export const CveChart: FC<Props> = ({ data }) => {
+const CveChart: FC<Props> = ({ data }) => {
     const total = data.reduce((sum, item) => sum + item.count, 0);
 
     return (
@@ -63,3 +71,5 @@ export const CveChart: FC<Props> = ({ data }) => {
         </div>
     );
 };
+
+export default CveChart;

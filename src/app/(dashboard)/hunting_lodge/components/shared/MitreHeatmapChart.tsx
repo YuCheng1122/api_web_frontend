@@ -3,8 +3,122 @@
 import { FC, useMemo } from 'react';
 import { Shield, AlertTriangle, Activity } from 'lucide-react';
 import type { EventTable } from '../../../../../features/dashboard_v2/types';
-import { calculateFrequencies, calculateMaxCount, calculateSummary, getColor } from './utils';
+import { RuleMitreTactic, RuleMitreID } from '../../../../../features/dashboard_v2/types/event_table';
 
+// Constants
+const CELL_COLORS = {
+    low: '#10B981',    // emerald-500
+    medium: '#F59E0B', // amber-500
+    high: '#EF4444',   // red-500
+} as const;
+
+// Types
+interface TacticFrequency {
+    tactic: RuleMitreTactic;
+    techniques: {
+        id: RuleMitreID;
+        count: number;
+        description: string;
+    }[];
+    total: number;
+}
+
+interface Summary {
+    totalTechniques: number;
+    highRiskTechniques: number;
+    activeTactics: number;
+}
+
+// Utility Functions
+const calculateFrequencies = (data: EventTable): TacticFrequency[] => {
+    const tacticMap = new Map<RuleMitreTactic, Map<RuleMitreID, { count: number; description: string }>>();
+
+    Object.values(RuleMitreTactic).forEach(tactic => {
+        if (tactic !== RuleMitreTactic.Empty) {
+            tacticMap.set(tactic, new Map());
+        }
+    });
+
+    data.content.event_table.forEach(event => {
+        if (event.rule_mitre_tactic === RuleMitreTactic.Empty ||
+            event.rule_mitre_id === RuleMitreID.Empty) {
+            return;
+        }
+
+        const techniqueMap = tacticMap.get(event.rule_mitre_tactic);
+        if (techniqueMap) {
+            const current = techniqueMap.get(event.rule_mitre_id);
+            if (current) {
+                techniqueMap.set(event.rule_mitre_id, {
+                    count: current.count + 1,
+                    description: event.rule_description
+                });
+            } else {
+                techniqueMap.set(event.rule_mitre_id, {
+                    count: 1,
+                    description: event.rule_description
+                });
+            }
+        }
+    });
+
+    const result: TacticFrequency[] = [];
+    tacticMap.forEach((techniqueMap, tactic) => {
+        const techniques = Array.from(techniqueMap.entries()).map(([id, data]) => ({
+            id,
+            count: data.count,
+            description: data.description
+        }));
+
+        const total = techniques.reduce((sum, t) => sum + t.count, 0);
+
+        if (total > 0) { // 只顯示有事件的戰術
+            result.push({
+                tactic,
+                techniques,
+                total
+            });
+        }
+    });
+
+    return result.sort((a, b) => b.total - a.total);
+};
+
+const calculateMaxCount = (frequencies: TacticFrequency[]): number => {
+    let max = 0;
+    frequencies.forEach(tf => {
+        tf.techniques.forEach(t => {
+            if (t.count > max) max = t.count;
+        });
+    });
+    return max;
+};
+
+const calculateSummary = (frequencies: TacticFrequency[], maxCount: number): Summary => {
+    let totalTechniques = 0;
+    let highRiskTechniques = 0;
+    let activeTactics = frequencies.length;
+
+    frequencies.forEach(({ techniques }) => {
+        totalTechniques += techniques.length;
+        techniques.forEach(t => {
+            if (t.count / maxCount > 0.66) {
+                highRiskTechniques++;
+            }
+        });
+    });
+
+    return { totalTechniques, highRiskTechniques, activeTactics };
+};
+
+const getColor = (count: number, maxCount: number): string => {
+    const ratio = count / maxCount;
+    if (ratio > 0.66) return CELL_COLORS.high;
+    if (ratio > 0.33) return CELL_COLORS.medium;
+    return CELL_COLORS.low;
+};
+
+// Main Component
 interface Props {
     data: EventTable;
 }
