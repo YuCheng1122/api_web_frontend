@@ -1,4 +1,4 @@
-import { avocadoClient } from '@/features/api/AvocadoClient';
+import { avocadoClient } from '@/core/https/AvocadoClient';
 import { TotalAgentsAndLicenseResponse } from '../types';
 
 export const getTotalAgentsAndLicense = async (): Promise<TotalAgentsAndLicenseResponse> => {

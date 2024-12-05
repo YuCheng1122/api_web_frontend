@@ -1,8 +1,6 @@
 import { NDRAuthResponse, NDRLoginCredentials, NDRDeviceInfo, NDREventsResponse, NDRDeviceListResponse } from '../types/ndr';
 import { decodeJWT, DecodedToken } from '../utils/jwt';
 
-const NDR_API_BASE = 'https://iacast.wnc.com.tw/api';
-
 const handleResponse = async (response: Response) => {
     if (!response.ok) {
         if (response.status === 401) {
@@ -17,7 +15,7 @@ const handleResponse = async (response: Response) => {
 
 export const ndrService = {
     login: async (credentials: NDRLoginCredentials): Promise<{ authResponse: NDRAuthResponse; decodedToken: DecodedToken }> => {
-        const response = await fetch(`${NDR_API_BASE}/auth/login`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_NDR_BASE_URL}/auth/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -33,7 +31,7 @@ export const ndrService = {
     },
 
     getDeviceInfo: async (token: string, deviceUuid: string): Promise<NDRDeviceInfo[]> => {
-        const response = await fetch(`${NDR_API_BASE}/security/device/info?deviceUuid=${deviceUuid}`, {
+        const response = await fetch(`${process.env.NEXT_PUBLIC_NDR_BASE_URL}/security/device/info?deviceUuid=${deviceUuid}`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Content-Type': 'application/json',
@@ -53,7 +51,7 @@ export const ndrService = {
         size: number = 20,
         severity?: number
     ): Promise<NDREventsResponse> => {
-        let url = `${NDR_API_BASE}/security/events/nids?deviceUuid=${deviceUuid}&from=${from}&to=${to}&page=${page}&size=${size}`;
+        let url = `${process.env.NEXT_PUBLIC_NDR_BASE_URL}/security/events/nids?deviceUuid=${deviceUuid}&from=${from}&to=${to}&page=${page}&size=${size}`;
         if (severity !== undefined) {
             url += `&severity=${severity}`;
         }
@@ -76,7 +74,7 @@ export const ndrService = {
         to: number,
         severity?: number
     ): Promise<any[]> => {
-        let url = `${NDR_API_BASE}/security/topblocking?deviceUuid=${deviceUuid}&from=${from}&to=${to}`;
+        let url = `${process.env.NEXT_PUBLIC_NDR_BASE_URL}/security/topblocking?deviceUuid=${deviceUuid}&from=${from}&to=${to}`;
         if (severity !== undefined) {
             url += `&severity=${severity}`;
         }
@@ -99,7 +97,7 @@ export const ndrService = {
         page: number = 0
     ): Promise<NDRDeviceListResponse> => {
         const response = await fetch(
-            `${NDR_API_BASE}/customer/${customerId}/deviceInfos?pageSize=${pageSize}&page=${page}`,
+            `${process.env.NEXT_PUBLIC_NDR_BASE_URL}/customer/${customerId}/deviceInfos?pageSize=${pageSize}&page=${page}`,
             {
                 headers: {
                     'Authorization': `Bearer ${token}`,

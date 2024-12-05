@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAuthContext } from '../../../../../features/auth/contexts/AuthContext';
+import { useAuthContext } from '../../../../../core/contexts/AuthContext';
 import type { EventTable } from '../../../../../features/dashboard_v2/types';
 import { MobileView } from './MobileView';
 import { DesktopView } from './DesktopView';

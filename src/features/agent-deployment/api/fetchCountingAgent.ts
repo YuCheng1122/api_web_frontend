@@ -1,4 +1,4 @@
-import { avocadoClient } from '@/features/api/AvocadoClient';
+import { avocadoClient } from '@/core/https/AvocadoClient';
 import { FetchCountingAgentResponse } from "../types";
 
 export const fetchNextAgentName = async (): Promise<FetchCountingAgentResponse> => {

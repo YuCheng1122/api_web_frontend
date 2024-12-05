@@ -8,11 +8,3 @@ export interface TotalAgentsAndLicenseResponse {
     total_license: number;
 }
 
-// 用於 API 錯誤處理
-export interface ApiError {
-    response?: {
-        data?: {
-            message?: string;
-        };
-    };
-}

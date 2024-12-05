@@ -16,16 +16,6 @@ import { SignupResponse, SignupFormData } from '../types';
  * and return mock response for UI/UX development
  */
 export const signup = async (formData: SignupFormData): Promise<SignupResponse> => {
-  // Check if we should bypass auth in development
-  if (process.env.NEXT_PUBLIC_BYPASS_AUTH === 'true') {
-    console.log('Development mode: Bypassing signup');
-    return {
-      success: true,
-      message: "User signup successfully"
-    };
-  }
-
-  // Normal signup flow
   const baseURL = process.env.NEXT_PUBLIC_API_BASE_URL || '';
   const api_url = `${baseURL}/api/auth/signup`;
 
