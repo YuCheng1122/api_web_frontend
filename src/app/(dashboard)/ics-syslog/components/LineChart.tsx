@@ -1,22 +1,13 @@
 import { log } from 'console';
 import React, { PureComponent } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-type LogEntry = {
-    timestamp: string;
-    severity: string;
-};
+
 
 type LogCount = {
     [severity: string]: number;
 };
 
-type Result = {
-    date: Date;
-    [severity: string]: number;
-};
 export default function LineChartsyslog(props: any) {
-    console.log('props', props);
-
 
     // props is an array clean to be used in the LineChart by day count
     const propsa = props.props.reduce((acc: any, curr: any) => {
@@ -29,14 +20,10 @@ export default function LineChartsyslog(props: any) {
         acc.push({ timestamp, severity });
         return acc;
     }, []);
-    console.log('propsa', propsa);
-    // count the number of logs per day[{ date: '2023-12-03', INFO: 2, WARNING: 1 }, { date: '2023-12-04', INFO: 1 }]
-
-
     const logCounts: { [date: string]: LogCount } = {};
 
     // Count logs per date and severity
-    propsa.forEach((log: any) => {
+    propsa.forEach((log: { timestamp: string, severity: string }) => {
         const { timestamp, severity } = log;
         if (!logCounts[timestamp]) {
             logCounts[timestamp] = {};
@@ -47,10 +34,12 @@ export default function LineChartsyslog(props: any) {
         logCounts[timestamp][severity]++;
     });
 
+    console.log('logCounts', logCounts);
+
     // Format the result as an array of objects
-    const result: Result[] = Object.keys(logCounts).map(date => {
-        const count = logCounts[date]
-        return { date, ...count };
+    const result = Object.keys(logCounts).map(date => {
+        const count = logCounts[date];
+        return { date, ...count }
     });
 
 
@@ -65,15 +54,6 @@ export default function LineChartsyslog(props: any) {
         ERROR: '#ff7300',
         CRITICAL: '#ff0000',
     }
-
-
-
-
-
-
-
-
-
 
 
     return (

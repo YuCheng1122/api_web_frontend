@@ -1,6 +1,8 @@
 'use client'
 import mock from './mock';
 import LineChartsyslog from './components/LineChart';
+import StatisticalTable from './components/StatisticalTable';
+import SyslogTable from './components/SyslogTable';
 // 定義日誌項目的介面
 interface LogEntry {
     device: string;
@@ -85,68 +87,20 @@ export default function Page() {
     const uniqueDates = getUniqueDates(mock);
     const groupedLogs = groupLogs(mock);
     const summary = calculateStats(groupedLogs, uniqueDates);
-
-
-
-
-
-
     return (
         <div>
+            <h1 className="text-2xl font-semibold">Syslog</h1>
             <div className="grid grid-cols-4 gap-4">
                 <div className="col-span-3">
 
                     <LineChartsyslog props={mock} />
                 </div>
-                <table className="table-auto col-span-1">
-                    <thead>
-                        <tr>
-                            <th className="px-4 py-2">Severity</th>
-                            <th className="px-4 py-2">Max</th>
-                            <th className="px-4 py-2">Avg</th>
-                            <th className="px-4 py-2">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {
-                            Object.entries(summary).map(([severity, stats]) => (
-                                <tr key={severity}>
-                                    <td className="border px-4 py-2">{severity}</td>
-                                    <td className="border px-4 py-2">{stats.Max}</td>
-                                    <td className="border px-4 py-2">{stats.Avg}</td>
-                                    <td className="border px-4 py-2">{stats.Total}</td>
-                                </tr>
-                            ))
-                        }
-
-
-
-                    </tbody>
-                </table>
+                <div className="col-span-1">
+                    <StatisticalTable summary={summary} />
+                </div>
 
             </div>
-            <table className="table-auto">
-                <thead>
-                    <tr>
-                        <th className="px-4 py-2">Device</th>
-                        <th className="px-4 py-2">Timestamp</th>
-                        <th className="px-4 py-2">Severity</th>
-                        <th className="px-4 py-2">Message</th>
-                        <th className="px-4 py-2">Details</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {mock.map((item, index) => (
-                        <tr key={index}>
-                            <td className="border px-4 py-2">{item.device}</td>
-                            <td className="border px-4 py-2">{item.timestamp}</td>
-                            <td className="border px-4 py-2">{item.severity}</td>
-                            <td className="border px-4 py-2">{item.message}</td>
-                            <td className="border px-4 py-2">{JSON.stringify(item.details)}</td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
+            <SyslogTable Syslog={mock} />
 
         </div>
     );
