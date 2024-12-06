@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useState, Suspense, lazy } from 'react';
-import { DashboardService, CriticalData } from '../../../features/dashboard_v2/api/dashboardService';
+import { DashboardService, CriticalData, ChartData } from '../../../features/dashboard_v2/api/dashboardService';
 import type { TimeRange } from '../../../features/dashboard_v2';
-import type { EventTable as EventTableType } from '../../../features/dashboard_v2/types';
+import type { AgentOS, EventTable as EventTableType } from '../../../features/dashboard_v2/types';
 import { DashboardProvider } from '../hunting_lodge/contexts/DashboardContext';
 import { NDRProvider } from '../ndr/contexts/NDRContext';
+import { ICSProvider } from '../ics/contexts/ICSContext';
 import { useNDR } from '../../../features/ndr/hooks/useNDR';
 import Loading from './components/Loading';
 
@@ -15,17 +16,18 @@ const AlertsChart = lazy(() => import('../hunting_lodge/components/shared/Alerts
 const SecurityEventsCard = lazy(() => import('../hunting_lodge/components/shared/SecurityEventsCard'));
 const MitreHeatmapChart = lazy(() => import('../hunting_lodge/components/shared/MitreHeatmapChart'));
 const NDROverview = lazy(() => import('../ndr/components/NDROverview'));
+const ICSOverview = lazy(() => import('../ics/components/ICSOverview'));
 
 interface DashboardState {
-    agentOS: null;
+    agentOS: AgentOS | null;
     agentSummary: CriticalData['agentSummary'] | null;
     alerts: CriticalData['alerts'] | null;
-    authentication: null;
-    cveBarchart: null;
+    authentication: ChartData['authentication'] | null;
+    cveBarchart: ChartData['cveBarchart'] | null;
     eventTable: EventTableType | null;
-    maliciousFile: null;
+    maliciousFile: ChartData['maliciousFile'] | null;
     tactics: null;
-    ttpLinechart: null;
+    ttpLinechart: ChartData['ttpLinechart'] | null;
 }
 
 export default function SecurityOverviewPage() {
@@ -54,10 +56,11 @@ export default function SecurityOverviewPage() {
                 end_time: new Date().toISOString()
             };
 
-            // 只獲取需要的數據
-            const [critical, events] = await Promise.all([
+            // 獲取所有需要的數據
+            const [critical, events, charts] = await Promise.all([
                 DashboardService.fetchCriticalData(timeRange),
                 DashboardService.fetchEventTableData(timeRange),
+                DashboardService.fetchChartData(timeRange)
             ]);
 
             // 確保 events 數據存在且格式正確
@@ -69,12 +72,12 @@ export default function SecurityOverviewPage() {
                 agentOS: null,
                 agentSummary: critical.agentSummary,
                 alerts: critical.alerts,
-                authentication: null,
-                cveBarchart: null,
+                authentication: charts.authentication,
+                cveBarchart: charts.cveBarchart,
                 eventTable: validEvents,
-                maliciousFile: null,
+                maliciousFile: charts.maliciousFile,
                 tactics: null,
-                ttpLinechart: null
+                ttpLinechart: charts.ttpLinechart
             });
         } catch (err: any) {
             console.error('Failed to fetch security overview data:', err);
@@ -160,13 +163,12 @@ export default function SecurityOverviewPage() {
                             )}
                         </div>
 
-                        {/* ICS 部分 - 待實現 */}
-                        <div className="space-y-6">
-                            <div className="bg-accent/50 backdrop-blur-sm rounded-lg p-6">
-                                <h2 className="text-xl sm:text-2xl font-semibold mb-2">工業控制系統 (ICS)</h2>
-                                <p className="text-muted-foreground">即將推出</p>
-                            </div>
-                        </div>
+                        {/* ICS 部分 */}
+                        <ICSProvider>
+                            <Suspense fallback={<Loading />}>
+                                <ICSOverview />
+                            </Suspense>
+                        </ICSProvider>
                     </div>
                 </Suspense>
             </div>
