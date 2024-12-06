@@ -1,14 +1,14 @@
-import { log } from 'console';
-import React, { PureComponent } from 'react';
+import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-
 
 type LogCount = {
     [severity: string]: number;
 };
+type Props = {
+    props: any[];
+};
 
-export default function LineChartsyslog(props: any) {
-
+export default function LineChartsyslog(props: Props) {
     // props is an array clean to be used in the LineChart by day count
     const propsa = props.props.reduce((acc: any, curr: any) => {
         const date = new Date(curr.timestamp);
@@ -17,6 +17,7 @@ export default function LineChartsyslog(props: any) {
         const year = date.getFullYear();
         const timestamp = `${year}-${month}-${day}`;
         const severity = curr.severity;
+        // console.log('timestamp', timestamp); TODO
         acc.push({ timestamp, severity });
         return acc;
     }, []);
@@ -31,18 +32,15 @@ export default function LineChartsyslog(props: any) {
         if (!logCounts[timestamp][severity]) {
             logCounts[timestamp][severity] = 0;
         }
-        logCounts[timestamp][severity]++;
-    });
 
-    console.log('logCounts', logCounts);
+        logCounts[timestamp][severity] += 1;
+    });
 
     // Format the result as an array of objects
     const result = Object.keys(logCounts).map(date => {
         const count = logCounts[date];
         return { date, ...count }
     });
-
-
     // find the unique severity
     const uniqueSeverities = propsa.reduce((acc: Set<string>, curr: any) => {
         acc.add(curr.severity);
