@@ -52,9 +52,14 @@ const SideNav = () => {
     // 定義導航項目
     const navItems: NavItem[] = [
         {
-            href: '/hunting_lodge',
+            href: '/security-overview',
             label: '安全總覽',
             icon: <Home size={20} />
+        },
+        {
+            href: '/hunting_lodge',
+            label: '端點防護',
+            icon: <Shield size={20} />
         },
         {
             href: '/ndr',
@@ -63,7 +68,7 @@ const SideNav = () => {
         },
         {
             href: '/agents',
-            label: '端點防護',
+            label: '代理資訊',
             icon: <Database size={20} />
         },
         {
