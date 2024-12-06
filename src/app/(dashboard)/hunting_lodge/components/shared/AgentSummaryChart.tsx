@@ -2,14 +2,23 @@
 
 import { FC } from 'react';
 import { Shield, AlertTriangle } from 'lucide-react';
-import type { AgentSummary } from '../../../../../features/dashboard_v2/types';
+import { useDashboard } from '../../contexts/DashboardContext';
 
-interface Props {
-    data: AgentSummary;
-}
+const AgentSummaryChart: FC = () => {
+    const { agentSummary } = useDashboard();
 
-const AgentSummaryChart: FC<Props> = ({ data }) => {
-    const { connected_agents, disconnected_agents } = data.content.agent_summary;
+    if (!agentSummary) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">代理狀態</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const { connected_agents, disconnected_agents } = agentSummary.content.agent_summary;
     const total = connected_agents + disconnected_agents;
 
     return (

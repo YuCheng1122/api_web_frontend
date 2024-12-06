@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { ShieldAlert, AlertTriangle, Shield } from 'lucide-react';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { CveBarchart } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced color configuration with gradients
@@ -28,13 +29,22 @@ const COLORS = [
     }
 ] as const;
 
-interface Props {
-    data: CveBarchart[];
-}
+const CveChart: FC = () => {
+    const { cveBarchart } = useDashboard();
 
-const CveChart: FC<Props> = ({ data }) => {
-    const total = data.reduce((sum, item) => sum + item.count, 0);
-    const maxCount = Math.max(...data.map(item => item.count));
+    if (!cveBarchart) {
+        return (
+            <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-4 text-card-foreground">CVE 分析</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const total = cveBarchart.reduce((sum: number, item: CveBarchart) => sum + item.count, 0);
+    const maxCount = Math.max(...cveBarchart.map((item: CveBarchart) => item.count));
 
     return (
         <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
@@ -56,7 +66,7 @@ const CveChart: FC<Props> = ({ data }) => {
                         <AlertTriangle className="w-5 h-5 sm:w-6 sm:h-6" style={{ color: COLORS[1].base }} />
                         <div className="flex-1">
                             <div className="text-sm font-medium text-card-foreground mb-1">漏洞類型</div>
-                            <div className="text-2xl font-bold" style={{ color: COLORS[1].base }}>{data.length}</div>
+                            <div className="text-2xl font-bold" style={{ color: COLORS[1].base }}>{cveBarchart.length}</div>
                         </div>
                     </div>
                 </div>
@@ -64,7 +74,7 @@ const CveChart: FC<Props> = ({ data }) => {
 
             {/* CVE 列表 */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                {data.map((item, index) => {
+                {cveBarchart.map((item: CveBarchart, index: number) => {
                     const color = COLORS[index % COLORS.length];
                     const relativeWidth = maxCount > 0 ? (item.count / maxCount) * 100 : 0;
 

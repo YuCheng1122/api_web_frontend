@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { Key, ShieldAlert, UserCheck } from 'lucide-react';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { Authentication } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced color palette with gradients
@@ -28,12 +29,21 @@ const COLORS = [
     }
 ] as const;
 
-interface Props {
-    data: Authentication;
-}
+const AuthenticationChart: FC = () => {
+    const { authentication } = useDashboard();
 
-const AuthenticationChart: FC<Props> = ({ data }) => {
-    const tactics = data.content.authentication_piechart;
+    if (!authentication) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">身份驗證策略分佈</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const tactics = authentication.content.authentication_piechart;
     const total = tactics.reduce((sum, item) => sum + item.count, 0);
     const maxCount = Math.max(...tactics.map(t => t.count));
 

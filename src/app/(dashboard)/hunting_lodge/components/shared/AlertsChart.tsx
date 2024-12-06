@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { AlertTriangle, AlertCircle, AlertOctagon, CheckCircle } from 'lucide-react';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { Alerts } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced severity configuration with intuitive colors
@@ -36,14 +37,23 @@ const SEVERITY_CONFIG = [
     }
 ];
 
-interface Props {
-    data: Alerts;
-}
+const AlertsChart: FC = () => {
+    const { alerts } = useDashboard();
 
-const AlertsChart: FC<Props> = ({ data }) => {
-    const total = SEVERITY_CONFIG.reduce((sum, config) => sum + config.getValue(data), 0);
-    const criticalPlusHigh = SEVERITY_CONFIG[0].getValue(data) + SEVERITY_CONFIG[1].getValue(data);
-    const maxValue = Math.max(...SEVERITY_CONFIG.map(config => config.getValue(data)));
+    if (!alerts) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">警報嚴重程度分佈</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const total = SEVERITY_CONFIG.reduce((sum, config) => sum + config.getValue(alerts), 0);
+    const criticalPlusHigh = SEVERITY_CONFIG[0].getValue(alerts) + SEVERITY_CONFIG[1].getValue(alerts);
+    const maxValue = Math.max(...SEVERITY_CONFIG.map(config => config.getValue(alerts)));
 
     return (
         <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
@@ -54,7 +64,7 @@ const AlertsChart: FC<Props> = ({ data }) => {
                 {/* 移動端卡片 */}
                 <div className="grid grid-cols-2 gap-2 sm:hidden">
                     {SEVERITY_CONFIG.map((config) => {
-                        const value = config.getValue(data);
+                        const value = config.getValue(alerts);
                         const Icon = config.icon;
 
                         return (
@@ -81,7 +91,7 @@ const AlertsChart: FC<Props> = ({ data }) => {
                 {/* 桌面端條形圖 */}
                 <div className="hidden sm:block space-y-4">
                     {SEVERITY_CONFIG.map((config) => {
-                        const value = config.getValue(data);
+                        const value = config.getValue(alerts);
                         const Icon = config.icon;
                         const relativeWidth = maxValue > 0 ? (value / maxValue) * 100 : 0;
 
@@ -131,9 +141,9 @@ const AlertsChart: FC<Props> = ({ data }) => {
                             </div>
                         </div>
                     </div>
-                    {SEVERITY_CONFIG[0].getValue(data) > 0 && (
+                    {SEVERITY_CONFIG[0].getValue(alerts) > 0 && (
                         <div className="mt-3 sm:mt-4 text-xs sm:text-sm" style={{ color: SEVERITY_CONFIG[0].color }}>
-                            ⚠️ {SEVERITY_CONFIG[0].getValue(data)} 個嚴重警報需要立即處理
+                            ⚠️ {SEVERITY_CONFIG[0].getValue(alerts)} 個嚴重警報需要立即處理
                         </div>
                     )}
                 </div>

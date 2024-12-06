@@ -2,6 +2,7 @@
 
 import { FC } from 'react';
 import { FileWarning, AlertTriangle, FileText } from 'lucide-react';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { MaliciousFile } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced color configuration with gradients
@@ -28,12 +29,21 @@ const COLORS = [
     }
 ] as const;
 
-interface Props {
-    data: MaliciousFile;
-}
+const MaliciousFileChart: FC = () => {
+    const { maliciousFile } = useDashboard();
 
-const MaliciousFileChart: FC<Props> = ({ data }) => {
-    const files = data.content.malicious_file_barchart;
+    if (!maliciousFile) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">惡意檔案分佈</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const files = maliciousFile.content.malicious_file_barchart;
     const total = files.reduce((sum, item) => sum + item.count, 0);
     const maxCount = Math.max(...files.map(item => item.count));
 

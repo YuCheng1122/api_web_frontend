@@ -14,6 +14,7 @@ import {
     ResponsiveContainer
 } from 'recharts';
 import { AlertTriangle, TrendingUp } from 'lucide-react';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { TtpLinechart, TtpLinechartTypes } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced color configuration
@@ -150,13 +151,21 @@ const CustomTooltip: FC<CustomTooltipProps> = ({ active, payload, label }) => {
     );
 };
 
-// Main Component
-interface Props {
-    data: TtpLinechart;
-}
+const TtpLineChart: FC = () => {
+    const { ttpLinechart } = useDashboard();
 
-const TtpLineChart: FC<Props> = ({ data }) => {
-    const chartData = data.content.tactic_linechart[0];
+    if (!ttpLinechart) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">MITRE 戰術時間分佈</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const chartData = ttpLinechart.content.tactic_linechart[0];
     if (!chartData) return null;
 
     const timePoints = transformDataForCharts(chartData);

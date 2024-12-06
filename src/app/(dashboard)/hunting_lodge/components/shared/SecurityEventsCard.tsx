@@ -4,6 +4,7 @@ import { FC } from 'react';
 import { useRouter } from 'next/navigation';
 import { Activity, AlertTriangle, Shield, Clock, Network, Crosshair } from 'lucide-react';
 import { useAuthContext } from '../../../../../core/contexts/AuthContext';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { EventTable } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced color configuration with gradients
@@ -26,18 +27,27 @@ const SEVERITY_COLORS = {
     }
 } as const;
 
-interface Props {
-    data: EventTable;
-}
-
 interface Event {
     rule_level: number;
 }
 
-const SecurityEventsCard: FC<Props> = ({ data }) => {
+const SecurityEventsCard: FC = () => {
     const router = useRouter();
     const { isadmin } = useAuthContext();
-    const events = data.content.event_table as Event[];
+    const { eventTable } = useDashboard();
+
+    if (!eventTable) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">安全事件</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const events = eventTable.content.event_table as Event[];
     const totalEvents = events.length;
 
     // Calculate severity counts

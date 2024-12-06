@@ -2,6 +2,7 @@
 
 import { FC, useMemo } from 'react';
 import { Shield, AlertTriangle, Activity } from 'lucide-react';
+import { useDashboard } from '../../contexts/DashboardContext';
 import type { EventTable } from '../../../../../features/dashboard_v2/types';
 import { RuleMitreTactic, RuleMitreID } from '../../../../../features/dashboard_v2/types/event_table';
 
@@ -39,7 +40,9 @@ interface Summary {
 }
 
 // Utility Functions
-const calculateFrequencies = (data: EventTable): TacticFrequency[] => {
+const calculateFrequencies = (data: EventTable | null): TacticFrequency[] => {
+    if (!data) return [];
+
     const tacticMap = new Map<RuleMitreTactic, Map<RuleMitreID, { count: number; description: string }>>();
 
     Object.values(RuleMitreTactic).forEach(tactic => {
@@ -127,16 +130,24 @@ const getColor = (count: number, maxCount: number): typeof CELL_COLORS[keyof typ
     return CELL_COLORS.low;
 };
 
-// Main Component
-interface Props {
-    data: EventTable;
-}
+const MitreHeatmapChart: FC = () => {
+    const { eventTable } = useDashboard();
 
-const MitreHeatmapChart: FC<Props> = ({ data }) => {
-    const frequencies = useMemo(() => calculateFrequencies(data), [data]);
+    const frequencies = useMemo(() => calculateFrequencies(eventTable), [eventTable]);
     const maxCount = useMemo(() => calculateMaxCount(frequencies), [frequencies]);
     const summary = useMemo(() => calculateSummary(frequencies, maxCount), [frequencies, maxCount]);
     const colorGetter = (count: number) => getColor(count, maxCount);
+
+    if (!eventTable || frequencies.length === 0) {
+        return (
+            <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-4 sm:mb-6 text-card-foreground">MITRE ATT&CK 矩陣</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">

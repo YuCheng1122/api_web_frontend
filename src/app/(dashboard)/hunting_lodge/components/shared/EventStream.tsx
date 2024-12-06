@@ -3,6 +3,7 @@
 import { FC, useCallback, useRef, useEffect, useState } from 'react';
 import type { EventTableElement } from '../../../../../features/dashboard_v2/types';
 import { DashboardService } from '../../../../../features/dashboard_v2/api/dashboardService';
+import { useDashboard } from '../../contexts/DashboardContext';
 
 // Enhanced color configuration
 const SEVERITY_COLORS = {
@@ -43,7 +44,6 @@ interface EventCardProps {
 const generateEventId = () => `event-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
 
 const generateUniqueKey = (event: EventTableElement) => {
-    // Create a unique key based on event content
     return `${event.timestamp}-${event.rule_level}-${event.agent_name}-${event.rule_description}`;
 };
 
@@ -105,6 +105,7 @@ interface Props {
 }
 
 const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
+    const { eventTable, setDashboardData } = useDashboard();
     const [events, setEvents] = useState<EventWithId[]>([]);
     const [animatingEvents, setAnimatingEvents] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
@@ -130,7 +131,6 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
                 const timeA = new Date(a.timestamp).getTime();
                 const timeB = new Date(b.timestamp).getTime();
                 if (timeA === timeB) {
-                    // If timestamps are equal, maintain stable order using IDs
                     return a._id.localeCompare(b._id);
                 }
                 return timeA - timeB;
@@ -139,6 +139,9 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
             // Keep only the most recent events up to maxEvents
             return combined.slice(-maxEvents);
         });
+
+        // Update context with the latest events
+        setDashboardData({ eventTable: { content: { event_table: processedEvents }, success: true, message: '' } });
 
         // Animate new events
         const newEventIds = new Set(processedEvents.map(event => event._id));
@@ -154,7 +157,7 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
                 behavior: 'smooth'
             });
         }
-    }, [maxEvents]);
+    }, [maxEvents, setDashboardData]);
 
     const fetchEvents = useCallback(async () => {
         try {
@@ -190,6 +193,13 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
         const interval = setInterval(fetchEvents, pollInterval);
         return () => clearInterval(interval);
     }, [fetchEvents, pollInterval]);
+
+    // Initialize events from context if available
+    useEffect(() => {
+        if (eventTable?.content.event_table && events.length === 0) {
+            addNewEvents(eventTable.content.event_table);
+        }
+    }, [eventTable, events.length, addNewEvents]);
 
     return (
         <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">

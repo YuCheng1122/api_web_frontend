@@ -1,7 +1,7 @@
 'use client';
 
 import { FC } from 'react';
-import type { AgentOS } from '../../../../../features/dashboard_v2/types';
+import { useDashboard } from '../../contexts/DashboardContext';
 
 // Enhanced color configuration
 const COLORS = {
@@ -39,12 +39,21 @@ const getOSIconInfo = (os: string) => {
     return { iconClass, versionNumber };
 };
 
-interface Props {
-    data: AgentOS;
-}
+const AgentOSChart: FC = () => {
+    const { agentOS } = useDashboard();
 
-const AgentOSChart: FC<Props> = ({ data }) => {
-    const osData = data.content.agent_os;
+    if (!agentOS) {
+        return (
+            <div className="w-full h-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-card-foreground">作業系統分佈</h2>
+                <div className="flex items-center justify-center h-[calc(100%-2rem)]">
+                    <span className="text-sm text-muted-foreground">無資料</span>
+                </div>
+            </div>
+        );
+    }
+
+    const osData = agentOS.content.agent_os;
     const total = osData.reduce((sum, item) => sum + item.count, 0);
 
     return (
