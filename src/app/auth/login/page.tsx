@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ToastContainer, toast } from "react-toastify";
 import { motion, AnimatePresence } from "framer-motion";
 import { login } from "@/features/auth/api/login";
-import { useAuthContext } from "@/features/auth/contexts/AuthContext";
+import { useAuthContext } from "@/core/contexts/AuthContext";
 import { encrypt } from "@/features/auth/utils/crypto";
 
 const LoginPage = () => {
