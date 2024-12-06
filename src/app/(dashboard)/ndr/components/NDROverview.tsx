@@ -4,25 +4,21 @@ import { FC, useEffect } from 'react';
 import { useNDR } from '../../../../features/ndr/hooks/useNDR';
 import { useNDRData } from '../contexts/NDRContext';
 import { ndrService } from '../../../../features/ndr/services/ndrService';
-import DeviceInfoCard from './DeviceInfoCard';
 import TopBlockingList from './TopBlockingList';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
+import type { NDRTopBlocking } from '../../../../features/ndr/types/ndr';
 
 const NDROverview: FC = () => {
     const {
-        deviceInfo,
         topBlocking,
         loading,
         error,
-        selectedDevice,
         devices,
         setDevices,
-        setDeviceInfo,
         setTopBlocking,
         setLoading,
         setError,
-        setSelectedDevice,
     } = useNDRData();
 
     const {
@@ -63,30 +59,45 @@ const NDROverview: FC = () => {
                 const deviceListResponse = await ndrService.listDeviceInfos(token, decodedToken.customerId);
                 setDevices(deviceListResponse.data);
 
-                if (deviceListResponse.data.length > 0) {
-                    const deviceToUse = selectedDevice || deviceListResponse.data[0].name;
-                    setSelectedDevice(deviceToUse);
+                // 獲取時間範圍
+                const fromTimestamp = new Date(Date.now() - 24 * 60 * 60 * 1000).getTime();
+                const toTimestamp = new Date().getTime();
 
-                    // 獲取設備信息
-                    const deviceInfoResponse = await ndrService.getDeviceInfo(token, deviceToUse);
-                    if (deviceInfoResponse.length > 0) {
-                        setDeviceInfo(deviceInfoResponse[0]);
-                    }
+                // 獲取所有設備的阻擋排行
+                const allBlockingData = await Promise.all(
+                    deviceListResponse.data.map(device =>
+                        ndrService.getTopBlocking(
+                            token,
+                            device.name,
+                            fromTimestamp,
+                            toTimestamp,
+                            1
+                        ).catch(err => {
+                            console.error(`Failed to fetch blocking data for device ${device.name}:`, err);
+                            return [];
+                        })
+                    )
+                );
 
-                    // 獲取阻擋排行
-                    const fromTimestamp = new Date(Date.now() - 24 * 60 * 60 * 1000).getTime();
-                    const toTimestamp = new Date().getTime();
+                // 合併所有設備的阻擋數據
+                const blockingMap = new Map<string, NDRTopBlocking>();
+                allBlockingData.forEach(deviceBlocking => {
+                    deviceBlocking.forEach((item: NDRTopBlocking) => {
+                        const key = `${item.signature_id}-${item.signature}`;
+                        const existing = blockingMap.get(key);
+                        if (existing) {
+                            existing.doc_count += item.doc_count;
+                        } else {
+                            blockingMap.set(key, { ...item });
+                        }
+                    });
+                });
 
-                    const topBlockingResponse = await ndrService.getTopBlocking(
-                        token,
-                        deviceToUse,
-                        fromTimestamp,
-                        toTimestamp,
-                        1
-                    );
+                // 轉換為陣列並排序
+                const combinedBlocking = Array.from(blockingMap.values())
+                    .sort((a, b) => b.doc_count - a.doc_count);
 
-                    setTopBlocking(topBlockingResponse);
-                }
+                setTopBlocking(combinedBlocking);
             } catch (err) {
                 console.error('Error fetching NDR data:', err);
                 setError(err instanceof Error ? err.message : '無法獲取 NDR 資料');
@@ -126,23 +137,15 @@ const NDROverview: FC = () => {
                     </svg>
                     網路偵測與回應 (NDR)
                     <span className="ml-2 text-sm text-gray-500 font-normal">
-                        {selectedDevice ? `監控設備：${devices.find(d => d.name === selectedDevice)?.label || selectedDevice}` : '未選擇設備'}
+                        監控設備數量：{devices.length}
                     </span>
                 </h2>
 
-                {/* 設備資訊 */}
-                {deviceInfo && (
-                    <div className="mb-6">
-                        <h3 className="text-lg font-semibold text-gray-900 mb-3">系統狀態</h3>
-                        <DeviceInfoCard info={deviceInfo} />
-                    </div>
-                )}
-
                 {/* Top Blocking */}
                 <div>
-                    <h3 className="text-lg font-semibold text-gray-900 mb-3">阻擋排行</h3>
+                    <h3 className="text-lg font-semibold text-gray-900 mb-3">阻擋排行 (所有設備)</h3>
                     {topBlocking.length > 0 ? (
-                        <TopBlockingList data={topBlocking.slice(0, 5)} /> // 只顯示前5筆
+                        <TopBlockingList data={topBlocking.slice(0, 10)} /> // 顯示前10筆
                     ) : (
                         <div className="bg-accent/50 backdrop-blur-sm rounded-lg p-4 text-center text-muted-foreground">
                             無阻擋資料
