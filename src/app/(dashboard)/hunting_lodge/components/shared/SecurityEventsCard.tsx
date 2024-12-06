@@ -73,7 +73,7 @@ const SecurityEventsCard: FC = () => {
             lowEvents: events.filter(e => e.rule_level < 4).length,
             lastUpdateTime: lastTime
         };
-    }, [eventTable]);
+    }, [eventTable]); // 只在eventTable改變時重新計算
 
     if (!eventTable) {
         return (

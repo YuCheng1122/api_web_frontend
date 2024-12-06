@@ -20,38 +20,6 @@ const MitreHeatmapChart = lazy(() => import('./components/shared/MitreHeatmapCha
 const EventStream = lazy(() => import('./components/shared/EventStream'));
 const CveChart = lazy(() => import('./components/shared/CveChart'));
 
-// 實現數據緩存
-const CACHE_TIME = 5 * 60 * 1000; // 5分鐘緩存
-const cache = new Map<string, { data: any; timestamp: number }>();
-
-function getCachedData(key: string) {
-    const cached = cache.get(key);
-    if (cached && Date.now() - cached.timestamp < CACHE_TIME) {
-        return cached.data;
-    }
-    cache.delete(key); // 自動刪除過期數據
-    return null;
-}
-
-function setCachedData(key: string, data: any) {
-    cache.set(key, {
-        data,
-        timestamp: Date.now()
-    });
-}
-
-// 清理過期緩存
-function cleanupCache() {
-    const now = Date.now();
-    const keys = Array.from(cache.keys());
-    keys.forEach(key => {
-        const cached = cache.get(key);
-        if (cached && now - cached.timestamp > CACHE_TIME) {
-            cache.delete(key);
-        }
-    });
-}
-
 interface DashboardState {
     agentOS: AgentOS | null;
     agentSummary: CriticalData['agentSummary'] | null;
@@ -112,25 +80,6 @@ export default function DashboardPage() {
         setError(null);
         setIsLoading(true);
 
-        const cacheKey = JSON.stringify(timeRange);
-        const cachedResult = getCachedData(cacheKey);
-
-        if (cachedResult) {
-            setDashboardData({
-                agentOS: cachedResult.os,
-                agentSummary: cachedResult.critical.agentSummary,
-                alerts: cachedResult.critical.alerts,
-                authentication: cachedResult.charts.authentication,
-                cveBarchart: cachedResult.charts.cveBarchart,
-                eventTable: cachedResult.events,
-                maliciousFile: cachedResult.charts.maliciousFile,
-                tactics: null,
-                ttpLinechart: cachedResult.charts.ttpLinechart
-            });
-            setIsLoading(false);
-            return;
-        }
-
         try {
             // 使用 Promise.all 並行獲取所有數據
             const [
@@ -141,20 +90,16 @@ export default function DashboardPage() {
             ] = await Promise.all([
                 DashboardService.fetchCriticalData(timeRange),
                 DashboardService.fetchOSData(timeRange),
-                DashboardService.fetchEventTableData(timeRange),
+                DashboardService.fetchEventTableData(timeRange, true), // 使用緩存的數據用於SecurityEventsCard
                 DashboardService.fetchChartData(timeRange)
             ]);
-
-            // 緩存數據
-            const result = { critical, os, events, charts };
-            setCachedData(cacheKey, result);
 
             // 確保 events 數據存在且格式正確
             const validEvents = events && events.content && Array.isArray(events.content.event_table)
                 ? events
                 : { success: true, content: { event_table: [] }, message: '' };
 
-            setDashboardData({
+            setDashboardData(prev => ({
                 agentOS: os,
                 agentSummary: critical.agentSummary,
                 alerts: critical.alerts,
@@ -164,7 +109,7 @@ export default function DashboardPage() {
                 maliciousFile: charts.maliciousFile,
                 tactics: null,
                 ttpLinechart: charts.ttpLinechart
-            });
+            }));
         } catch (err: any) {
             console.error('Failed to fetch dashboard data:', err);
             setError(err.message || 'Failed to load dashboard data. Please try again later.');
@@ -179,10 +124,6 @@ export default function DashboardPage() {
             end_time: new Date().toISOString()
         };
         fetchData(initialTimeRange);
-
-        // 定期清理過期緩存
-        const cleanup = setInterval(cleanupCache, CACHE_TIME / 2);
-        return () => clearInterval(cleanup);
     }, []);
 
     const handleTimeRangeChange = (newTimeRange: TimeRange) => {
@@ -199,6 +140,11 @@ export default function DashboardPage() {
         }
 
         setCurrentTimeRange(rangeType);
+
+        // 清除舊的緩存數據
+        DashboardService.clearCache(newTimeRange);
+
+        // 獲取新的數據
         fetchData(newTimeRange);
     };
 

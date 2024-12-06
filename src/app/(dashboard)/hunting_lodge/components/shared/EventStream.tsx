@@ -3,7 +3,6 @@
 import { FC, useCallback, useRef, useEffect, useState } from 'react';
 import type { EventTableElement } from '../../../../../features/dashboard_v2/types';
 import { DashboardService } from '../../../../../features/dashboard_v2/api/dashboardService';
-import { useDashboard } from '../../contexts/DashboardContext';
 
 // Enhanced color configuration
 const SEVERITY_COLORS = {
@@ -105,7 +104,6 @@ interface Props {
 }
 
 const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
-    const { eventTable, setDashboardData } = useDashboard();
     const [events, setEvents] = useState<EventWithId[]>([]);
     const [animatingEvents, setAnimatingEvents] = useState<Set<string>>(new Set());
     const [isLoading, setIsLoading] = useState(true);
@@ -140,9 +138,6 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
             return combined.slice(-maxEvents);
         });
 
-        // Update context with the latest events
-        setDashboardData({ eventTable: { content: { event_table: processedEvents }, success: true, message: '' } });
-
         // Animate new events
         const newEventIds = new Set(processedEvents.map(event => event._id));
         setAnimatingEvents(newEventIds);
@@ -157,7 +152,7 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
                 behavior: 'smooth'
             });
         }
-    }, [maxEvents, setDashboardData]);
+    }, [maxEvents]);
 
     const fetchEvents = useCallback(async () => {
         try {
@@ -166,7 +161,8 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
                 end_time: new Date().toISOString()
             };
 
-            const response = await DashboardService.fetchEventTableData(timeRange);
+            // 使用不緩存的方式獲取實時數據
+            const response = await DashboardService.fetchEventTableData(timeRange, false);
             if (!response.success || !response.content.event_table) return;
 
             const newEvents = response.content.event_table.filter(event => {
@@ -193,13 +189,6 @@ const EventStream: FC<Props> = ({ maxEvents = 50, pollInterval = 3000 }) => {
         const interval = setInterval(fetchEvents, pollInterval);
         return () => clearInterval(interval);
     }, [fetchEvents, pollInterval]);
-
-    // Initialize events from context if available
-    useEffect(() => {
-        if (eventTable?.content.event_table && events.length === 0) {
-            addNewEvents(eventTable.content.event_table);
-        }
-    }, [eventTable, events.length, addNewEvents]);
 
     return (
         <div className="w-full bg-card rounded-lg shadow-sm p-3 sm:p-6">
