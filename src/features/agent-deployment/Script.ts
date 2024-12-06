@@ -49,7 +49,7 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     linuxPackages.forEach(pkg => {
         for (let i = 1; i <= pkg.count; i++) {
             const index = String(currentIndex++).padStart(3, '0'); // 更新 index
-            const hostName = next_agent_name;
+            const hostName = `${group}_${index}`;
             let script = '';
 
             // 根據 pkg.type 生成相應的腳本
@@ -100,18 +100,39 @@ export async function generateScripts(group: string, stats: any, totalAgentsInpu
     macPackages.forEach(pkg => {
         for (let i = 1; i <= pkg.count; i++) {
             const index = String(currentIndex++).padStart(3, '0'); // 更新 index
-            const hostName = next_agent_name;
+            const hostName = `${group}_${index}`;
             let script = '';
 
             if (pkg.type === 'intel') {
-                script = `curl -so wazuh-agent.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.9.0-1.intel64.pkg && echo "WAZUH_MANAGER='${process.env.NEXT_PUBLIC_API_BASE_DOMAIN}' && WAZUH_AGENT_GROUP='${group}' && WAZUH_AGENT_NAME='${hostName}'" > /tmp/wazuh_envs && sudo installer -pkg ./wazuh-agent.pkg -target /\nsudo /Library/Ossec/bin/wazuh-control start`;
+                script = `#!/bin/bash\n` +
+                    `osascript -e 'display notification "Starting Wazuh Agent installation..." with title "Wazuh Agent Setup"'\n` +
+                    `osascript -e 'display notification "Downloading Wazuh agent package..." with title "Wazuh Agent Setup"'\n` +
+                    `curl -so /tmp/wazuh-agent.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.9.0-1.intel64.pkg\n` +
+                    `osascript -e 'display notification "Setting environment variables..." with title "Wazuh Agent Setup"'\n` +
+                    `echo "WAZUH_MANAGER='${process.env.NEXT_PUBLIC_API_BASE_DOMAIN}' && WAZUH_AGENT_GROUP='${group}' && WAZUH_AGENT_NAME='${hostName}'" > /tmp/wazuh_envs\n` +
+                    `osascript -e 'display notification "Starting Wazuh agent installation..." with title "Wazuh Agent Setup"'\n` +
+                    `sudo installer -pkg /tmp/wazuh-agent.pkg -target /\n` +
+                    `osascript -e 'display notification "Starting Wazuh agent service..." with title "Wazuh Agent Setup"'\n` +
+                    `sudo /Library/Ossec/bin/wazuh-control start\n` +
+                    `osascript -e 'display notification "Wazuh Agent installation complete!" with title "Wazuh Agent Setup"'`;
                 zip.file(`${hostName}_macOS_intel.sh`, script);
             } else if (pkg.type === 'apple_silicon') {
-                script = `curl -so wazuh-agent.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.9.0-1.arm64.pkg && echo  "WAZUH_MANAGER='${process.env.NEXT_PUBLIC_API_BASE_DOMAIN}' && WAZUH_AGENT_GROUP='${group}' && WAZUH_AGENT_NAME='${hostName}'" > /tmp/wazuh_envs && sudo installer -pkg ./wazuh-agent.pkg -target /\nsudo /Library/Ossec/bin/wazuh-control start`;
+                script = `#!/bin/bash\n` +
+                    `osascript -e 'display notification "Starting Wazuh Agent installation..." with title "Wazuh Agent Setup"'\n` +
+                    `osascript -e 'display notification "Downloading Wazuh agent package..." with title "Wazuh Agent Setup"'\n` +
+                    `curl -so /tmp/wazuh-agent.pkg https://packages.wazuh.com/4.x/macos/wazuh-agent-4.9.0-1.arm64.pkg\n` +
+                    `osascript -e 'display notification "Setting environment variables..." with title "Wazuh Agent Setup"'\n` +
+                    `echo "WAZUH_MANAGER='${process.env.NEXT_PUBLIC_API_BASE_DOMAIN}' && WAZUH_AGENT_GROUP='${group}' && WAZUH_AGENT_NAME='${hostName}'" > /tmp/wazuh_envs\n` +
+                    `osascript -e 'display notification "Starting Wazuh agent installation..." with title "Wazuh Agent Setup"'\n` +
+                    `sudo installer -pkg /tmp/wazuh-agent.pkg -target /\n` +
+                    `osascript -e 'display notification "Starting Wazuh agent service..." with title "Wazuh Agent Setup"'\n` +
+                    `sudo /Library/Ossec/bin/wazuh-control start\n` +
+                    `osascript -e 'display notification "Wazuh Agent installation complete!" with title "Wazuh Agent Setup"'`;
                 zip.file(`${hostName}_macOS_apple_silicon.sh`, script);
             }
         }
     });
+
 
     // 將 PDF 文件添加到 ZIP
     const pdfResponse = await fetch(pdfUrl); // 獲取 PDF 文件
