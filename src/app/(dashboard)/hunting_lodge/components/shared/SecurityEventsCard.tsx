@@ -1,11 +1,11 @@
 'use client';
 
-import { FC } from 'react';
+import { FC, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { Activity, AlertTriangle, Shield, Clock, Network, Crosshair } from 'lucide-react';
 import { useAuthContext } from '../../../../../core/contexts/AuthContext';
 import { useDashboard } from '../../contexts/DashboardContext';
-import type { EventTable } from '../../../../../features/dashboard_v2/types';
+import type { EventTableElement } from '../../../../../features/dashboard_v2/types';
 
 // Enhanced color configuration with gradients
 const SEVERITY_COLORS = {
@@ -27,14 +27,53 @@ const SEVERITY_COLORS = {
     }
 } as const;
 
-interface Event {
-    rule_level: number;
-}
-
 const SecurityEventsCard: FC = () => {
     const router = useRouter();
     const { isadmin } = useAuthContext();
     const { eventTable } = useDashboard();
+
+    const {
+        totalEvents,
+        criticalEvents,
+        highEvents,
+        mediumEvents,
+        lowEvents,
+        lastUpdateTime
+    } = useMemo(() => {
+        if (!eventTable?.content?.event_table) {
+            return {
+                totalEvents: 0,
+                criticalEvents: 0,
+                highEvents: 0,
+                mediumEvents: 0,
+                lowEvents: 0,
+                lastUpdateTime: null
+            };
+        }
+
+        const events = eventTable.content.event_table as EventTableElement[];
+        let lastTime: Date | null = null;
+
+        // 找到最新的事件時間
+        if (events.length > 0) {
+            const timestamps = events
+                .map(e => e.timestamp)
+                .filter(Boolean);
+
+            if (timestamps.length > 0) {
+                lastTime = new Date(Math.max(...timestamps.map(t => t instanceof Date ? t.getTime() : new Date(t).getTime())));
+            }
+        }
+
+        return {
+            totalEvents: events.length,
+            criticalEvents: events.filter(e => e.rule_level >= 10).length,
+            highEvents: events.filter(e => e.rule_level >= 7 && e.rule_level < 10).length,
+            mediumEvents: events.filter(e => e.rule_level >= 4 && e.rule_level < 7).length,
+            lowEvents: events.filter(e => e.rule_level < 4).length,
+            lastUpdateTime: lastTime
+        };
+    }, [eventTable]);
 
     if (!eventTable) {
         return (
@@ -46,15 +85,6 @@ const SecurityEventsCard: FC = () => {
             </div>
         );
     }
-
-    const events = eventTable.content.event_table as Event[];
-    const totalEvents = events.length;
-
-    // Calculate severity counts
-    const criticalEvents = events.filter((e: Event) => e.rule_level >= 10).length;
-    const highEvents = events.filter((e: Event) => e.rule_level >= 7 && e.rule_level < 10).length;
-    const mediumEvents = events.filter((e: Event) => e.rule_level >= 4 && e.rule_level < 7).length;
-    const lowEvents = events.filter((e: Event) => e.rule_level < 4).length;
 
     const handleEventsClick = () => {
         router.push('/hunting_lodge/events');
@@ -89,9 +119,11 @@ const SecurityEventsCard: FC = () => {
                         <Activity className="w-6 h-6 sm:w-8 sm:h-8 mb-4" />
                         <div className="text-2xl sm:text-3xl font-bold mb-2">{totalEvents}</div>
                         <div className="text-sm sm:text-base opacity-90">安全事件總數</div>
-                        <div className="mt-4 text-xs sm:text-sm opacity-75">
-                            最後更新：{new Date().toLocaleTimeString()}
-                        </div>
+                        {lastUpdateTime && (
+                            <div className="mt-4 text-xs sm:text-sm opacity-75">
+                                最後事件時間：{lastUpdateTime.toLocaleString()}
+                            </div>
+                        )}
                     </div>
                 </div>
 
