@@ -26,8 +26,8 @@ export default function SyslogTable(props: props) {
     }
     );
     return (
-        <div>
-            <div className="flex flex-row px-20 border-b  mb-4 gap-3">
+        <div className="bg-white p-5 rounded-lg shadow-sm">
+            <div className="flex flex-row px-20  mb-2 gap-3">
                 <div className=" relative flex-1  ">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
                     <input
@@ -37,6 +37,7 @@ export default function SyslogTable(props: props) {
                         onChange={(e) => setSearchTerm(e.target.value)}
                         className="w-full pl-10 pr-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                     />
+
 
                 </div>
                 <div className="relative">
@@ -53,6 +54,11 @@ export default function SyslogTable(props: props) {
 
                     </select>
                 </div>
+
+            </div>
+            <div className="flex justify-between items-center px-24">
+                <span className="text-gray-400 text-sm">共 {filteredSyslog.length} 筆日誌</span>
+                <p></p>
             </div>
 
 
