@@ -13,6 +13,8 @@ export const DesktopView: FC<ViewProps> = ({
     increasingTrends,
     getSeriesColor
 }) => {
+    console.log(chartData);
+
     return (
         <div className="space-y-6">
             <div className="h-[400px]">
