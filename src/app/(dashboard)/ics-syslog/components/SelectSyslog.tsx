@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
-
-export default function SelectSyslog(props: any) {
-    const { props: mock, filter } = props;
-
-    const [selectedDevice, setSelectedDevice] = useState('all');
-    const [selectedSeverity, setSelectedSeverity] = useState('all');
+import React from 'react';
+type Props = {
+    originaldata: any;
+    setdevice: (device: string) => void;
+    setseverity: (severity: string) => void;
+    severity: string;
+    device: string;
+};
+export default function SelectSyslog(props: Props) {
+    const { originaldata, setdevice, setseverity, severity, device } = props;
 
     // Extract unique devices and severities
-    const uniqueDevice = mock.reduce((acc: Set<string>, curr: any) => {
+    const uniqueDevice = originaldata.reduce((acc: Set<string>, curr: any) => {
         acc.add(curr.device);
         return acc;
     }, new Set<string>());
 
-    const uniqueSeverity = mock.reduce((acc: Set<string>, curr: any) => {
+    const uniqueSeverity = originaldata.reduce((acc: Set<string>, curr: any) => {
         acc.add(curr.severity);
         return acc;
     }, new Set<string>());
 
     const handleReset = () => {
-        setSelectedDevice('all');
-        setSelectedSeverity('all');
-        filter('', 'all');
+        setdevice('all');
+        setseverity('all');
+
     }
 
     return (
@@ -32,10 +35,10 @@ export default function SelectSyslog(props: any) {
                 id="device"
                 onChange={(e) => {
                     const value = e.target.value;
-                    setSelectedDevice(value);
-                    filter(value, 'device');
+                    setdevice(value);
+
                 }}
-                value={selectedDevice}
+                value={device}
             >
                 {
                     Array.from(uniqueDevice).map((item, index) => (
@@ -52,10 +55,10 @@ export default function SelectSyslog(props: any) {
                 id="severity"
                 onChange={(e) => {
                     const value = e.target.value;
-                    setSelectedSeverity(value);
-                    filter(value, 'severity');
+                    setseverity(value);
+
                 }}
-                value={selectedSeverity}
+                value={severity}
             >
                 {
                     Array.from(uniqueSeverity).map((item, index) => (

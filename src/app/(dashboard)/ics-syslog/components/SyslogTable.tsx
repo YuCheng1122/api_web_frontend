@@ -4,11 +4,17 @@ import { useState } from "react";
 
 type props = {
     Syslog: {
+        event_id: string;
         timestamp: string;
         device: string;
         details: {
+            in_interface: string;
+            out_interface: string;
             src_ip: string;
             dst_ip: string;
+            protocol: string;
+            src_port: number;
+            dst_port: number;
         };
         severity: string;
         message: string;
@@ -22,9 +28,12 @@ export default function SyslogTable(props: props) {
     const [currentPage, setCurrentPage] = useState(1);
 
     const filteredSyslog = Syslog.filter((item) => {
-        return item.device.includes(searchTerm) || item.details.src_ip.includes(searchTerm) || item.details.dst_ip.includes(searchTerm) || item.severity.includes(searchTerm) || item.message.includes(searchTerm);
-    }
-    );
+        if (searchTerm === '') {
+            return item;
+        } else if (item.event_id.toLowerCase().includes(searchTerm.toLowerCase()) || item.device.toLowerCase().includes(searchTerm.toLowerCase()) || item.details.src_ip.toLowerCase().includes(searchTerm.toLowerCase()) || item.details.dst_ip.toLowerCase().includes(searchTerm.toLowerCase()) || item.severity.toLowerCase().includes(searchTerm.toLowerCase()) || item.message.toLowerCase().includes(searchTerm.toLowerCase())) {
+            return item;
+        }
+    });
     return (
         <div className="bg-white p-5 rounded-lg shadow-sm">
             <div className="flex flex-row px-20  mb-2 gap-3">
@@ -79,8 +88,9 @@ export default function SyslogTable(props: props) {
                             <tr key={index}>
                                 <td className="border px-4 py-2">{item.timestamp}</td>
                                 <td className="border px-4 py-2">{item.device}</td>
-                                <td className="border px-4 py-2">{item.details.src_ip}</td>
-                                <td className="border px-4 py-2">{item.details.dst_ip}</td>
+                                <td className="border px-4 py-2">{item.details && item.details.src_ip ? item.details.src_ip : 'N/A'}</td>
+
+                                <td className="border px-4 py-2">{item.details && item.details.dst_ip ? item.details.dst_ip : 'N/A'}</td>
                                 <td className="border px-4 py-2">{item.severity}</td>
                                 <td className="border px-4 py-2">{item.message}</td>
                             </tr>
