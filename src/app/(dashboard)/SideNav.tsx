@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { useAuthContext } from '@/features/auth/contexts/AuthContext';
+import { useAuthContext } from '@/core/contexts/AuthContext';
 import { useRouter } from 'next/navigation';
 import {
     Home,

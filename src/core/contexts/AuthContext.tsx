@@ -19,9 +19,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [username, setUsername] = useState('')
     const [isadmin, setIsadmin] = useState(false)
     const [isInitialized, setIsInitialized] = useState(false)
-    const router = useRouter()
-
-    // 檢查管理員權限
+    useRouter();
+// 檢查管理員權限
     const checkAdminStatus = useCallback(async () => {
         if (!isLogin || !username) return;
 

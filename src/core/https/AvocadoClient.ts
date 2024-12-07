@@ -1,7 +1,7 @@
 import Cookies from 'js-cookie';
 import axios, { AxiosRequestConfig, AxiosError } from 'axios';
-import { login } from '../auth/api/login';
-import { decrypt } from '../auth/utils/crypto';
+import { login } from '@/features/auth/api/login';
+import { decrypt } from '@/features/auth/utils/crypto';
 
 class AvocadoClient {
     private baseURL: string;
