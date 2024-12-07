@@ -20,17 +20,18 @@ export default function Page() {
     const [loading, setloading] = useState<boolean>(true);
     const [error, seterror] = useState<string | null>(null);
     useEffect(() => {
-        severity === 'all' && device === 'all' ? setfilterdata(originaldata) : setfilterdata(originaldata.filter((item) => {
-            if (severity === 'all' && device !== 'all') {
-                return item.device === device;
-            } else if (severity !== 'all' && device === 'all') {
-                return item.severity === severity;
-            } else {
-                return item.device === device && item.severity === severity;
-            }
+        if (severity === 'all' && device === 'all') {
+            setfilterdata(originaldata);
+        } else {
+            const filtered = originaldata.filter(item => {
+                const severityMatch = severity === 'all' || item.severity === severity;
+                const deviceMatch = device === 'all' || item.device === device;
+                return severityMatch && deviceMatch;
+            });
+            setfilterdata(filtered);
         }
-        ));
     }, [severity, device, originaldata]);
+
 
     useEffect(() => {
         setloading(true);
