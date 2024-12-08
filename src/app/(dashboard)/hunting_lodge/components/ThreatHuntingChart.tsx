@@ -27,10 +27,10 @@ interface AgentLink extends d3.SimulationLinkDatum<AgentNode> {
 }
 
 const COLORS = {
-    critical: '#DC2626', // red-600
-    high: '#F97316',    // orange-500
-    medium: '#F59E0B',  // amber-500
-    low: '#10B981',     // emerald-500
+    critical: 'hsl(var(--destructive))',
+    high: 'hsl(var(--chart-3))',
+    medium: 'hsl(var(--chart-4))',
+    low: 'hsl(var(--chart-2))',
 };
 
 export default function ThreatHuntingChart({ data }: Props) {
@@ -189,7 +189,7 @@ export default function ThreatHuntingChart({ data }: Props) {
             .selectAll('line')
             .data(filteredLinks)
             .enter().append('line')
-            .attr('stroke', d => d.type === 'lateral_movement' ? '#EF4444' : '#8B5CF6')
+            .attr('stroke', d => d.type === 'lateral_movement' ? 'hsl(var(--destructive))' : 'hsl(var(--accent))')
             .attr('stroke-width', d => Math.sqrt(d.events.length))
             .attr('stroke-dasharray', d => d.type === 'lateral_movement' ? 'none' : '5,5')
             .attr('opacity', 0.6);
@@ -220,14 +220,14 @@ export default function ThreatHuntingChart({ data }: Props) {
         node.append('circle')
             .attr('r', d => getNodeSize(d))
             .attr('fill', d => getNodeColor(d))
-            .attr('stroke', '#fff')
+            .attr('stroke', 'hsl(var(--background))')
             .attr('stroke-width', 2);
 
         // Add labels
         node.append('text')
             .attr('dy', '0.35em')
             .attr('text-anchor', 'middle')
-            .attr('fill', '#fff')
+            .attr('fill', 'hsl(var(--background))')
             .attr('font-size', '12px')
             .text(d => d.label);
 
@@ -260,15 +260,15 @@ export default function ThreatHuntingChart({ data }: Props) {
     }, [dimensions, processedData, selectedSeverity]);
 
     return (
-        <div className="w-full h-full bg-white rounded-lg shadow-sm p-6" ref={containerRef}>
+        <div className="w-full h-full bg-card rounded-lg shadow-sm p-6" ref={containerRef}>
             <div className="flex justify-between items-center mb-4">
-                <h2 className="text-lg font-semibold">Agent Relationship Analysis</h2>
+                <h2 className="text-lg font-semibold text-card-foreground">Agent Relationship Analysis</h2>
                 <div className="flex gap-2">
                     <button
                         onClick={() => setSelectedSeverity('all')}
                         className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === 'all'
-                                ? 'bg-gray-200 text-gray-800'
-                                : 'bg-gray-100 text-gray-600'
+                            ? 'bg-accent text-accent-foreground'
+                            : 'bg-muted text-muted-foreground'
                             }`}
                     >
                         All
@@ -276,8 +276,8 @@ export default function ThreatHuntingChart({ data }: Props) {
                     <button
                         onClick={() => setSelectedSeverity('critical')}
                         className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === 'critical'
-                                ? 'bg-red-100 text-red-800'
-                                : 'bg-gray-100 text-gray-600'
+                            ? 'bg-destructive text-destructive-foreground'
+                            : 'bg-muted text-muted-foreground'
                             }`}
                     >
                         Critical
@@ -285,8 +285,8 @@ export default function ThreatHuntingChart({ data }: Props) {
                     <button
                         onClick={() => setSelectedSeverity('high')}
                         className={`px-3 py-1 rounded-full text-sm ${selectedSeverity === 'high'
-                                ? 'bg-orange-100 text-orange-800'
-                                : 'bg-gray-100 text-gray-600'
+                            ? 'bg-accent text-accent-foreground'
+                            : 'bg-muted text-muted-foreground'
                             }`}
                     >
                         High
@@ -294,30 +294,30 @@ export default function ThreatHuntingChart({ data }: Props) {
                 </div>
             </div>
             <div className="relative">
-                <svg ref={svgRef} className="w-full h-[600px]" />
-                <div className="absolute top-4 right-4 bg-white/80 p-3 rounded-lg shadow-sm">
-                    <div className="text-sm font-medium mb-2">Legend</div>
+                <svg ref={svgRef} className="w-full h-[600px] bg-card" />
+                <div className="absolute top-4 right-4 bg-card/80 p-3 rounded-lg shadow-sm border border-border">
+                    <div className="text-sm font-medium mb-2 text-card-foreground">Legend</div>
                     <div className="space-y-2">
                         <div className="flex items-center gap-2">
                             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS.critical }} />
-                            <span className="text-sm text-gray-600">Critical Severity Agent</span>
+                            <span className="text-sm text-muted-foreground">Critical Severity Agent</span>
                         </div>
                         <div className="flex items-center gap-2">
                             <div className="w-3 h-3 rounded-full" style={{ backgroundColor: COLORS.high }} />
-                            <span className="text-sm text-gray-600">High Severity Agent</span>
+                            <span className="text-sm text-muted-foreground">High Severity Agent</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-0.5 bg-red-500" />
-                            <span className="text-sm text-gray-600">Lateral Movement</span>
+                            <div className="w-6 h-0.5" style={{ backgroundColor: 'hsl(var(--destructive))' }} />
+                            <span className="text-sm text-muted-foreground">Lateral Movement</span>
                         </div>
                         <div className="flex items-center gap-2">
-                            <div className="w-6 h-0.5 bg-violet-500" style={{ strokeDasharray: '5,5' }} />
-                            <span className="text-sm text-gray-600">Similar Attack Pattern</span>
+                            <div className="w-6 h-0.5" style={{ backgroundColor: 'hsl(var(--accent))', strokeDasharray: '5,5' }} />
+                            <span className="text-sm text-muted-foreground">Similar Attack Pattern</span>
                         </div>
                     </div>
                 </div>
             </div>
-            <div className="mt-4 text-sm text-gray-500">
+            <div className="mt-4 text-sm text-muted-foreground">
                 * Node size indicates number of events. Solid lines show lateral movement between agents,
                 dashed lines show similar attack patterns. Hover for details.
             </div>

@@ -1,7 +1,7 @@
 import React from "react";
 import { ArrowUpToLine } from "lucide-react";
 import SideNav from "./SideNav";
-import { ScrollToTop } from "@/app/shared/scroll-to-top";
+import { ScrollToTop } from "../../app/shared/scroll-to-top";
 
 export default function DashboardLayout({
     children,
@@ -9,7 +9,7 @@ export default function DashboardLayout({
     children: React.ReactNode;
 }) {
     return (
-        <div className="flex min-h-screen bg-gray-100">
+        <div className="flex min-h-screen bg-background">
             {/* Side Navigation */}
             <SideNav />
 
