@@ -1,6 +1,5 @@
 'use client'
-import { Button, ButtonProps } from "@/app/shared/button";
-
+import { Button, ButtonProps } from "./button";
 import { useEffect, useState } from "react"
 
 export function ScrollToTop({
@@ -19,12 +18,15 @@ export function ScrollToTop({
         document.addEventListener("scroll", onScroll);
 
         return () => document.removeEventListener("scroll", onScroll);
-    }, []);
+    }, [minHeight]);
 
     return (
         <>
             {visible && (
                 <Button
+                    variant="outline"
+                    size="icon"
+                    className="rounded-full bg-background hover:bg-accent text-muted-foreground hover:text-accent-foreground"
                     onClick={() =>
                         window.scrollTo({
                             top: scrollTo ?? 0,

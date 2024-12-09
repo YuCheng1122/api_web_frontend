@@ -32,9 +32,9 @@ interface Graph {
 }
 
 const NODE_COLORS = {
-    normal: '#10B981',   // emerald-500
-    attacked: '#EF4444', // red-500
-    source: '#F59E0B'    // amber-500
+    normal: 'hsl(var(--chart-2))',   // emerald
+    attacked: 'hsl(var(--destructive))', // red
+    source: 'hsl(var(--chart-3))'    // amber
 };
 
 export default function NetworkTopologyChart({ data }: Props) {
@@ -157,7 +157,7 @@ export default function NetworkTopologyChart({ data }: Props) {
             .attr('markerHeight', 6)
             .attr('orient', 'auto')
             .append('path')
-            .attr('fill', d => d === 'attack' ? '#EF4444' : '#9CA3AF')
+            .attr('fill', d => d === 'attack' ? 'hsl(var(--destructive))' : 'hsl(var(--muted-foreground))')
             .attr('d', 'M0,-5L10,0L0,5');
 
         // Create links
@@ -166,7 +166,7 @@ export default function NetworkTopologyChart({ data }: Props) {
             .data(graph.links)
             .enter().append('line')
             .attr('stroke-width', d => Math.sqrt(d.value) * 2) // Increased width
-            .attr('stroke', d => d.type === 'attack' ? '#EF4444' : '#9CA3AF')
+            .attr('stroke', d => d.type === 'attack' ? 'hsl(var(--destructive))' : 'hsl(var(--muted-foreground))')
             .attr('marker-end', d => `url(#arrow-${d.type})`);
 
         // Create nodes
@@ -183,7 +183,7 @@ export default function NetworkTopologyChart({ data }: Props) {
         nodes.append('circle')
             .attr('r', d => d.radius)
             .attr('fill', d => NODE_COLORS[d.status])
-            .attr('stroke', '#fff')
+            .attr('stroke', 'hsl(var(--background))')
             .attr('stroke-width', 2);
 
         // Add labels to nodes
@@ -191,7 +191,7 @@ export default function NetworkTopologyChart({ data }: Props) {
             .text(d => d.id)
             .attr('text-anchor', 'middle')
             .attr('dy', '.35em')
-            .attr('fill', '#4B5563')
+            .attr('fill', 'hsl(var(--foreground))')
             .attr('font-size', '14px'); // Increased font size
 
         // Add title for hover effect
@@ -234,21 +234,21 @@ export default function NetworkTopologyChart({ data }: Props) {
 
     return (
         <div className="w-full h-full" ref={containerRef}>
-            <svg ref={svgRef} className="w-full h-full" />
-            <div className="absolute top-4 right-4 bg-white/80 p-3 rounded-lg shadow-sm">
-                <div className="text-sm font-medium mb-2">Legend</div>
+            <svg ref={svgRef} className="w-full h-full bg-card" />
+            <div className="absolute top-4 right-4 bg-card/80 p-3 rounded-lg shadow-sm border border-border">
+                <div className="text-sm font-medium mb-2 text-card-foreground">Legend</div>
                 <div className="space-y-2">
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: NODE_COLORS.normal }} />
-                        <span className="text-sm text-gray-600">Normal Agent</span>
+                        <span className="text-sm text-muted-foreground">Normal Agent</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: NODE_COLORS.attacked }} />
-                        <span className="text-sm text-gray-600">Attacked Agent</span>
+                        <span className="text-sm text-muted-foreground">Attacked Agent</span>
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="w-3 h-3 rounded-full" style={{ backgroundColor: NODE_COLORS.source }} />
-                        <span className="text-sm text-gray-600">Attack Source</span>
+                        <span className="text-sm text-muted-foreground">Attack Source</span>
                     </div>
                 </div>
             </div>

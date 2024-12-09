@@ -20,7 +20,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const [isadmin, setIsadmin] = useState(false)
     const [isInitialized, setIsInitialized] = useState(false)
     useRouter();
-// 檢查管理員權限
+
+    // 檢查管理員權限
     const checkAdminStatus = useCallback(async () => {
         if (!isLogin || !username) return;
 
@@ -63,8 +64,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             Cookies.set('token', token)
             Cookies.set('username', newUsername)
         } else {
+            // 登出時清除所有認證資訊
             Cookies.remove('token')
             Cookies.remove('username')
+            sessionStorage.removeItem('auth_credentials')
             setIsadmin(false)
         }
     }, []);

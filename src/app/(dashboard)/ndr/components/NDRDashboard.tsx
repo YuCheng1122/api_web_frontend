@@ -1,9 +1,8 @@
-'use client'
+'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useNDR } from '../../../../features/ndr/hooks/useNDR';
 import { ndrService } from '../../../../features/ndr/services/ndrService';
-import { NDRDeviceListItem, NDRDeviceInfo, NDREvent, NDRTopBlocking } from '../../../../features/ndr/types/ndr';
 import { LogOut } from 'lucide-react';
 import LoadingSpinner from './LoadingSpinner';
 import ErrorMessage from './ErrorMessage';
@@ -13,57 +12,36 @@ import DeviceCard from './DeviceCard';
 import { default as DeviceInfoCard } from './DeviceInfoCard';
 import EventList from './EventList';
 import TopBlockingList from './TopBlockingList';
-
-interface UserPreferences {
-    pageSize: number;
-    sortField: keyof NDREvent;
-    sortDirection: 'asc' | 'desc';
-    severity?: number;
-}
-
-const DEFAULT_PREFERENCES: UserPreferences = {
-    pageSize: 20,
-    sortField: '@timestamp',
-    sortDirection: 'desc'
-};
-
-const loadPreferences = (): UserPreferences => {
-    if (typeof window === 'undefined') return DEFAULT_PREFERENCES;
-    const saved = localStorage.getItem('ndrPreferences');
-    if (!saved) return DEFAULT_PREFERENCES;
-    try {
-        return { ...DEFAULT_PREFERENCES, ...JSON.parse(saved) };
-    } catch {
-        return DEFAULT_PREFERENCES;
-    }
-};
-
-const savePreferences = (preferences: UserPreferences) => {
-    if (typeof window === 'undefined') return;
-    localStorage.setItem('ndrPreferences', JSON.stringify(preferences));
-};
+import { useNDRData } from '../contexts/NDRContext';
 
 const NDRDashboard = () => {
     const { token, decodedToken, logout: ndrLogout } = useNDR();
-    const [devices, setDevices] = useState<NDRDeviceListItem[]>([]);
-    const [deviceInfo, setDeviceInfo] = useState<NDRDeviceInfo | null>(null);
-    const [allEvents, setAllEvents] = useState<NDREvent[]>([]);
-    const [totalEvents, setTotalEvents] = useState(0);
-    const [topBlocking, setTopBlocking] = useState<NDRTopBlocking[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-    const [preferences, setPreferences] = useState<UserPreferences>(loadPreferences);
-    const [currentPage, setCurrentPage] = useState(0);
-    const [fromDate, setFromDate] = useState(() => {
-        const date = new Date();
-        date.setDate(date.getDate() - 30);
-        return date.toISOString().slice(0, 16);
-    });
-    const [toDate, setToDate] = useState(() => {
-        return new Date().toISOString().slice(0, 16);
-    });
-    const [selectedDevice, setSelectedDevice] = useState<string | null>(null);
-    const [isFilterVisible, setIsFilterVisible] = useState(false);
+    const {
+        devices,
+        deviceInfo,
+        allEvents,
+        totalEvents,
+        topBlocking,
+        loading,
+        error,
+        preferences,
+        currentPage,
+        fromDate,
+        toDate,
+        selectedDevice,
+        setDevices,
+        setDeviceInfo,
+        setAllEvents,
+        setTotalEvents,
+        setTopBlocking,
+        setLoading,
+        setError,
+        updatePreferences,
+        setCurrentPage,
+        setFromDate,
+        setToDate,
+        setSelectedDevice,
+    } = useNDRData();
 
     const handleNDRLogout = () => {
         ndrLogout();
@@ -75,13 +53,7 @@ const NDRDashboard = () => {
         return allEvents.slice(start, end);
     };
 
-    const updatePreferences = (newPreferences: Partial<UserPreferences>) => {
-        const updated = { ...preferences, ...newPreferences };
-        setPreferences(updated);
-        savePreferences(updated);
-    };
-
-    const handleSort = (field: keyof NDREvent) => {
+    const handleSort = (field: keyof typeof allEvents[0]) => {
         const newDirection =
             preferences.sortField === field && preferences.sortDirection === 'asc'
                 ? 'desc'
@@ -228,31 +200,8 @@ const NDRDashboard = () => {
                     </div>
                 </div>
 
-                {/* 篩選器切換按鈕（行動裝置） */}
-                <div className="md:hidden mb-4">
-                    <button
-                        onClick={() => setIsFilterVisible(!isFilterVisible)}
-                        className="w-full bg-white p-3 rounded-lg shadow-sm text-gray-700 font-medium flex items-center justify-center"
-                    >
-                        <svg
-                            className="w-5 h-5 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                strokeWidth="2"
-                                d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"
-                            />
-                        </svg>
-                        {isFilterVisible ? '隱藏篩選器' : '顯示篩選器'}
-                    </button>
-                </div>
-
                 {/* 查詢控制項 */}
-                <div className={`md:block ${isFilterVisible ? 'block' : 'hidden'}`}>
+                <div className="mb-6">
                     <QueryControls
                         fromDate={fromDate}
                         toDate={toDate}

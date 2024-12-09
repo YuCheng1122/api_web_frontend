@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useAuthContext } from '@/core/contexts/AuthContext';
+import { useTheme } from '@/core/contexts/ThemeContext';
 import { useRouter } from 'next/navigation';
 import {
     Home,
@@ -20,7 +21,9 @@ import {
     X,
     Download,
     LogOut,
-    User
+    User,
+    Sun,
+    Moon
 } from 'lucide-react';
 
 // 定義導航項目類型
@@ -34,6 +37,7 @@ interface NavItem {
 const SideNav = () => {
     const [isOpen, setIsOpen] = useState(false);
     const { isadmin, username, updateLoginState } = useAuthContext();
+    const { theme, toggleTheme } = useTheme();
     const router = useRouter();
 
     const toggleMenu = () => {
@@ -48,9 +52,14 @@ const SideNav = () => {
     // 定義導航項目
     const navItems: NavItem[] = [
         {
-            href: '/hunting_lodge',
+            href: '/security-overview',
             label: '安全總覽',
             icon: <Home size={20} />
+        },
+        {
+            href: '/hunting_lodge',
+            label: '端點防護',
+            icon: <Shield size={20} />
         },
         {
             href: '/ndr',
@@ -59,7 +68,7 @@ const SideNav = () => {
         },
         {
             href: '/agents',
-            label: '端點防護',
+            label: '代理資訊',
             icon: <Database size={20} />
         },
         {
@@ -103,7 +112,7 @@ const SideNav = () => {
             {/* Mobile Menu Button */}
             <button
                 onClick={toggleMenu}
-                className="sm:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900 text-white hover:bg-gray-800 transition-colors"
+                className="sm:hidden fixed top-4 left-4 z-50 p-2 rounded-lg bg-gray-900 dark:bg-gray-800 text-white hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
                 aria-label="Toggle menu"
             >
                 {isOpen ? <X size={24} /> : <Menu size={24} />}
@@ -120,14 +129,14 @@ const SideNav = () => {
 
             {/* Sidebar */}
             <div className={`
-                fixed top-0 left-0 h-screen w-64 bg-gray-900 text-white z-40
+                fixed top-0 left-0 h-screen w-64 bg-gray-900 dark:bg-gray-800 text-white z-40
                 transform transition-transform duration-300 ease-in-out
                 ${isOpen ? 'translate-x-0' : '-translate-x-full'}
                 sm:translate-x-0
                 flex flex-col
             `}>
                 {/* Logo Section */}
-                <div className="p-4 border-b border-gray-800">
+                <div className="p-4 border-b border-gray-800 dark:border-gray-700">
                     <Link href="/hunting_lodge" className="block" onClick={() => setIsOpen(false)}>
                         <div className="flex items-center justify-center hover:opacity-80 transition-opacity cursor-pointer">
                             <Image
@@ -149,7 +158,7 @@ const SideNav = () => {
                             <li key={item.href}>
                                 <Link
                                     href={item.href}
-                                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors"
+                                    className="flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {item.icon}
@@ -161,14 +170,22 @@ const SideNav = () => {
                 </nav>
 
                 {/* User Section */}
-                <div className="p-4 border-t border-gray-800">
+                <div className="p-4 border-t border-gray-800 dark:border-gray-700">
                     <div className="flex items-center space-x-3 p-2 text-gray-300">
                         <User size={20} />
                         <span>{username}</span>
                     </div>
+                    {/* Theme Toggle Button */}
+                    <button
+                        onClick={toggleTheme}
+                        className="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors text-gray-300 mb-2"
+                    >
+                        {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+                        <span>{theme === 'dark' ? '切換淺色模式' : '切換深色模式'}</span>
+                    </button>
                     <button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 transition-colors text-red-400"
+                        className="w-full flex items-center space-x-3 p-2 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-700 transition-colors text-red-400"
                     >
                         <LogOut size={20} />
                         <span>登出</span>
