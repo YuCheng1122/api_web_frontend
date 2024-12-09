@@ -94,7 +94,7 @@ export default function StatisticalTable(props: props) {
     const summary = calculateStats(groupedLogs, uniqueDates);
 
     return (
-        <table className="table-auto col-span-1">
+        <table className="table-auto col-span-1 dark:bg-gray-800">
             <thead>
                 <tr>
                     <th className="px-4 py-2">Severity</th>

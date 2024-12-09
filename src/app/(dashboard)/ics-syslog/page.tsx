@@ -1,15 +1,16 @@
 'use client'
-import mock from './mock';
 import LineChartsyslog from './components/LineChart';
 import StatisticalTable from './components/StatisticalTable';
 import SyslogTable from './components/SyslogTable';
 import SelectSyslog from './components/SelectSyslog';
-import { use, useState } from 'react';
+import { useState } from 'react';
 import { Clock } from 'lucide-react';
 import { fetchSyslogEvents } from '@/features/ics-syslog/services/syslogApi';
 import { useEffect } from 'react';
 import { SyslogRow } from '@/features/ics-syslog/types';
-// 定義日誌項目的介面
+import Loading from './components/Loading';
+import { useAuthContext } from '@/core/contexts/AuthContext';
+
 
 export default function Page() {
     const [filterdata, setfilterdata] = useState<SyslogRow[]>([]);
@@ -19,6 +20,8 @@ export default function Page() {
     const [time, settime] = useState<string>('all');
     const [loading, setloading] = useState<boolean>(true);
     const [error, seterror] = useState<string | null>(null);
+    const { isLogin } = useAuthContext();
+
     useEffect(() => {
         if (severity === 'all' && device === 'all') {
             setfilterdata(originaldata);
@@ -31,11 +34,17 @@ export default function Page() {
             setfilterdata(filtered);
         }
     }, [severity, device, originaldata]);
-
-
     useEffect(() => {
+        if (!isLogin) {
+            setloading(false);
+            seterror('請先登入以查看事件');
+            return;
+        }
         setloading(true);
-        fetchSyslogEvents({ start_time: '2021-09-01T00:00:00Z', end_time: '2024-12-31T23:59:59Z' }).then((res) => {
+        fetchSyslogEvents({
+            start_time: new Date('2021-09-01T00:00:00Z').toISOString()
+            , end_time: new Date().toISOString()
+        }).then(res => {
             if (res.success) {
                 setfilterdata(res.content);
                 setoriginaldata(res.content);
@@ -47,7 +56,7 @@ export default function Page() {
             }
         }
         )
-    }, [])
+    }, [isLogin]);
     useEffect(() => {
         if (time === '') {
             return;
@@ -99,23 +108,29 @@ export default function Page() {
 
         if (loading) {
             return (
-                <div className="flex justify-center items-center h-96">
-                    <div className="text-gray-400 text-2xl">載入中...</div>
+                <div className="flex items-start justify-center min-h-screen">
+                    <div className="flex flex-col items-center gap-2">
+                        <Loading />
+                        <p className="text-sm text-gray-500">載入中...</p>
+                    </div>
                 </div>
             );
         }
 
         if (filterdata.length === 0) {
             return (
-                <div className="flex justify-center items-center h-96">
-                    <div className="text-gray-400 text-2xl">沒有數據</div>
+                <div className="flex justify-center items-center h-96 flex-col">
+                    <div className=" text-2xl  font-semibold">沒有資料</div>
+                    <div>
+                        <p className="text-gray-400">請嘗試更改過濾條件</p>
+                    </div>
                 </div>
             );
         }
         return (
             <div>
                 <SelectSyslog originaldata={originaldata} setdevice={setdevice} setseverity={setseverity} device={device} severity={severity} />
-                <div className="grid grid-cols-1 gap-2 mt-2 bg-white p-8 rounded-lg shadow-sm border mb-5 border-t-0 sm:grid-cols-4 md:grid-col-4 xl:grid-col-4">
+                <div className="grid grid-cols-1 gap-2 mt-2 bg-white p-8 rounded-lg shadow-sm border mb-5 border-t-0 sm:grid-cols-4 md:grid-col-4 xl:grid-col-4 dark:bg-gray-800 dark:border-gray-700">
                     <div className="col-span-3">
                         <LineChartsyslog props={filterdata} />
                     </div>
@@ -127,6 +142,15 @@ export default function Page() {
             </div>
         );
     };
+    if (!isLogin) {
+        return (
+            <div className="flex items-start justify-center min-h-screen">
+                <div className="flex flex-col items-center gap-2">
+                    <div className="text-2xl font-semibold">請先登入</div>
+                </div>
+            </div>
+        );
+    }
 
 
 
@@ -140,8 +164,8 @@ export default function Page() {
                 <div className="flex items-center gap-4">
                     <label htmlFor="device">選擇時間:</label>
                     <div className=' relative'>
-                        <Clock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                        <select className="w-40 pl-10 pr-4 py-2 border rounded-lg appearance-none bg-white focus:outline-none focus:ring-2 focus:ring-blue-500" name="time" id="" onChange={(e) => settime(e.target.value)} defaultValue={time}>
+                        <Clock size={20} className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 " />
+                        <select className="w-40 pl-10 pr-4 py-2 border rounded-lg appearance-none bg-white  focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:border-gray-800 dark:focus:ring-blue-500" value={time} onChange={(e) => settime(e.target.value)}>
                             <option value="all">全部</option>
                             <option value="day">過去一天</option>
                             <option value="week">過去一週</option>

@@ -27,10 +27,10 @@ export default function SelectSyslog(props: Props) {
     }
 
     return (
-        <div className="bg-white p-5 rounded-lg shadow-sm space-x-3 ">
+        <div className="bg-white p-5 rounded-lg shadow-sm space-x-3 dark:bg-gray-800 ">
             <label htmlFor="device">選擇設備:</label>
             <select
-                className="bg-gray-300 rounded-sm shadow-sm"
+                className="bg-gray-300 rounded-sm shadow-sm dark:bg-gray-700"
                 name="device"
                 id="device"
                 onChange={(e) => {
@@ -50,7 +50,7 @@ export default function SelectSyslog(props: Props) {
 
             <label htmlFor="severity">選擇嚴重性:</label>
             <select
-                className="bg-gray-300 rounded-sm shadow-sm"
+                className="bg-gray-300 rounded-sm shadow-xl dark:bg-gray-700"
                 name="severity"
                 id="severity"
                 onChange={(e) => {
