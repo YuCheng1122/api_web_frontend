@@ -12,11 +12,23 @@ type Props = {
 };
 
 export default function LineChartsyslog(props: Props) {
+    const toChinese = (severity: string) => {
+        switch (severity) {
+            case 'INFO':
+                return "一般";
+            case 'WARNING':
+                return "警告";
+            case 'ERROR':
+                return "錯誤";
+            default:
+                return 'N/A';
+        }
+    }
     // props is an array clean to be used in the LineChart by day count
     const exchangeData = props.props.reduce((acc: { timestamp: string, severity: string }[], curr: { timestamp: string, severity: string }) => {
         const date = new Date(curr.timestamp);
         const timestamp = date.toLocaleDateString();
-        const severity = curr.severity;
+        const severity = toChinese(curr.severity);
         acc.push({ timestamp, severity });
         return acc;
     }, []);
@@ -37,16 +49,18 @@ export default function LineChartsyslog(props: Props) {
         const count = logCounts[date];
         return { date, ...count }
     });
+
+    // result is an array of objects with date and severity count
+
     // find the unique severity
     const uniqueSeverities = exchangeData.reduce((acc: Set<string>, curr: { timestamp: string, severity: string }) => {
         acc.add(curr.severity);
         return acc;
     }, new Set<string>());
     const color = {
-        INFO: '#8884d8',
-        WARNING: '#82ca9d',
-        ERROR: '#ff7300',
-        CRITICAL: '#ff0000',
+        "一般": "#82ca9d",
+        "警告": "#ffc658",
+        "錯誤": "#ff7300"
     }
     return (
         <div>

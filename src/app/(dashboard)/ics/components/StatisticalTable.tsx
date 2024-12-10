@@ -92,22 +92,38 @@ export default function StatisticalTable(props: props) {
     const uniqueDates = getUniqueDates(mock);
     const groupedLogs = groupLogs(mock);
     const summary = calculateStats(groupedLogs, uniqueDates);
+    const switchs = (severity: string) => {
+        switch (severity) {
+            case 'INFO':
+                return "一般";
+            case 'WARNING':
+                return "警告";
+            case 'ERROR':
+                return "錯誤";
+            default:
+                return 'N/A';
+        }
+    }
 
     return (
         <table className="table-auto col-span-1 dark:bg-gray-800">
             <thead>
-                <tr>
-                    <th className="px-4 py-2">Severity</th>
-                    <th className="px-4 py-2">Max</th>
-                    <th className="px-4 py-2">Avg</th>
-                    <th className="px-4 py-2">Total</th>
+                <tr className="bg-gray-200 rounded-sm text-gray-800">
+                    <th className="px-2 py-2">嚴重性</th>
+                    <th className="px-2 py-2">最大值</th>
+                    <th className="px-2 py-2">平均值(天)</th>
+                    <th className="px-2 py-2">總計</th>
                 </tr>
             </thead>
             <tbody>
                 {
                     Object.entries(summary).map(([severity, stats]) => (
                         <tr key={severity}>
-                            <td className="border px-4 py-2">{severity}</td>
+                            <td className="border px-4 py-2">
+                                <span className={`p-1 rounded-md text-${severity === 'INFO' ? 'green' : severity === 'WARNING' ? 'yellow' : 'red'}-500`}>
+                                    {switchs(severity)}
+                                </span>
+                            </td>
                             <td className="border px-4 py-2">{stats.Max}</td>
                             <td className="border px-4 py-2">{stats.Avg}</td>
                             <td className="border px-4 py-2">{stats.Total}</td>

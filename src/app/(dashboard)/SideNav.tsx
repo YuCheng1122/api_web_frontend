@@ -97,11 +97,6 @@ const SideNav = () => {
             icon: <Settings size={20} />,
             adminOnly: true
         },
-        {
-            href: '/ics-syslog',
-            label: 'ics系統紀錄',
-            icon: <Shield size={20} />,
-        }
     ];
 
     // 過濾導航項目

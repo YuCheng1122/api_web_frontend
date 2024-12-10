@@ -6,7 +6,7 @@ type Props = {
     severity: string;
     device: string;
 };
-export default function SelectSyslog(props: Props) {
+export default function FilterSyslog(props: Props) {
     const { originaldata, setdevice, setseverity, severity, device } = props;
 
     // Extract unique devices and severities
@@ -24,6 +24,20 @@ export default function SelectSyslog(props: Props) {
         setdevice('all');
         setseverity('all');
 
+    }
+    const toChinese = (severity: string) => {
+        switch (severity) {
+            case 'INFO':
+                return '一般';
+            case 'WARNING':
+                return '警告';
+            case 'ERROR':
+                return '錯誤';
+            case 'CRITICAL':
+                return '嚴重';
+            default:
+                return severity;
+        }
     }
 
     return (
@@ -62,7 +76,7 @@ export default function SelectSyslog(props: Props) {
             >
                 {
                     Array.from(uniqueSeverity).map((item, index) => (
-                        <option key={index} value={item as string}>{item as string}</option>
+                        <option key={index} value={item as string}>{toChinese(item as string)}</option>
                     ))
                 }
                 <option value="all" disabled>全部</option>
