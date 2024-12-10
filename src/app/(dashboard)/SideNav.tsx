@@ -96,7 +96,7 @@ const SideNav = () => {
             label: '管理中心',
             icon: <Settings size={20} />,
             adminOnly: true
-        }
+        },
     ];
 
     // 過濾導航項目
