@@ -11,7 +11,6 @@ import { fetchSyslogEvents } from '@/features/ics-syslog/services/syslogApi';
 import { useEffect } from 'react';
 import { SyslogRow } from '@/features/ics-syslog/types';
 import Loading from './components/Loading';
-import { useAuthContext } from '@/core/contexts/AuthContext';
 
 
 export default function ICSPage() {

@@ -223,7 +223,7 @@ export default function SyslogTable(props: props) {
                     {
                         filteredSyslog.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage).map((item, index) => (
                             <tr key={index} className="hover:bg-gray-50 cursor-pointer transition-colors ">
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.timestamp}</td>
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(item.timestamp).toLocaleString()}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.device}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.details && item.details.src_ip ? item.details.src_ip : 'N/A'}</td>
                                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{item.details && item.details.dst_ip ? item.details.dst_ip : 'N/A'}</td>
